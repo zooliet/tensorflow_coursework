@@ -293,7 +293,9 @@ if args.step == 7:
         "how do I extract keys from a dict into a list?",  # python
         "debug public static void main(string[] args) {...}",  # java
     ]
-    predicted_scores = export_model.predict(inputs)
+    debug()
+    # predicted_scores = export_model.predict(inputs)
+    predicted_scores = export_model(inputs)
     logger.info(f'predicted_scores:\n{predicted_scores}\n')
     predicted_labels = get_string_labels(predicted_scores)
     for input, label in zip(inputs, predicted_labels):
