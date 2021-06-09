@@ -104,8 +104,6 @@ if args.step == 4:
 if args.step == 5:
     print("\n### Step #5 - GPU acceleration: Explicit Device Placement")
 
-    import time
-
     def time_matmul(x, n=10):
         start = time.time()
         for loop in range(n):
