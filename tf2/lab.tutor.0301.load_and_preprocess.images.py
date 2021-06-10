@@ -69,7 +69,7 @@ if args.step >= 1:
     logger.info(f'dataset_dir: {dataset_dir}')
     dataset_dir = pathlib.Path(dataset_dir)
     image_count = len(list(dataset_dir.glob('*/*.jpg')))
-    logger.info(f'ls flower_photos/*/*.jpg | wc -l => {image_count}')
+    logger.info(f'ls flower_photos/*/*.jpg | wc -l: {image_count}')
 
     if args.step == 1 and args.plot:
         roses = list(dataset_dir.glob('roses/*'))
@@ -112,9 +112,9 @@ if args.step >= 2:
     )
 
     class_names = train_ds.class_names
-    logger.info(f'class names:\n{class_names}')
 
     if args.step == 2:
+        logger.info(f'class names: {class_names}')
         for image_batch, labels_batch in train_ds.take(1):
             logger.info(f'image_batch.shape: {image_batch.shape}') # (32, 180, 180, 3)
             logger.info(f'labels_batch.shape: {labels_batch.shape}') # (32,)
@@ -146,7 +146,7 @@ if args.step == 4:
     image_batch, labels_batch = next(iter(normalized_ds))
     first_image = image_batch[0]
     # Notice the pixels values are now in `[0,1]`.
-    logger.info(f'normalization range:\n{np.min(first_image)}(min) ~ {np.max(first_image)}(max)')
+    logger.info(f'normalization range: {np.min(first_image)}(min) ~ {np.max(first_image)}(max)')
 
 
 ### Step #5 - Load using keras.preprocessing: Configure the dataset for performance
@@ -183,7 +183,6 @@ if args.step == 6:
         metrics=['accuracy']
     )
 
-    logger.info('model.fit():')
     model.fit(
         train_ds,
         validation_data=val_ds,
@@ -200,10 +199,10 @@ if args.step >= 7:
     list_ds = list_ds.shuffle(image_count, reshuffle_each_iteration=False)
 
     class_names = sorted([item.name for item in dataset_dir.glob('*') if item.name != "LICENSE.txt"])
-    logger.info(f'class_names: {class_names}')
 
     if args.step == 7:
-        logger.info('list_ds')
+        logger.info(f'class_names: {class_names}')
+        logger.info('list_ds:')
         for f in list_ds.take(5):
             print(f.numpy().decode())
         print("...")
@@ -213,8 +212,9 @@ if args.step >= 7:
     val_ds = list_ds.take(val_size)
 
     # You can see the length of each dataset as follows:
-    logger.info(f'# of tran_ds: {tf.data.experimental.cardinality(train_ds).numpy()}')
-    logger.info(f'# of val_ds: {tf.data.experimental.cardinality(val_ds).numpy()}')
+    if args.step == 7:
+        logger.info(f'# of tran_ds: {tf.data.experimental.cardinality(train_ds).numpy()}')
+        logger.info(f'# of val_ds: {tf.data.experimental.cardinality(val_ds).numpy()}')
 
     # Write a short function that converts a file path to an (img, label) pair
     def get_label(file_path):
@@ -307,7 +307,6 @@ if args.step == 10:
         metrics=['accuracy']
     )
 
-    logger.info('model.fit():')
     model.fit(
         train_ds,
         validation_data=val_ds,
@@ -328,7 +327,7 @@ if args.step == 11:
     )
 
     num_classes = metadata.features['label'].num_classes
-    logger.info('# of classes: {}.format(num_classes)')
+    logger.info('# of classes: {}'.format(num_classes))
 
     if args.plot:
         get_label_name = metadata.features['label'].int2str

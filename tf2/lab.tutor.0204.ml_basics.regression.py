@@ -94,8 +94,9 @@ if args.step >= 3:
     train_dataset = dataset.sample(frac=0.8, random_state=0)
     test_dataset = dataset.drop(train_dataset.index)
 
-    logger.info(f'train_dataset.shape: {train_dataset.shape}')
-    logger.info(f'test_dataset.shape: {test_dataset.shape}')
+    if args.step == 3:
+        logger.info(f'train_dataset.shape: {train_dataset.shape}')
+        logger.info(f'test_dataset.shape: {test_dataset.shape}')
 
 
 ### Step #4 - The Auto MPG dataset: Inspect the data
@@ -128,18 +129,19 @@ if args.step >= 6:
     if args.step == 6:
         logger.info('different the ranges of each feature:')
         print(train_dataset.describe().transpose()[['mean', 'std']])
+        print('')
 
     # The Normalization layer
     normalizer = tf.keras.layers.experimental.preprocessing.Normalization()
     normalizer.adapt(train_features.to_numpy())
 
     if args.step == 6:
-        logger.info(f'normalizer stores the mean and variation of each feature:\n{normalizer.mean.numpy()}')
+        logger.info(f'normalizer stores the mean and variation of each feature:\n{normalizer.mean.numpy()}\n')
 
         first = train_features[:1]
         with np.printoptions(precision=2, suppress=True):
             logger.info(f'Before normalization:\n{first.values}')
-            logger.info(f'After Normalized:\n{normalizer(first).numpy()}')
+            logger.info(f'After Normalized:\n{normalizer(first).numpy()}\n')
 
 
 ### Plot utilities
@@ -195,22 +197,23 @@ if args.step >= 7:
         train_features['Horsepower'], 
         train_labels,
         epochs=args.epochs,
-        verbose=0, # suppress logging
+        verbose=0, 
         # Calculate validation results on 20% of the training data
         validation_split=0.2
     )
     end = time.time()
     logger.info(f"Time taken of horsepower_model is {end - start:.2f} secs\n")
 
-    if args.step == 7 and args.plot:
+    if args.step == 7:
         hist = pd.DataFrame(history.history)
         hist['epoch'] = history.epoch
-        logger.info(f'history\n{hist.tail()}')
-        plot_loss(history)
+        logger.info(f'history\n{hist.tail()}\n')
 
-        x = tf.linspace(0.0, 250, 251)
-        y = horsepower_model.predict(x)
-        plot_horsepower(x,y)
+        if args.plot:
+            plot_loss(history)
+            x = tf.linspace(0.0, 250, 251)
+            y = horsepower_model.predict(x)
+            plot_horsepower(x,y)
 
 
 ### Step #8 - Linear regression: Multiple inputs
@@ -238,8 +241,9 @@ if args.step >= 8:
     end = time.time()
     logger.info(f"Time taken of linear_model is {end - start:.2f} secs\n")
 
-    if args.step == 8 and args.plot:
-        plot_loss(history)
+    if args.step == 8:
+        if args.plot:
+            plot_loss(history)
 
 
 ### Step #9 - A DNN regression

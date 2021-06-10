@@ -127,8 +127,11 @@ if args.step >= 5:
 if args.step >= 6:
     print("\n### Step #6 - Train the model: Feed the model")
 
-    logger.info('model.fit():')
-    model.fit(train_images, train_labels, epochs=args.epochs, verbose=2)
+    model.fit(
+        train_images, train_labels, 
+        epochs=args.epochs, 
+        verbose=2 if args.step == 6 else 0
+    )
 
 
 ### Step #7 - Train the model: Evaluate accuracy
@@ -145,8 +148,9 @@ if args.step >= 8:
 
     probability_model = Sequential([model, Softmax()])
     predictions = probability_model.predict(test_images)
-    logger.info(f'Predictions(softmax):\n{predictions[:5]}')
-    logger.info(f'After applying np.argmax: {np.argmax(predictions[:5], -1)}')
+    if args.step == 8:
+        logger.info(f'Predictions(softmax):\n{predictions[:5]}')
+        logger.info(f'After applying np.argmax: {np.argmax(predictions[:5], -1)}')
 
     def plot_image(i, predictions_array, true_label, img):
         true_label, img = true_label[i], img[i]

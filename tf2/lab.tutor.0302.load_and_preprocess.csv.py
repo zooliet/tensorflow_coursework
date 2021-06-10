@@ -65,7 +65,7 @@ if args.step in [1, 2]:
 
     if args.step == 1:
         logger.info('abalone_train.head():')
-        print(abalone_train.head())
+        print(abalone_train.head(), '\n')
 
         abalone_model = Sequential([
             Dense(64),
@@ -77,7 +77,6 @@ if args.step in [1, 2]:
             optimizer = tf.keras.optimizers.Adam()
         )
 
-        logger.info('abalone_model.fit():')
         abalone_model.fit(abalone_features, abalone_labels, epochs=args.epochs, verbose=2)
     
 
@@ -99,7 +98,6 @@ if args.step == 2:
         optimizer = tf.keras.optimizers.Adam()
     )
 
-    logger.info('norm_abalone_model.fit():')
     norm_abalone_model.fit(abalone_features, abalone_labels, epochs=args.epochs, verbose=2)
 
 
@@ -110,7 +108,7 @@ if args.step in [3, 4] :
     titanic = pd.read_csv("https://storage.googleapis.com/tf-datasets/titanic/train.csv")
     if args.step == 3:
         logger.info('titanic.head():')
-        print(titanic.head())
+        print(titanic.head(), '\n')
 
     titanic_features = titanic.copy()
     titanic_labels = titanic_features.pop('survived')
@@ -141,7 +139,7 @@ if args.step in [3, 4] :
     # 4 x (None, 1) => (None, 4)
     x = Concatenate()(list(numeric_inputs.values()))
     if args.step == 3:
-        logger.info(f'Concatenate()(numeric_inputs.values()): {x.shape}')
+        logger.info(f'Concatenate()(numeric_inputs.values()): {x.shape}\n')
 
     norm = preprocessing.Normalization()
     norm.adapt(np.array(titanic[numeric_inputs.keys()]))
@@ -182,7 +180,7 @@ if args.step in [3, 4] :
         sample_output = titanic_preprocessing(sample_input)
         logger.info('titanic_preprocessing(sample_input):')
         print(f'{[v[0] for v in sample_input.values()]} => ')
-        print(sample_output.numpy())
+        print(sample_output.numpy(), '\n')
 
     # titanic_model
     def titanic_model(preprocessing_head, inputs):
@@ -242,12 +240,12 @@ if args.step == 4:
     for example in features_ds:
         for name, value in example.items():
             print(f"{name:19s}: {value}")
+        print('')
         break
 
     titanic_ds = tf.data.Dataset.from_tensor_slices((titanic_features_dict, titanic_labels))
     titanic_batches = titanic_ds.shuffle(len(titanic_labels)).batch(32)
 
-    logger.info('titanic_model.fit():')
     titanic_model.fit(titanic_batches, epochs=args.epochs, verbose=2)
 
 
@@ -273,7 +271,7 @@ if args.step in [5, 6]:
         for key, value in batch.items():
             print(f"{key:20s}: {value}")
             print(f"{'label':20s}: {label}")
-
+        print('')
     #
     traffic_volume_csv_gz = tf.keras.utils.get_file(
         'Metro_Interstate_Traffic_Volume.csv.gz',
@@ -293,6 +291,7 @@ if args.step in [5, 6]:
         for key, value in batch.items():
             print(f"{key:20s}: {value[:5]}")
             print(f"{'label':20s}: {label[:5]}")
+        print('')
 
 
 ### Step #6 - Using tf.data: Caching 
@@ -319,8 +318,8 @@ if args.step == 6:
     # So using .cache disables any shuffles earlier in the pipeline. 
     # Below the .shuffle is added back in after .cache.
 
-    print(f"Time taken is {elapsed:.2f} secs")
-    print(f"Time taken with caching is {elapsed_caching:.2f} secs")
+    logger.info(f"Time taken is {elapsed:.2f} secs")
+    logger.info(f"Time taken with caching is {elapsed_caching:.2f} secs")
 
 
 ### Step #7 - Using tf.data: Multiple files
@@ -336,6 +335,7 @@ if args.step == 7:
     font_csvs =  sorted(str(p) for p in pathlib.Path(os.path.dirname(fonts_zip)).glob("*.csv"))
     logger.info('font_csvs[:10]:')
     print(*font_csvs[:10], sep='\n')
+    print('')
     logger.info(f'len(font_csvs): {len(font_csvs)}') 
 
     fonts_ds = tf.data.experimental.make_csv_dataset(

@@ -225,7 +225,7 @@ if args.step in [5, 6, 7]:
         binary_train_ds, 
         validation_data=binary_val_ds, 
         epochs=args.epochs,
-        verbose=0
+        verbose=2 if args.step == 5 else 0
     )
 
     # vocab_size is VOCAB_SIZE + 1 since 0 is used additionally for padding.
@@ -240,7 +240,7 @@ if args.step in [5, 6, 7]:
         int_train_ds, 
         validation_data=int_val_ds, 
         epochs=args.epochs,
-        verbose=0
+        verbose=2 if args.step == 5 else 0
     )
 
     if args.step == 5:
@@ -277,7 +277,8 @@ if args.step in [6, 7]:
 
     # Test it with `raw_test_ds`, which yields raw strings
     loss, accuracy = export_model.evaluate(raw_test_ds, verbose=0)
-    logger.info("Accuracy: {:2.2%}".format(accuracy))
+    if args.step == 6:
+        logger.info("Accuracy: {:2.2%}".format(accuracy))
 
 
 ### Step #7 - Predict the tag for a Stack Overflow question: Run inference on new data
@@ -293,9 +294,8 @@ if args.step == 7:
         "how do I extract keys from a dict into a list?",  # python
         "debug public static void main(string[] args) {...}",  # java
     ]
-    debug()
-    # predicted_scores = export_model.predict(inputs)
-    predicted_scores = export_model(inputs)
+
+    predicted_scores = export_model.predict(inputs)
     logger.info(f'predicted_scores:\n{predicted_scores}\n')
     predicted_labels = get_string_labels(predicted_scores)
     for input, label in zip(inputs, predicted_labels):
@@ -316,7 +316,8 @@ if args.step in [8, 9, 10, 11, 12, 13, 14]:
             name, origin=DIRECTORY_URL + name, cache_subdir='datasets/illiad')
 
     parent_dir = pathlib.Path(text_dir).parent
-    logger.info(parent_dir)
+    if args.step == 8:
+        logger.info(f'parent_dir: {parent_dir}\n')
 
 
 ### Step #9 - Predict the author of Illiad translations: Load the dataset
@@ -344,6 +345,7 @@ if args.step in [9, 10, 11, 12, 13, 14]:
     if args.step == 9:
         for text, label in all_labeled_data.take(10):
             print(f"Sentence: {text.numpy()[:30]}... => Label: {label.numpy()}")
+        print('')
 
 
 ### Step #10 - Predict the author of Illiad translations: Prepare the dataset for training
@@ -363,7 +365,7 @@ if args.step in [10, 11, 12, 13, 14]:
         logger.info('tokenized_ds.take(5):')
         for text_batch in tokenized_ds.take(5):
             print(text_batch.numpy()[:5], "...")
-        print("\n")
+        print('')
 
     tokenized_ds = configure_dataset(tokenized_ds)
     vocab_dict = collections.defaultdict(lambda: 0)
@@ -401,6 +403,7 @@ if args.step in [10, 11, 12, 13, 14]:
         print("Sentence: {}".format(example_text.numpy()))
         vectorized_text, example_label = preprocess_text(example_text, example_label)
         print("Vectorized sentence: ", vectorized_text.numpy())
+        print('')
 
     all_encoded_data = all_labeled_data.map(preprocess_text)
 
@@ -438,16 +441,16 @@ if args.step in [12, 13, 14]:
         metrics=['accuracy']
     )
 
-    logger.info('model.fit():')
     history = model.fit(
         train_data, 
         validation_data=validation_data, epochs=3,
-        verbose=2
+        verbose=2 if args.step == 12 else 0
     )
 
     loss, accuracy = model.evaluate(validation_data, verbose=0)
-    logger.info("Loss: {:.2f}".format(loss)) 
-    logger.info("Accuracy: {:2.2%}".format(accuracy))
+    if args.step == 12:
+        logger.info("Loss: {:.2f}".format(loss)) 
+        logger.info("Accuracy: {:2.2%}".format(accuracy))
 
 
 ### Step #13 - Predict the author of Illiad translations: Export the model
@@ -479,8 +482,9 @@ if args.step in [13, 14]:
     test_ds = all_labeled_data.take(VALIDATION_SIZE).batch(BATCH_SIZE)
     test_ds = configure_dataset(test_ds)
     loss, accuracy = export_model.evaluate(test_ds, verbose=0)
-    logger.info("Loss: {:.2f}".format(loss))
-    logger.info("Accuracy: {:2.2%}".format(accuracy))
+    if args.step == 13:
+        logger.info("Loss: {:.2f}".format(loss))
+        logger.info("Accuracy: {:2.2%}".format(accuracy))
 
 
 ### Step #14 - Predict the author of Illiad translations: Run inference on new data
@@ -565,12 +569,16 @@ if args.step >= 17:
         metrics=['accuracy']
     )
 
-    logger.info('model.fit()')
-    history = model.fit(train_ds, validation_data=val_ds, epochs=3, verbose=2)
+    history = model.fit(
+        train_ds, validation_data=val_ds, 
+        epochs=3, 
+        verbose=2 if args.step == 17 else 0
+    )
 
     loss, accuracy = model.evaluate(val_ds, verbose=0)
-    logger.info("Loss: {:.2f}".format(loss))
-    logger.info("Accuracy: {:2.2%}".format(accuracy))
+    if args.step == 17:
+        logger.info("Loss: {:.2f}".format(loss))
+        logger.info("Accuracy: {:2.2%}".format(accuracy))
 
 
 ### Step #18 - Downloading more datasets using TensorFlow Datasets (TFDS): Export the model

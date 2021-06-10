@@ -77,6 +77,8 @@ if args.step in [2, 3, 4]:
     if args.step == 2:
         logger.info('dataset.element_spec:')
         print(*list(dataset.element_spec), sep='\n')
+        print('')
+
         logger.info('dataset samples:')
         for feat, targ in dataset.take(5):
             print ('{} => {}'.format(feat, targ))
@@ -104,7 +106,7 @@ if args.step == 3:
         return model
 
     model = get_compiled_model()
-    model.fit(train_dataset, epochs=args.epochs, verbose=0)
+    model.fit(train_dataset, epochs=args.epochs, verbose=2)
 
 
 ### Step #4 - Alternative to feature columns
@@ -118,12 +120,13 @@ if args.step == 4:
     logger.info('inputs:')
     for value in inputs.values():
         print(f'{value.name:8s} {value.shape} {value.dtype}')
+    print('')
         
     # x = tf.stack(list(inputs.values()), axis=-1) # (None, 13, 1)
     # x = tf.reshape(x, (-1, len(inputs))) # (None, 13)
     # or
     x = Concatenate()(list(inputs.values())) # (None, 13)
-    logger.info(f'Concatenate()(inputs.values()): {x.shape}')
+    logger.info(f'Concatenate()(inputs.values()): {x.shape}\n')
 
     x = Dense(10, activation='relu')(x)
     output = Dense(1)(x)

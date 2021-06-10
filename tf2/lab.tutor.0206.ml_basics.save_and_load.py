@@ -105,7 +105,7 @@ if args.step == 3:
     model = create_model()
 
     # Train the model with the new callback
-    logger.info('model.fit():')
+    logger.info('model.fit()')
     model.fit(
         train_images,
         train_labels,
@@ -116,6 +116,7 @@ if args.step == 3:
     )
     logger.info('ls -l checkpoint_dir:')
     print(*os.listdir(checkpoint_dir), sep="\n")
+    print('')
 
     # This may generate warnings related to saving the state of the optimizer.
     # These warnings (and similar warnings throughout this notebook)
@@ -243,6 +244,7 @@ if args.step == 7:
     model.save('tmp/saved_model/my_model')
     logger.info('ls -l tmp/saved_model/my_model:')
     print(*os.listdir('tmp/saved_model/my_model'), sep="\n")
+    print('')
 
     new_model = tf.keras.models.load_model('tmp/saved_model/my_model')
     new_model.summary()

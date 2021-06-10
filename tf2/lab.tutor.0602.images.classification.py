@@ -58,19 +58,20 @@ if args.step >= 1:
     )
 
     data_dir = pathlib.Path(data_dir)
-    logger.info(f'data_dir: {data_dir}')
-
     image_count = len(list(data_dir.glob('*/*.jpg')))
-    logger.info(f'image_count: {image_count}')
 
-    if args.step == 1 and args.plot:
-        roses = list(data_dir.glob('roses/*'))
-        # image = Image.open(str(roses[0]))
-        image = tf.io.read_file(str(roses[0]))
-        image = tf.image.decode_jpeg(image)
-        plt.figure()
-        plt.imshow(image)
-        plt.show(block=False)
+    if args.step == 1:
+        logger.info(f'data_dir: {data_dir}')
+        logger.info(f'image_count: {image_count}')
+
+        if args.plot:
+            roses = list(data_dir.glob('roses/*'))
+            # image = Image.open(str(roses[0]))
+            image = tf.io.read_file(str(roses[0]))
+            image = tf.image.decode_jpeg(image)
+            plt.figure()
+            plt.imshow(image)
+            plt.show(block=False)
 
 
 ### Step #2 - Create a dataset
@@ -100,7 +101,8 @@ if args.step >= 2:
     )
 
     class_names = train_ds.class_names
-    logger.info(f'class_names: {class_names}')
+    if args.step == 2:
+        logger.info(f'class_names: {class_names}')
 
 
 ### Step #3 -  Visualize the data
@@ -173,7 +175,7 @@ if args.step in [6, 7, 8, 9]:
 ### Step #7 - Model summary
 if args.step == 7:
     print("\n### Step #7 - Model summary")
-
+    # 
     model.summary()
 
 
@@ -181,12 +183,11 @@ if args.step == 7:
 if args.step in [8, 9]:
     print("\n### Step #8 - Train the model")
 
-    logger.info('model.fit():')
     history = model.fit(
         train_ds,
         validation_data=val_ds,
         epochs=args.epochs,
-        verbose=2
+        verbose=2 if args.step == 8 else 0
     )
 
 
@@ -281,12 +282,11 @@ if args.step >= 13:
     if args.step == 13:
         model.summary()
 
-    logger.info('model.fit():')
     history = model.fit(
         train_ds, 
         validation_data=val_ds, 
         epochs=args.epochs,
-        verbose=2
+        verbose= 2 if args.step == 13 else 0 
     )
 
 

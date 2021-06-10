@@ -121,8 +121,8 @@ if args.step >= 2:
                 logger.info("Review: \n{}".format(review))
                 logger.info("Label: {}".format(label_batch.numpy()[i]))
 
-    logger.info("Label 0 corresponds to {}".format(raw_train_ds.class_names[0]))
-    logger.info("Label 1 corresponds to {}".format(raw_train_ds.class_names[1]))
+        logger.info("Label 0 corresponds to {}".format(raw_train_ds.class_names[0]))
+        logger.info("Label 1 corresponds to {}".format(raw_train_ds.class_names[1]))
 
 
 ### Step #3 - Sentiment analysis: Prepare the dataset for training
@@ -215,13 +215,11 @@ if args.step >= 7:
     print("\n### Step #7 - Sentiment analysis: Train the model")
 
     epochs = args.epochs
-    # verbose = 2 if args.step == 7 else 0
-
     history = model.fit(
         train_ds,
         validation_data=val_ds,
         epochs=epochs,
-        verbose=2
+        verbose=2 if args.step == 7 else 0
     )
 
 
@@ -289,8 +287,9 @@ if args.step >= 10:
 
     # Test it with `raw_test_ds`, which yields raw strings
     loss, accuracy = export_model.evaluate(raw_test_ds, verbose=0)
-    logger.info(f'loss: {loss:.4f}')
-    logger.info(f'accuracy: {accuracy:.4f}')
+    if args.step == 10:
+        logger.info(f'loss: {loss:.4f}')
+        logger.info(f'accuracy: {accuracy:.4f}')
 
 
 ### Step #11 - Export the model: Inference on new data

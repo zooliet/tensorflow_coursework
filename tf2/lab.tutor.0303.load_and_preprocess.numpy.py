@@ -101,7 +101,6 @@ if args.step == 4:
         metrics=['sparse_categorical_accuracy']
     )
 
-    logger.info('model.fit():')
     model.fit(train_dataset, epochs=args.epochs, verbose=2)
 
 

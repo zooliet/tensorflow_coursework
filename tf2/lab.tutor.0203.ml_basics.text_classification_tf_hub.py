@@ -114,12 +114,11 @@ if args.step >= 4:
 if args.step >= 5:
     print("\n### Step #5 - Train the model")
     
-    logger.info('model.fit():')
     history = model.fit(
         train_data.shuffle(10000).batch(512),
         epochs=args.epochs,
         validation_data=validation_data.batch(512),
-        verbose=2
+        verbose=2 if args.step == 5 else 0
     )
 
     if args.step == 5:

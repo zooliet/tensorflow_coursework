@@ -53,7 +53,8 @@ if args.step >= 1:
         origin=train_dataset_url
     )
 
-    logger.info("Local copy of the dataset file: {}".format(train_dataset_fp))
+    if args.step == 1:
+        logger.info("Local copy of the dataset file: {}".format(train_dataset_fp))
 
 
 ### Step #2 - Import and parse the training dataset: Inspect the data
@@ -68,8 +69,9 @@ if args.step >= 2:
 
     feature_names = column_names[:-1]
     label_name = column_names[-1]
-    logger.info("Features: {}".format(feature_names))
-    logger.info("Label: {}".format(label_name))
+    if args.step == 2:
+        logger.info("Features: {}".format(feature_names))
+        logger.info("Label: {}".format(label_name))
 
     class_names = ['Iris setosa', 'Iris versicolor', 'Iris virginica']
 
@@ -227,10 +229,11 @@ if args.step >= 8:
         train_loss_results.append(epoch_loss_avg.result())
         train_accuracy_results.append(epoch_accuracy.result())
 
-        if epoch % 50 == 0:
-            print("Epoch {:03d}: Loss: {:.3f}, Accuracy: {:.3%}".format(
-                epoch, epoch_loss_avg.result(), epoch_accuracy.result())
-        )
+        if args.step == 8:
+            if epoch % 50 == 0:
+                print("Epoch {:03d}: Loss: {:.3f}, Accuracy: {:.3%}".format(
+                    epoch, epoch_loss_avg.result(), epoch_accuracy.result())
+            )
 
         # 원래는 해야함
         # epoch_loss_avg.reset_states()
@@ -289,14 +292,13 @@ if args.step >= 11:
         prediction = tf.argmax(logits, axis=1, output_type=tf.int32)
         test_accuracy.update_state(prediction, y)
 
-    logger.info("Test set accuracy: {:.3%}".format(test_accuracy.result()))
-
     if args.step == 11:
+        logger.info("Test set accuracy: {:.3%}".format(test_accuracy.result()))
         print(tf.stack([y, prediction], axis=1))
 
 
 ### Step #12 - Use the trained model to make predictions
-if args.step >= 12:
+if args.step == 12:
     print("\n### Step #12 - Use the trained model to make predictions")
 
     predict_dataset = tf.convert_to_tensor([

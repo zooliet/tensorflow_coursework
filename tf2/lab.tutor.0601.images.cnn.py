@@ -112,18 +112,17 @@ if args.step >= 5:
         metrics=['accuracy']
     )
 
-    logger.info('mode.fit():')
     history = model.fit(
         train_images, 
         train_labels, 
         epochs=args.epochs,
         validation_data=(test_images, test_labels),
-        verbose=2
+        verbose=2 if args.step == 5 else 0
     )
 
 
 ### Step #6 - Evaluate the model
-if args.step >= 6:
+if args.step == 6:
     print("\n### Step #6 - Evaluate the model")
 
     if args.step == 6 and args.plot:
