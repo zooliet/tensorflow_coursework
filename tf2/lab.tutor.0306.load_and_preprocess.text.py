@@ -18,6 +18,8 @@ ap.add_argument('--batch', type=int, default=64, help='batch size: 64*')
 args, extra_args = ap.parse_known_args()
 logger.info(args)
 # logger.info(extra_args)
+if args.all:
+    args.step = 0 # forced to 0
 
 if args.debug:
     import pdb

@@ -16,6 +16,8 @@ ap.add_argument('--batch', type=int, default=64, help='batch size: 64*')
 args, extra_args = ap.parse_known_args()
 logger.info(args)
 # logger.info(extra_args)
+if args.all:
+    args.step = 0 # forced to 0
 
 if args.debug:
     import pdb
@@ -44,7 +46,6 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D
 
 import tensorflow_datasets as tfds
 from tensorflow_examples.models.pix2pix import pix2pix
-
 
 ### TOC
 if args.step == 0:
@@ -248,7 +249,6 @@ if args.step in [3, 4]:
         plt.ylim([0, 1])
         plt.legend()
         plt.show(block=False)
-
 
 args.step = auto_increment(args.step, args.all)
 ### Step #4 - Make predictions

@@ -50,9 +50,6 @@ def toc(fp):
     print("\n#################################################")
     print(*matching_lines, sep="")
 
-if args.all:
-    args.step = 0 # force to 0
-
 def auto_increment(step, flag=False):
     if flag:
         step = step + 1
