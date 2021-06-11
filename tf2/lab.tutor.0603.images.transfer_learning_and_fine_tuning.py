@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -41,11 +41,12 @@ from tensorflow.keras.layers import Flatten, Dense, Dropout, Softmax
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, GlobalAveragePooling2D
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Data preprocessing: Data download
 if args.step >= 1:
     print("\n### Step #1 - Data preprocessing: Data download")
@@ -100,6 +101,7 @@ if args.step >= 1:
         logger.info('Number of test batches: %d' % tf.data.experimental.cardinality(test_dataset))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Data preprocessing: Configure the dataset for performance
 if args.step >= 2:
     print("\n### Step #2 - Data preprocessing: Configure the dataset for performance")
@@ -111,6 +113,7 @@ if args.step >= 2:
     test_dataset = test_dataset.prefetch(buffer_size=AUTOTUNE)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Data preprocessing: Use data augmentation
 if args.step >= 3:
     print("\n### Step #3 - Data preprocessing: Use data augmentation")
@@ -132,6 +135,7 @@ if args.step >= 3:
             plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Data preprocessing: Rescale pixel values
 if args.step >= 4:
     print("\n### Step #4 - Data preprocessing: Rescale pixel values")
@@ -142,6 +146,7 @@ if args.step >= 4:
     # rescale = tf.keras.layers.experimental.preprocessing.Rescaling(1./127.5, offset= -1)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Create the base model from the pre-trained convnets
 if args.step >= 5:
     print("\n### Step #5 - Create the base model from the pre-trained convnets")
@@ -160,6 +165,7 @@ if args.step >= 5:
         logger.info(f'feature_batch.shape: {feature_batch.shape}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Feature extraction: Freeze the convolutional base
 if args.step >= 6:
     print("\n### Step #6 - Feature extraction: Freeze the convolutional base")
@@ -167,6 +173,7 @@ if args.step >= 6:
     base_model.trainable = False
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Feature extraction: Important note about BatchNormalization layers
 if args.step == 7:
     print("\n### Step #7 - Feature extraction: Important note about BatchNormalization layers")
@@ -175,6 +182,7 @@ if args.step == 7:
     base_model.summary()
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Feature extraction: Add a classification head
 if args.step >= 8:
     print("\n### Step #8 - Feature extraction: Add a classification head")
@@ -201,6 +209,7 @@ if args.step >= 8:
     model = Model(inputs, outputs)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Feature extraction: Compile the model
 if args.step >= 9:
     print("\n### Step #9 - Feature extraction: Compile the model")
@@ -220,6 +229,7 @@ if args.step >= 9:
         # These are divided between two tf.Variable objects, the weights and biases.
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #10 - Feature extraction: Train the model
 if args.step >= 10:
     print("\n### Step #10 - Feature extraction: Train the model")
@@ -239,6 +249,7 @@ if args.step >= 10:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #11 - Feature extraction: Learning curves
 if args.step == 11:
     print("\n### Step #11 - Feature extraction: Learning curves")
@@ -275,6 +286,7 @@ if args.step == 11:
         # accuracy during training. They are turned off when calculating validation loss
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #12 - Fine tuning: Un-freeze the top layers of the model
 if args.step >= 12:
     print("\n### Step #12 - Fine tuning: Un-freeze the top layers of the model")
@@ -293,6 +305,7 @@ if args.step >= 12:
         layer.trainable =  False
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #13 - Fine tuning: Compile the model
 if args.step >= 13:
     print("\n### Step #13 - Fine tuning: Compile the model")
@@ -309,6 +322,7 @@ if args.step >= 13:
         logger.info(f'len(model.trainable_variables): {len(model.trainable_variables)}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #14 - Fine tuning: Continue training the model
 if args.step >= 14:
     print("\n### Step #14 - Fine tuning: Continue training the model")
@@ -357,6 +371,7 @@ if args.step >= 14:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #15 - Fine tuning: Evaluation and prediction
 if args.step == 15:
     print("\n### Step #15 - Fine tuning: Evaluation and prediction")

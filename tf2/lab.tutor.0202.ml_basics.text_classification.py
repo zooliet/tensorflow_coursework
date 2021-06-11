@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -43,11 +43,12 @@ from tensorflow.keras.layers import Embedding, Activation, GlobalAveragePooling1
 from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Sentiment analysis: Download the IMDB dataset 
 if args.step >= 1: 
     print("\n### Step #1 - Sentiment analysis: Download the IMDB dataset ")
@@ -85,6 +86,7 @@ if args.step >= 1:
             print(f.read())
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Sentiment analysis: Load the dataset
 if args.step >= 2:
     print("\n### Step #2 - Sentiment analysis: Load the dataset")
@@ -125,6 +127,7 @@ if args.step >= 2:
         logger.info("Label 1 corresponds to {}".format(raw_train_ds.class_names[1]))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Sentiment analysis: Prepare the dataset for training
 if args.step >= 3:
     print("\n### Step #3 - Sentiment analysis: Prepare the dataset for training")
@@ -169,6 +172,7 @@ if args.step >= 3:
         logger.info('vocabulary size: {}'.format(len(vectorize_layer.get_vocabulary())))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Sentiment analysis: Configure the dataset for performance
 if args.step >= 4:
     print("\n### Step #4 - Sentiment analysis: Configure the dataset for performance")
@@ -179,6 +183,7 @@ if args.step >= 4:
     test_ds = test_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Sentiment analysis: Create the model
 if args.step >= 5:
     print("\n### Step #5 - Sentiment analysis: Create the model")
@@ -198,6 +203,7 @@ if args.step >= 5:
         model.summary()
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Sentiment analysis: Loss function and optimizer
 if args.step >= 6:
     print("\n### Step #6 - Sentiment analysis: Loss function and optimizer")
@@ -210,6 +216,7 @@ if args.step >= 6:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Sentiment analysis: Train the model
 if args.step >= 7:
     print("\n### Step #7 - Sentiment analysis: Train the model")
@@ -223,6 +230,7 @@ if args.step >= 7:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Sentiment analysis: Evaluate the model
 if args.step == 8:
     print("\n### Step #8 - Sentiment analysis: Evaluate the model")
@@ -232,6 +240,7 @@ if args.step == 8:
     logger.info(f'Accuracy: {accuracy:.2f}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Sentiment analysis: Create a plot of accuracy and loss over time
 if args.step == 9:
     print("\n### Step #9 - Sentiment analysis: Create a plot of accuracy and loss over time")
@@ -268,6 +277,7 @@ if args.step == 9:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #10 - Export the model
 if args.step >= 10:
     print("\n### Step #10 - Export the model")
@@ -292,6 +302,7 @@ if args.step >= 10:
         logger.info(f'accuracy: {accuracy:.4f}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #11 - Export the model: Inference on new data
 if args.step == 11:
     print("\n### Step #11 - Export the model: Inference on new data")

@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -41,11 +41,12 @@ from tensorflow.keras.losses import SparseCategoricalCrossentropy
 from tensorflow.keras.optimizers import Adam
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Import the MNIST dataset
 if args.step:
     print("\n### Step #1 - Import the MNIST dataset")
@@ -65,6 +66,7 @@ if args.step:
     test_ds = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(32)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Prepare model templates
 if args.step >= 2:
     print("\n### Step #2 - Prepare model templates")
@@ -88,6 +90,7 @@ if args.step >= 2:
         return model
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Build a sequentail model, and fit() with (x_train,y_train)
 if args.step == 3:
     print("\n### Step #3 - Build a sequentail model, and fit() with (x_train,y_train)")
@@ -126,6 +129,7 @@ if args.step == 3:
     logger.info(f'Predictions(softmax-integrated):\n{predictions}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Build a sequentail model, and fit() with train_ds
 if args.step == 4:
     print("\n### Step #4 - Build a sequentail model, and fit() with train_ds")
@@ -150,6 +154,7 @@ if args.step == 4:
     logger.info(f'Test accuracy: {test_acc:.4f}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Build a sequentail model, and train with custom loop
 if args.step == 5:
     print("\n### Step #5 - Build a sequentail model, and train with custom loop")
@@ -217,6 +222,7 @@ if args.step == 5:
     logger.info(f'Test accuracy: {test_accuracy.result():.4f}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Build a functional model, and fit() with (x_train,y_train) 
 if args.step == 6:
     print("\n### Step #6 - Build a functional model, and fit() with (x_train,y_train)")
@@ -238,6 +244,7 @@ if args.step == 6:
     logger.info(f"Functional model with fit(x_train,y_train): {end - start:.2f} secs\n")
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Build a functional model, and fit() with train_ds
 if args.step == 7:
     print("\n### Step #7 - Build a functional model, and fit() with train_ds")
@@ -262,6 +269,7 @@ if args.step == 7:
     logger.info(f'Test accuracy: {test_acc:.4f}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Build a functional model, and train with custom loop
 if args.step == 8:
     print("\n### Step #8 - Build a functional model, and train with custom loop")

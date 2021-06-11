@@ -7,7 +7,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -38,11 +38,12 @@ print("GPU is", "available" if tf.config.list_physical_devices("GPU") else "NOT 
 from tensorflow.keras import Sequential 
 from tensorflow.keras.layers import Dense 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Import and parse the training dataset: Download the dataset
 if args.step >= 1:
     print("\n### Step #1 - Import and parse the training dataset: Download the dataset")
@@ -57,6 +58,7 @@ if args.step >= 1:
         logger.info("Local copy of the dataset file: {}".format(train_dataset_fp))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Import and parse the training dataset: Inspect the data
 if args.step >= 2:
     print("\n### Step #2 - Import and parse the training dataset: Inspect the data")
@@ -76,6 +78,7 @@ if args.step >= 2:
     class_names = ['Iris setosa', 'Iris versicolor', 'Iris virginica']
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Import and parse the training dataset: Create a tf.data.Dataset
 if args.step >= 3:
     print("\n### Step #3 - Import and parse the training dataset: Create a tf.data.Dataset")
@@ -125,6 +128,7 @@ if args.step >= 3:
         print(features)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Select the type of model: Create a model using Keras
 if args.step >= 4:
     print("\n### Step #4 - Select the type of model: Create a model using Keras")
@@ -139,6 +143,7 @@ if args.step >= 4:
         model.summary()
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Select the type of model: Using the model
 if args.step >= 5:
     print("\n### Step #5 - Select the type of model: Using the model")
@@ -151,6 +156,7 @@ if args.step >= 5:
         print(predictions[:5])
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Train the model: Define the loss and gradient function
 if args.step >= 6:
     print("\n### Step #6 - Train the model: Define the loss and gradient function")
@@ -173,6 +179,7 @@ if args.step >= 6:
         return loss_value, tape.gradient(loss_value, model.trainable_variables)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Train the model: Create an optimizer
 if args.step >= 7:
     print("\n### Step #7 - Train the model: Create an optimizer")
@@ -197,6 +204,7 @@ if args.step >= 7:
         ) 
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Train the model: Training loop
 if args.step >= 8:
     print("\n### Step #8 - Train the model: Training loop")
@@ -240,6 +248,7 @@ if args.step >= 8:
         # epoch_accuracy.reset_states()
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Train the model: Visualize the loss function over time
 if args.step >= 9:
     print("\n### Step #9 - Train the model: Visualize the loss function over time")
@@ -257,6 +266,7 @@ if args.step >= 9:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #10 - Evaluate the model's effectiveness: Setup the test dataset
 if args.step >= 10:
     print("\n### Step #10 - Evaluate the model's effectiveness: Setup the test dataset")
@@ -279,6 +289,7 @@ if args.step >= 10:
     test_dataset = test_dataset.map(pack_features_vector)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #11 - Evaluate the model's effectiveness: Evaluate the model on the test dataset
 if args.step >= 11:
     print("\n### Step #11 - Evaluate the model's effectiveness: Evaluate the model on the test dataset")
@@ -297,6 +308,7 @@ if args.step >= 11:
         print(tf.stack([y, prediction], axis=1))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #12 - Use the trained model to make predictions
 if args.step == 12:
     print("\n### Step #12 - Use the trained model to make predictions")

@@ -8,7 +8,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=3, help='number of epochs: 3*')
@@ -45,11 +45,12 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D
 import tensorflow_datasets as tfds
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Setup: Download the flowers dataset
 if args.step >= 1: 
     print("\n### Step #1 - Setup: Download the flowers dataset")
@@ -85,6 +86,7 @@ if args.step >= 1:
         # plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Load using keras.preprocessing: Create a dataset
 if args.step >= 2: 
     print("\n### Step #2 - Load using keras.preprocessing: Create a dataset")
@@ -120,6 +122,7 @@ if args.step >= 2:
             logger.info(f'labels_batch.shape: {labels_batch.shape}') # (32,)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Load using keras.preprocessing: Visualize the data
 if args.step == 3: 
     print("\n### Step #3 - Load using keras.preprocessing: Visualize the data")    
@@ -136,6 +139,7 @@ if args.step == 3:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Load using keras.preprocessing: Standardize the data
 if args.step == 4: 
     print("\n### Step #4 - Load using keras.preprocessing: Standardize the data")
@@ -149,6 +153,7 @@ if args.step == 4:
     logger.info(f'normalization range: {np.min(first_image)}(min) ~ {np.max(first_image)}(max)')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Load using keras.preprocessing: Configure the dataset for performance
 if args.step in [5, 6]: 
     print("\n### Step #5 - Load using keras.preprocessing: Configure the dataset for performance")
@@ -158,6 +163,7 @@ if args.step in [5, 6]:
     val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Load using keras.preprocessing: Train a model
 if args.step == 6: 
     print("\n### Step #6 - Load using keras.preprocessing: Train a model")
@@ -191,6 +197,7 @@ if args.step == 6:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Using tf.data for finer control
 if args.step >= 7: 
     print("\n### Step #7 - Using tf.data for finer control")
@@ -248,6 +255,7 @@ if args.step >= 7:
             logger.info("Label: {}".format(label.numpy()))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Using tf.data for finer control: Configure dataset for performance
 if args.step >= 8: 
     print("\n### Step #8 - Using tf.data for finer control: Configure dataset for performance")
@@ -263,6 +271,7 @@ if args.step >= 8:
     val_ds = configure_for_performance(val_ds)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Using tf.data for finer control: Visualize the data
 if args.step == 9: 
     print("\n### Step #9 - Using tf.data for finer control: Visualize the data")
@@ -283,6 +292,7 @@ if args.step == 9:
         print('Usage: --plot')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #10 - Using tf.data for finer control: Continue training the model
 if args.step == 10: 
     print("\n### Step #10 - Using tf.data for finer control: Continue training the model")
@@ -315,6 +325,7 @@ if args.step == 10:
     )
 
     
+args.step = auto_increment(args.step, args.all)
 ### Step #11 - Using TensorFlow Datasets
 if args.step == 11: 
     print("\n### Step #11 - Using TensorFlow Datasets")

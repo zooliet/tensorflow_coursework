@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -38,11 +38,12 @@ from tensorflow.keras import Sequential, Model, Input
 from tensorflow.keras.layers import Flatten, Dense, Dropout, Concatenate
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Load from .npz file
 if args.step >= 1: 
     print("\n### Step #1 - Load from .npz file")
@@ -62,6 +63,7 @@ if args.step >= 1:
         logger.info(f'labels: {sorted(np.unique(train_labels))}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Load NumPy arrays with tf.data.Dataset
 if args.step >= 2: 
     print("\n### Step #2 - Load NumPy arrays with tf.data.Dataset")
@@ -74,6 +76,7 @@ if args.step >= 2:
         print(*list(train_dataset.element_spec), sep='\n')
 
     
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Use the datasets: Shuffle and batch the datasets
 if args.step >= 3: 
     print("\n### Step #3 - Use the datasets: Shuffle and batch the datasets")
@@ -85,6 +88,7 @@ if args.step >= 3:
     test_dataset = test_dataset.batch(BATCH_SIZE)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Use the datasets: Build and train a model
 if args.step == 4:
     print("\n### Step #4 - Use the datasets: Build and train a model")

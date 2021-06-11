@@ -21,6 +21,7 @@ ap.add_argument('--log', type=int, default=1, help='Tensorflow log level: 1*') #
 ap.add_argument('--test', type=int, default=0, help='test case no: 0*') 
 ap.add_argument('--task', type=int, default=0, help='task no: 0*') 
 ap.add_argument('--step', type=int, default=0, help='step no: 0*') 
+ap.add_argument('--all', '--no-all', dest='all', default=False, action=BooleanAction, help='execute all the steps: F*') 
 args, extra_args = ap.parse_known_args()
 logger.info(args)
 # logger.info(extra_args)
@@ -48,4 +49,12 @@ def toc(fp):
     matching_lines = [line for line in open(fp) if re.match(pattern, line)]
     print("\n#################################################")
     print(*matching_lines, sep="")
+
+if args.all:
+    args.step = 0 # force to 0
+
+def auto_increment(step, flag=False):
+    if flag:
+        step = step + 1
+    return step
 

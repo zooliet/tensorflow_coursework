@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -39,11 +39,12 @@ from tensorflow.keras.layers import Flatten, Dense, Dropout, Softmax
 from tensorflow.keras.layers import Conv2D, GlobalAveragePooling2D
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Import the Fashion MNIST dataset
 if args.step >= 1:
     print("\n### Step #1 - Import the Fashion MNIST dataset")
@@ -60,6 +61,7 @@ if args.step >= 1:
     ]
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Explore the data
 if args.step == 2:
     print("\n### Step #2 - Explore the data")
@@ -72,6 +74,7 @@ if args.step == 2:
     logger.info(f'train_labels: {np.unique(train_labels)}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Preprocess the data
 if args.step >= 3:
     print("\n### Step #3 - Preprocess the data")
@@ -98,6 +101,7 @@ if args.step >= 3:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Build the model: Set up the layers
 if args.step >= 4:
     print("\n### Step #4 - Build the model: Set up the layers")
@@ -109,6 +113,7 @@ if args.step >= 4:
     ])
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Build the model: Compile the model
 if args.step >= 5:
     print("\n### Step #5 - Build the model: Compile the model")
@@ -123,6 +128,7 @@ if args.step >= 5:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Train the model: Feed the model
 if args.step >= 6:
     print("\n### Step #6 - Train the model: Feed the model")
@@ -134,6 +140,7 @@ if args.step >= 6:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Train the model: Evaluate accuracy
 if args.step == 7:
     print("\n### Step #7 - Train the model: Evaluate accuracy")
@@ -142,6 +149,7 @@ if args.step == 7:
     logger.info(f'Test accuracy: {test_acc:.4f}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Train the model: Make predictions
 if args.step >= 8:
     print("\n### Step #8 - Train the model: Make predictions")
@@ -183,6 +191,7 @@ if args.step >= 8:
         thisplot[true_label].set_color('blue')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Train the model: Verify predictions
 if args.step == 9: 
     print("\n### Step #9 - Train the model: Verify predictions")
@@ -220,6 +229,7 @@ if args.step == 9:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #10 - Use the trained model
 if args.step == 10: 
     print("\n### Step #10 - Use the trained model")

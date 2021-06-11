@@ -9,7 +9,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -47,11 +47,12 @@ import tensorflow_hub as tfhub
 import tensorflow_datasets as tfds
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Download the IMDB dataset 
 if args.step >= 1: 
     print("\n### Step #1 - Download the IMDB dataset ")
@@ -64,6 +65,7 @@ if args.step >= 1:
         as_supervised=True
     )
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Explore the IMDB dataset
 if args.step == 2:
     print("\n### Step #2 - Explore the IMDB dataset")
@@ -73,6 +75,7 @@ if args.step == 2:
         logger.info(f'{i+1}. {label.numpy()}: {text.numpy()[:30]}...')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Build the model
 if args.step >= 3:
     print("\n### Step #3 - Build the model")
@@ -98,6 +101,7 @@ if args.step >= 3:
     if args.step == 3:
         model.summary()
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Build the model: Loss function and optimizer
 if args.step >= 4:
     print("\n### Step #4 - Build the model: Loss function and optimizer")
@@ -110,6 +114,7 @@ if args.step >= 4:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Train the model
 if args.step >= 5:
     print("\n### Step #5 - Train the model")
@@ -126,6 +131,7 @@ if args.step >= 5:
             logger.info(f'{key}: {list(map(lambda x: round(x,2), vals))}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Evaludate the model 
 if args.step == 6:
     print("\n### Step #6 - Evaluate the model")

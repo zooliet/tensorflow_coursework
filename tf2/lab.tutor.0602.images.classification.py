@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -41,11 +41,12 @@ from tensorflow.keras.layers import Flatten, Dense, Dropout, Softmax
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Download and explore the dataset
 if args.step >= 1:
     print("\n### Step #1 - Download and explore the dataset")
@@ -74,6 +75,7 @@ if args.step >= 1:
             plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Create a dataset
 if args.step >= 2:
     print("\n### Step #2 - Create a dataset")
@@ -105,6 +107,7 @@ if args.step >= 2:
         logger.info(f'class_names: {class_names}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 -  Visualize the data
 if args.step == 3:
     print("\n### Step #3 - Visualize the data")
@@ -125,6 +128,7 @@ if args.step == 3:
         break
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Configure the dataset for performance
 if args.step >= 4:
     print("\n### Step #4 - Configure the dataset for performance")
@@ -134,6 +138,7 @@ if args.step >= 4:
     val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Standardize the data
 if args.step == 5:
     print("\n### Step #5 - Standardize the data")
@@ -147,6 +152,7 @@ if args.step == 5:
     logger.info(f'pixel ranges: {np.min(first_image)}~{np.max(first_image)}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Create and compile the model
 if args.step in [6, 7, 8, 9]:
     print("\n### Step #6 - Create and compile the model")
@@ -172,6 +178,7 @@ if args.step in [6, 7, 8, 9]:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Model summary
 if args.step == 7:
     print("\n### Step #7 - Model summary")
@@ -179,6 +186,7 @@ if args.step == 7:
     model.summary()
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Train the model
 if args.step in [8, 9]:
     print("\n### Step #8 - Train the model")
@@ -191,6 +199,7 @@ if args.step in [8, 9]:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Visualize training results
 if args.step == 9:
     print("\n### Step #9 - Visualize training results")
@@ -219,11 +228,13 @@ if args.step == 9:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #10 - Overfitting
 if args.step >= 10:
     print("\n### Step #10 - Overfitting")
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #11 - Data augmentation
 if args.step >= 11:
     print("\n### Step #11 - Data augmentation")
@@ -248,6 +259,7 @@ if args.step >= 11:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #12 - Dropout
 if args.step >= 12:
     print("\n### Step #12 - Dropout")
@@ -269,6 +281,7 @@ if args.step >= 12:
     ])  
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #13 - Compile and train the model
 if args.step >= 13:
     print("\n### Step #13 - Compile and train the model")
@@ -290,6 +303,7 @@ if args.step >= 13:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #14 - Visualize training results
 if args.step == 14:
     print("\n### Step #14 - Visualize training results")
@@ -318,6 +332,7 @@ if args.step == 14:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #15 - Predict on new data
 if args.step == 15:
     print("\n### Step #15 - Predict on new data")

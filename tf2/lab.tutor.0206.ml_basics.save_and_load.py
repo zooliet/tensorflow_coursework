@@ -8,7 +8,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -41,11 +41,12 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Setup: Get an example dataset
 if args.step >= 1: 
     print("\n### Step #1 - Setup: Get an example dataset")
@@ -60,6 +61,7 @@ if args.step >= 1:
     test_images = test_images[:1000].reshape(-1, 28 * 28) / 255.0
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Setup: Define a model
 if args.step >= 2: 
     print("\n### Step #1 - Setup: Define a model")
@@ -85,6 +87,7 @@ if args.step >= 2:
         model.summary()
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Save checkpoints during training: Checkpoint callback usage
 if args.step == 3:
     print("\n### Step #3 - Save checkpoints during training: Checkpoint callback usage")
@@ -137,6 +140,7 @@ if args.step == 3:
     logger.info("Restored model's accuracy: {:5.2f}%".format(100 * acc))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Save checkpoints during training: Checkpoint callback options
 if args.step == 4:
     print("\n### Step #4 - Save checkpoints during training: Checkpoint callback options")
@@ -185,6 +189,7 @@ if args.step == 4:
     logger.info("Restored model's accuracy: {:5.2f}%".format(100 * acc))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - What are these files?
 if args.step == 5:
     print("\n### Step #5 - What are these files?")
@@ -200,6 +205,7 @@ if args.step == 5:
     tf.print(doc)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Manually save weights
 if args.step == 6:
     print("\n### Step #6 - Manually save weights")
@@ -233,6 +239,7 @@ if args.step == 6:
     logger.info("Restored model's accuracy: {:5.2f}%".format(100 * acc))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Save the entire model: SavedModel format
 if args.step == 7:
     print("\n### Step #7 - Save the entire model: SavedModel format")
@@ -253,6 +260,7 @@ if args.step == 7:
     logger.info(new_model.predict(test_images).shape)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Save the entire model: HDF5 format
 if args.step == 8:
     print("\n### Step #8 - Save the entire model: HDF5 format")
@@ -269,6 +277,7 @@ if args.step == 8:
     logger.info("Restored model's accuracy: {:5.2f}%".format(100 * acc))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Save the entire model: Saving custom object
 if args.step == 9:
     print("\n### Step #9 - Save the entire model: Saving custom object")

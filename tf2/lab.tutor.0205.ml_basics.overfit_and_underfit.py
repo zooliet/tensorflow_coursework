@@ -8,7 +8,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=1000, help='number of epochs: 1000*')
@@ -47,11 +47,12 @@ import tensorflow_docs.modeling
 import tensorflow_docs.plots
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - The Higgs Dataset
 if args.step >= 1: 
     print("\n### Step #1 - The Higgs Dataset")
@@ -116,6 +117,7 @@ if args.step >= 1:
     # validate_ds = validate_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Demonstrate overfitting: Training procedure
 if args.step >= 2:
     print("\n### Step #2 - Demonstrate overfitting: Training procedure")
@@ -174,6 +176,7 @@ if args.step >= 2:
     size_histories = {}
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Demonstrate overfitting: Tiny model
 if args.step in [3, 7, 8, 9, 10, 11, 12, 13]:
     print("\n### Step #3 - Demonstrate overfitting: Tiny model")
@@ -193,6 +196,7 @@ if args.step in [3, 7, 8, 9, 10, 11, 12, 13]:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Demonstrate overfitting: Small model
 if args.step in [4, 7, 8]:
     print("\n### Step #4 - Demonstrate overfitting: Small model")
@@ -207,6 +211,7 @@ if args.step in [4, 7, 8]:
     size_histories['Small'] = compile_and_fit(small_model, 'sizes/Small', max_epochs=args.epochs)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Demonstrate overfitting: Medium model
 if args.step in [5, 7, 8]:
     print("\n### Step #5 - Demonstrate overfitting: Medium model")
@@ -221,6 +226,7 @@ if args.step in [5, 7, 8]:
     size_histories['Medium'] = compile_and_fit(medium_model, 'sizes/Medium', max_epochs=args.epochs)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Demonstrate overfitting: Large model
 if args.step in [6, 7, 8]:
     print("\n### Step #6 - Demonstrate overfitting: Large model")
@@ -235,6 +241,7 @@ if args.step in [6, 7, 8]:
     size_histories['Large'] = compile_and_fit(large_model, 'sizes/Large', max_epochs=args.epochs)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Demonstrate overfitting: Plot the training and validation losses
 if args.step == 7:
     print("\n### Step #7 - Demonstrate overfitting: Plot the training and validation losses")
@@ -250,6 +257,7 @@ if args.step == 7:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Demonstrate overfitting: View in TensorBoard
 if args.step == 8:
     print("\n### Step #8 - Demonstrate overfitting: View in TensorBoard")
@@ -258,6 +266,7 @@ if args.step == 8:
     logger.info(f'tensorboard dev upload --logdir {logdir}/sizes')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Strategies to prevent overfitting
 if args.step >= 9:
     print("\n### Step #9 - Strategies to prevent overfitting")
@@ -268,6 +277,7 @@ if args.step >= 9:
     regularizer_histories['Tiny'] = size_histories['Tiny']
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #10 - Strategies to prevent overfitting: Add weight regularization
 if args.step >= 10:
     print("\n### Step #10 - Strategies to prevent overfitting: Add weight regularization")
@@ -303,6 +313,7 @@ if args.step >= 10:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #11 - Strategies to prevent overfitting: Add dropout
 if args.step >= 11:
     print("\n### Step #11 - Strategies to prevent overfitting: Add dropout")
@@ -329,6 +340,7 @@ if args.step >= 11:
             plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #12 - Strategies to prevent overfitting: Combined L2 + dropout
 if args.step == 12:
     print("\n### Step #12 - Strategies to prevent overfitting: Combined L2 + dropout")
@@ -355,6 +367,7 @@ if args.step == 12:
             plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #13 - Strategies to prevent overfitting: View in TensorBoard
 if args.step == 13:
     print("\n### Step #13 - Strategies to prevent overfitting: View in TensorBoard")

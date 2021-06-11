@@ -10,7 +10,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -51,7 +51,7 @@ import tensorflow_datasets as tfds
 import tensorflow_text as tf_text
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
@@ -79,6 +79,7 @@ if True:
         return model
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Predict the tag for a Stack Overflow question: Download and explore the dataset
 if args.step in [1, 2, 3, 4, 5, 6, 7]: 
     print("\n### Step #1 - Predict the tag for a Stack Overflow question: Download and explore the dataset")
@@ -108,6 +109,7 @@ if args.step in [1, 2, 3, 4, 5, 6, 7]:
             print(f.read())
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Predict the tag for a Stack Overflow question: Load the dataset
 if args.step in [2, 3, 4, 5, 6, 7]: 
     print("\n### Step #2 - Predict the tag for a Stack Overflow question: Load the dataset")
@@ -146,6 +148,7 @@ if args.step in [2, 3, 4, 5, 6, 7]:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Predict the tag for a Stack Overflow question: Prepare the dataset for training
 if args.step in [3, 4, 5, 6, 7]: 
     print("\n### Step #3 - Predict the tag for a Stack Overflow question: Prepare the dataset for training")
@@ -197,6 +200,7 @@ if args.step in [3, 4, 5, 6, 7]:
     int_test_ds = raw_test_ds.map(int_vectorize_text)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Predict the tag for a Stack Overflow question: Configure the dataset for performance
 if args.step in [4, 5, 6, 7]: 
     print("\n### Step #4 - Predict the tag for a Stack Overflow question: Configure the dataset for performance")
@@ -210,6 +214,7 @@ if args.step in [4, 5, 6, 7]:
     int_test_ds = configure_dataset(int_test_ds)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Predict the tag for a Stack Overflow question: Train the model
 if args.step in [5, 6, 7]: 
     print("\n### Step #5 - Predict the tag for a Stack Overflow question: Train the model")
@@ -259,6 +264,7 @@ if args.step in [5, 6, 7]:
         logger.info("Int model accuracy: {:2.2%}".format(int_accuracy))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Predict the tag for a Stack Overflow question: Export the model
 if args.step in [6, 7]: 
     print("\n### Step #6 - Predict the tag for a Stack Overflow question: Export the model")
@@ -281,6 +287,7 @@ if args.step in [6, 7]:
         logger.info("Accuracy: {:2.2%}".format(accuracy))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Predict the tag for a Stack Overflow question: Run inference on new data
 if args.step == 7: 
     print("\n### Step #7 - Predict the tag for a Stack Overflow question: Run inference on new data")
@@ -304,6 +311,7 @@ if args.step == 7:
         print('')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Predict the author of Illiad translations: Download and explore the dataset
 if args.step in [8, 9, 10, 11, 12, 13, 14]: 
     print("\n### Step #8 - Predict the author of Illiad translations: Download and explore the dataset")
@@ -320,6 +328,7 @@ if args.step in [8, 9, 10, 11, 12, 13, 14]:
         logger.info(f'parent_dir: {parent_dir}\n')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Predict the author of Illiad translations: Load the dataset
 if args.step in [9, 10, 11, 12, 13, 14]: 
     print("\n### Step #9 - Predict the author of Illiad translations: Load the dataset")
@@ -348,6 +357,7 @@ if args.step in [9, 10, 11, 12, 13, 14]:
         print('')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #10 - Predict the author of Illiad translations: Prepare the dataset for training
 if args.step in [10, 11, 12, 13, 14]: 
     print("\n### Step #10 - Predict the author of Illiad translations: Prepare the dataset for training")
@@ -408,6 +418,7 @@ if args.step in [10, 11, 12, 13, 14]:
     all_encoded_data = all_labeled_data.map(preprocess_text)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #11 - Predict the author of Illiad translations: Split the dataset into train and test
 if args.step in [11, 12, 13, 14]: 
     print("\n### Step #11 - Predict the author of Illiad translations: Split the dataset into train and test")
@@ -430,6 +441,7 @@ if args.step in [11, 12, 13, 14]:
     validation_data = configure_dataset(validation_data)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #12 - Predict the author of Illiad translations: Train the model
 if args.step in [12, 13, 14]: 
     print("\n### Step #12 - Predict the author of Illiad translations: Train the model")
@@ -453,6 +465,7 @@ if args.step in [12, 13, 14]:
         logger.info("Accuracy: {:2.2%}".format(accuracy))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #13 - Predict the author of Illiad translations: Export the model
 if args.step in [13, 14]: 
     print("\n### Step #13 - Predict the author of Illiad translations: Export the model")
@@ -487,6 +500,7 @@ if args.step in [13, 14]:
         logger.info("Accuracy: {:2.2%}".format(accuracy))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #14 - Predict the author of Illiad translations: Run inference on new data
 if args.step == 14: 
     print("\n### Step #14 - Predict the author of Illiad translations: Run inference on new data")
@@ -503,6 +517,7 @@ if args.step == 14:
         print(f"Question: {input}... => Label: {label.numpy()}")
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #15 - Downloading more datasets using TensorFlow Datasets (TFDS)
 if args.step >= 15: 
     print("\n### Step #15 - Downloading more datasets using TensorFlow Datasets (TFDS)")
@@ -529,6 +544,7 @@ if args.step >= 15:
                 print(f"Review: {review_batch.numpy()[i][:30]}... => Label: {label_batch.numpy()[i]}")
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #16 - Downloading more datasets using TensorFlow Datasets (TFDS): Prepare the dataset for training
 if args.step >= 16: 
     print("\n### Step #16 - Downloading more datasets using TensorFlow Datasets (TFDS): Prepare the dataset for training")
@@ -555,6 +571,7 @@ if args.step >= 16:
     val_ds = configure_dataset(val_ds)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #17 - Downloading more datasets using TensorFlow Datasets (TFDS): Train the model
 if args.step >= 17: 
     print("\n### Step #17 - Downloading more datasets using TensorFlow Datasets (TFDS): Train the model")
@@ -581,6 +598,7 @@ if args.step >= 17:
         logger.info("Accuracy: {:2.2%}".format(accuracy))
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #18 - Downloading more datasets using TensorFlow Datasets (TFDS): Export the model
 if args.step == 18: 
     print("\n### Step #18 - Downloading more datasets using TensorFlow Datasets (TFDS): Export the model")

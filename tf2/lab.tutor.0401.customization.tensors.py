@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -35,11 +35,12 @@ print("Eager mode: ", tf.executing_eagerly())
 print("GPU is", "available" if tf.config.list_physical_devices("GPU") else "NOT AVAILABLE")
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Tensors
 if args.step == 1:
     print("\n### Step #1 - Tensors")
@@ -65,6 +66,7 @@ if args.step == 1:
     print(x, '\n')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Tensors: NumPy Compatibility
 if args.step == 2:
     print("\n### Step #2 - Tensors: NumPy Compatibility")
@@ -82,6 +84,7 @@ if args.step == 2:
     print(tensor.numpy(), '\n')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - GPU acceleration
 if args.step == 3:
     print("\n### Step #3 - GPU acceleration")
@@ -95,11 +98,13 @@ if args.step == 3:
     print(x.device.endswith('GPU:0'), '\n')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - GPU acceleration: Device Names
 if args.step == 4:
     print("\n### Step #4 - GPU acceleration: Device Names")
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - GPU acceleration: Explicit Device Placement
 if args.step == 5:
     print("\n### Step #5 - GPU acceleration: Explicit Device Placement")

@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -39,11 +39,12 @@ from tensorflow.keras import Sequential, Model, Input
 from tensorflow.keras.layers import Flatten, Dense, Dropout, Concatenate
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Read data using pandas
 if args.step >= 1: 
     print("\n### Step #1 - Read data using pandas")
@@ -67,6 +68,7 @@ if args.step >= 1:
         print(df.head())
     
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Load data using tf.data.Dataset
 if args.step in [2, 3, 4]: 
     print("\n### Step #2 - Load data using tf.data.Dataset")
@@ -86,6 +88,7 @@ if args.step in [2, 3, 4]:
     train_dataset = dataset.shuffle(len(df)).batch(1)
 
     
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Create and train a model
 if args.step == 3: 
     print("\n### Step #3 - Create and train a model")
@@ -109,6 +112,7 @@ if args.step == 3:
     model.fit(train_dataset, epochs=args.epochs, verbose=2)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Alternative to feature columns
 if args.step == 4:
     print("\n### Step #4 - Alternative to feature columns")

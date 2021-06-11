@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -39,11 +39,12 @@ from tensorflow.keras.layers import Flatten, Dense, Dropout, Softmax
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - Download and prepare the CIFAR10 dataset
 if args.step >= 1:
     print("\n### Step #1 - Download and prepare the CIFAR10 dataset")
@@ -54,6 +55,7 @@ if args.step >= 1:
     train_images, test_images = train_images / 255.0, test_images / 255.0
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Verify the data
 if args.step >= 2:
     print("\n### Step #2 - Verify the data")
@@ -75,6 +77,7 @@ if args.step >= 2:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Create the convolutional base
 if args.step >= 3:
     print("\n### Step #3 - Create the convolutional base")
@@ -90,6 +93,7 @@ if args.step >= 3:
         model.summary()
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Add Dense layers on top
 if args.step >= 4:
     print("\n### Step #4 - Add Dense layers on top")
@@ -102,6 +106,7 @@ if args.step >= 4:
         model.summary()
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Compile and train the model
 if args.step >= 5:
     print("\n### Step #5 - Compile and train the model")
@@ -121,6 +126,7 @@ if args.step >= 5:
     )
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Evaluate the model
 if args.step == 6:
     print("\n### Step #6 - Evaluate the model")

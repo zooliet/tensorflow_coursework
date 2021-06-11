@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -39,11 +39,12 @@ from tensorflow.keras import Sequential, Model, Input
 from tensorflow.keras.layers import Flatten, Dense, Dropout, Concatenate
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - tf.train.Example: Data types for tf.train.Example
 if args.step >= 1: 
     print("\n### Step #1 - tf.train.Example: Data types for tf.train.Example")
@@ -87,6 +88,7 @@ if args.step >= 1:
         print(feature.SerializeToString())
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - tf.train.Example: Creating a tf.train.Example message
 if args.step >= 2 and args.step < 8:
     print("\n### Step #2 - tf.train.Example: Creating a tf.train.Example message")
@@ -119,6 +121,7 @@ if args.step >= 2 and args.step < 8:
         print(example_proto)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - TFRecords format details
 if args.step == 3: 
     print("\n### Step #3 - TFRecords format details")
@@ -132,6 +135,7 @@ if args.step == 3:
     print(format_str)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - TFRecord files using tf.data: Writing a TFRecord file
 if args.step in [4, 5, 6, 7]: 
     print("\n### Step #4 - TFRecord files using tf.data: Writing a TFRecord file")
@@ -206,6 +210,7 @@ if args.step in [4, 5, 6, 7]:
     writer.write(serialized_features_dataset)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - TFRecord files using tf.data: Reading a TFRecord file
 if args.step in [5, 6, 7]: 
     print("\n### Step #5 - TFRecord files using tf.data: Reading a TFRecord file")
@@ -240,6 +245,7 @@ if args.step in [5, 6, 7]:
             print('')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - TFRecord files in Python: Writing a TFRecord file
 if args.step == 6: 
     print("\n### Step #6 - TFRecord files in Python: Writing a TFRecord file")
@@ -255,6 +261,7 @@ if args.step == 6:
     os.system(f"du -sh {filename}")
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - TFRecord files in Python: Reading a TFRecord file
 if args.step == 7: 
     print("\n### Step #7 - TFRecord files in Python: Reading a TFRecord file")
@@ -270,6 +277,7 @@ if args.step == 7:
         print(example)
 
     
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Walkthrough: Reading and writing image data: Fetch the images
 if args.step >= 8: 
     print("\n### Step #8 - Walkthrough: Reading and writing image data: Fetch the images")
@@ -296,6 +304,7 @@ if args.step >= 8:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Walkthrough: Reading and writing image data: Write the TFRecord data
 if args.step == 9: 
     print("\n### Step #9 - Walkthrough: Reading and writing image data: Write the TFRecord data")
@@ -342,6 +351,7 @@ if args.step == 9:
         os.system(f"du -sh {record_file}")
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #10 - Walkthrough: Reading and writing image data: Read the TFRecord data
 if args.step == 10: 
     print("\n### Step #10 - Walkthrough: Reading and writing image data: Read the TFRecord data")

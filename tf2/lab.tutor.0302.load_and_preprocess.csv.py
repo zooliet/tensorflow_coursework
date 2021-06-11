@@ -6,7 +6,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=10, help='number of epochs: 10*')
@@ -43,11 +43,12 @@ from tensorflow.keras.layers import Flatten, Dense, Dropout, Concatenate
 from tensorflow.keras.layers.experimental import preprocessing
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - In memory data
 if args.step in [1, 2]: 
     print("\n### Step #1 - In memory data")
@@ -80,6 +81,7 @@ if args.step in [1, 2]:
         abalone_model.fit(abalone_features, abalone_labels, epochs=args.epochs, verbose=2)
     
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Basic preprocessing
 if args.step == 2: 
     print("\n### Step #2 - Basic preprocessing")
@@ -101,6 +103,7 @@ if args.step == 2:
     norm_abalone_model.fit(abalone_features, abalone_labels, epochs=args.epochs, verbose=2)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - Mixed data types
 if args.step in [3, 4] : 
     print("\n### Step #3 - Mixed data types")
@@ -220,6 +223,7 @@ if args.step in [3, 4] :
         print(f'prediction of reloaded model: {after}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - Using tf.data: On in memory data
 if args.step == 4: 
     print("\n### Step #4 - Using tf.data: On in memory data")
@@ -249,6 +253,7 @@ if args.step == 4:
     titanic_model.fit(titanic_batches, epochs=args.epochs, verbose=2)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - Using tf.data: From a single file
 if args.step in [5, 6]: 
     print("\n### Step #5 - Using tf.data: From a single file")
@@ -294,6 +299,7 @@ if args.step in [5, 6]:
         print('')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Using tf.data: Caching 
 if args.step == 6: 
     print("\n### Step #6 - Using tf.data: Caching")
@@ -322,6 +328,7 @@ if args.step == 6:
     logger.info(f"Time taken with caching is {elapsed_caching:.2f} secs")
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Using tf.data: Multiple files
 if args.step == 7: 
     print("\n### Step #7 - Using tf.data: Multiple files")
@@ -386,11 +393,13 @@ if args.step == 7:
             plt.axis('off')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Lower level functions: tf.io.decode_csv
 if args.step == 8: 
     print("\n### Step #8 - Lower level functions: tf.io.decode_csv")
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - Lower level functions: tf.data.experimental.CsvDataset
 if args.step == 9: 
     print("\n### Step #9 - Lower level functions: tf.data.experimental.CsvDataset")

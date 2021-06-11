@@ -8,7 +8,7 @@ sys.path.append('../')
 
 from lab_utils import (
     os, np, plt, logger, ap, BooleanAction,
-    debug, toc
+    debug, toc, auto_increment
 )
 
 ap.add_argument('--epochs', type=int, default=100, help='number of epochs: 100*')
@@ -43,11 +43,12 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers.experimental.preprocessing import Normalization
 
 
-### Step #0 - TOC
+### TOC
 if args.step == 0:
     toc(__file__)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #1 - The Auto MPG dataset: Get the data
 if args.step >= 1: 
     print("\n### Step #1 - The Auto MPG dataset: Get the data")
@@ -70,6 +71,7 @@ if args.step >= 1:
         logger.info(f'\n{dataset.tail()}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - The Auto MPG dataset: Clean the data
 if args.step >= 2:
     print("\n### Step #2 - The Auto MPG dataset: Clean the data")
@@ -87,6 +89,7 @@ if args.step >= 2:
         logger.info(f'after one-hot encoding:\n{dataset.tail()}')
 
     
+args.step = auto_increment(args.step, args.all)
 ### Step #3 - The Auto MPG dataset: Split the data into train and test
 if args.step >= 3:
     print("\n### Step #3 - The Auto MPG dataset: Split the data into train and test")
@@ -99,6 +102,7 @@ if args.step >= 3:
         logger.info(f'test_dataset.shape: {test_dataset.shape}')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #4 - The Auto MPG dataset: Inspect the data
 if args.step == 4:
     print("\n### Step #4 - The Auto MPG dataset: Inspect the data")
@@ -111,6 +115,7 @@ if args.step == 4:
     print(train_dataset.describe().transpose())
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #5 - The Auto MPG dataset: Split features from labels
 if args.step >= 5:
     print("\n### Step #5 - The Auto MPG dataset: Split features from labels")
@@ -122,6 +127,7 @@ if args.step >= 5:
     test_labels = test_features.pop('MPG')
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #6 - Normalization
 if args.step >= 6:
     print("\n### Step #6 - Normalization")
@@ -167,6 +173,7 @@ if True:
         plt.show(block=False)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #7 - Linear regression: One variable
 if args.step >= 7:
     print("\n### Step #7 - Linear regression: One variable")
@@ -216,6 +223,7 @@ if args.step >= 7:
             plot_horsepower(x,y)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #8 - Linear regression: Multiple inputs
 if args.step >= 8:
     print("\n### Step #8 - Linear regression: Multiple inputs")
@@ -246,6 +254,7 @@ if args.step >= 8:
             plot_loss(history)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #9 - A DNN regression
 if args.step >= 9:
     print("\n### Step #9 - A DNN regression")
@@ -265,6 +274,7 @@ if args.step >= 9:
         return model
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #10 - A DNN regression: One variable
 if args.step >= 10:
     print("\n### Step #10 - A DNN regression: One variable")
@@ -292,6 +302,7 @@ if args.step >= 10:
             plot_horsepower(x,y)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #11 - A DNN regression: Full model
 if args.step >= 11:
     print("\n### Step #11 - A DNN regression: Full model")
@@ -316,6 +327,7 @@ if args.step >= 11:
             plot_loss(history)
 
 
+args.step = auto_increment(args.step, args.all)
 ### Step #12 - Performance
 if args.step == 12:
     print("\n### Step #12 - Performance")
