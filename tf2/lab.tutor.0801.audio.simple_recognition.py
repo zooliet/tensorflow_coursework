@@ -5,7 +5,7 @@ sys.path.append('./')
 sys.path.append('../')
 
 from lab_utils import (
-    os, np, plt, logger, ap, BooleanAction,
+    tf, os, np, plt, logger, ap, BooleanAction,
     debug, toc, auto_increment
 )
 
@@ -30,20 +30,10 @@ import time
 import pathlib
 import seaborn as sns
 
-import tensorflow as tf
-physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
-print("\n#################################################")
-print("Version: ", tf.__version__)
-print("Eager mode: ", tf.executing_eagerly())
-print("GPU is", "available" if tf.config.list_physical_devices("GPU") else "NOT AVAILABLE")
-
 from tensorflow.keras import Sequential, Model, Input
 from tensorflow.keras.layers import Flatten, Dense, Dropout, Softmax, InputLayer
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
 from tensorflow.keras.layers.experimental import preprocessing
-
 
 ### TOC
 if args.step == 0:
@@ -51,11 +41,10 @@ if args.step == 0:
 args.step = auto_increment(args.step, args.all)
 
 
-if True:
-    # Set seed for experiment reproducibility
-    seed = 42
-    tf.random.set_seed(seed)
-    np.random.seed(seed)
+# Set seed for experiment reproducibility
+seed = 42
+tf.random.set_seed(seed)
+np.random.seed(seed)
 
 
 ### Step #1 - Import the Speech Commands dataset
@@ -73,16 +62,10 @@ if args.step >= 1:
 
     commands = np.array(tf.io.gfile.listdir(str(data_dir)))
     commands = commands[commands != 'README.md']
-    if args.step == 1:
-        logger.info(f'Commands: {commands}')
 
     filenames = tf.io.gfile.glob(str(data_dir) + '/*/*')
     filenames = tf.random.shuffle(filenames)
     num_samples = len(filenames)
-    if args.step == 1:
-        logger.info(f'Number of total examples: {num_samples}')
-        logger.info(f'Number of examples per label: {len(tf.io.gfile.listdir(str(data_dir/commands[0])))}')
-        logger.info(f'Example file tensor:\n{filenames[0]}')
 
     # Split the files into training, validation and test sets using a 80:10:10 ratio, respectively
     train_files = filenames[:6400]
@@ -90,6 +73,12 @@ if args.step >= 1:
     test_files = filenames[-800:]
 
     if args.step == 1:
+        logger.info(f'Commands: {commands}')
+
+        logger.info(f'Number of total examples: {num_samples}')
+        logger.info(f'Number of examples per label: {len(tf.io.gfile.listdir(str(data_dir/commands[0])))}')
+        logger.info(f'Example file tensor:\n{filenames[0]}')
+
         logger.info(f'Training set size: {len(train_files)}')
         logger.info(f'Validation set size: {len(val_files)}')
         logger.info(f'Test set size: {len(test_files)}')
@@ -165,6 +154,16 @@ if args.step >= 3:
         Y = range(height)
         ax.pcolormesh(X, Y, log_spec)
 
+    def get_spectrogram_and_label_id(audio, label):
+        spectrogram = get_spectrogram(audio)
+        spectrogram = tf.expand_dims(spectrogram, -1)
+        label_id = tf.argmax(label == commands)
+        return spectrogram, label_id
+
+    spectrogram_ds = waveform_ds.map(
+        get_spectrogram_and_label_id, num_parallel_calls=AUTOTUNE
+    )
+
     if args.step == 3:
         for waveform, label in waveform_ds.take(1):
             label = label.numpy().decode('utf-8')
@@ -186,30 +185,19 @@ if args.step >= 3:
             axes[1].set_title('Spectrogram')
             plt.show(block=False)
 
-    def get_spectrogram_and_label_id(audio, label):
-        spectrogram = get_spectrogram(audio)
-        spectrogram = tf.expand_dims(spectrogram, -1)
-        label_id = tf.argmax(label == commands)
-        return spectrogram, label_id
+            rows = 3
+            cols = 3
+            n = rows*cols
+            fig, axes = plt.subplots(rows, cols, figsize=(10, 10))
+            for i, (spectrogram, label_id) in enumerate(spectrogram_ds.take(n)):
+                r = i // cols
+                c = i % cols
+                ax = axes[r][c]
+                plot_spectrogram(np.squeeze(spectrogram.numpy()), ax)
+                ax.set_title(commands[label_id.numpy()])
+                ax.axis('off')
 
-    spectrogram_ds = waveform_ds.map(
-        get_spectrogram_and_label_id, num_parallel_calls=AUTOTUNE
-    )
-
-    if args.step == 3 and args.plot:
-        rows = 3
-        cols = 3
-        n = rows*cols
-        fig, axes = plt.subplots(rows, cols, figsize=(10, 10))
-        for i, (spectrogram, label_id) in enumerate(spectrogram_ds.take(n)):
-            r = i // cols
-            c = i % cols
-            ax = axes[r][c]
-            plot_spectrogram(np.squeeze(spectrogram.numpy()), ax)
-            ax.set_title(commands[label_id.numpy()])
-            ax.axis('off')
-
-        plt.show(block=False)
+            plt.show(block=False)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -339,13 +327,6 @@ if args.step == 7:
             plt.bar(commands, tf.nn.softmax(prediction[0]))
             plt.title(f'Predictions for "{commands[label[0]]}"')
             plt.show(block=False)
-
-
-args.step = auto_increment(args.step, args.all)
-### Step #8 - Next steps
-if args.step == 8: 
-    print("\n### Step #8 - Next steps")
-
 
 
 ### End of File

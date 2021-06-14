@@ -5,7 +5,7 @@ sys.path.append('./')
 sys.path.append('../')
 
 from lab_utils import (
-    os, np, plt, logger, ap, BooleanAction,
+    tf, os, np, plt, logger, ap, BooleanAction,
     debug, toc, auto_increment
 )
 
@@ -14,6 +14,7 @@ ap.add_argument('--batch', type=int, default=32, help='batch size: 32*')
 args, extra_args = ap.parse_known_args()
 logger.info(args)
 # logger.info(extra_args)
+
 if args.all:
     args.step = 0 # forced to 0
 
@@ -29,15 +30,6 @@ import time
 import re
 import shutil
 import string
-
-import tensorflow as tf
-physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
-print("\n#################################################")
-print("Version: ", tf.__version__)
-print("Eager mode: ", tf.executing_eagerly())
-print("GPU is", "available" if tf.config.list_physical_devices("GPU") else "NOT AVAILABLE")
 
 from tensorflow.keras import Sequential, Model, Input
 from tensorflow.keras.layers import Flatten, Dense, Dropout, Softmax

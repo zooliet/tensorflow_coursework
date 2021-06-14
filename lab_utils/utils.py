@@ -40,6 +40,15 @@ if args.plot:
     mp.use('TkAgg')
 import matplotlib.pyplot as plt
 
+import tensorflow as tf
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
+print("\n#################################################")
+print("Version: ", tf.__version__)
+print("Eager mode: ", tf.executing_eagerly())
+print("GPU is", "available" if tf.config.list_physical_devices("GPU") else "NOT AVAILABLE")
+
 def debug():
     pass
 
