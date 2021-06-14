@@ -1,0 +1,1 @@
+../tf2/lab.tutor.0701.text.word_embeddings.py
