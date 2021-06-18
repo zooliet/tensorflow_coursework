@@ -144,7 +144,7 @@ if args.step == 3:
 args.step = auto_increment(args.step, args.all)
 ### Step #4 -- Specifying the input shape in advance
 if args.step == 4:
-    print("\n### Step #3 -- Specifying the input shape in advance")
+    print("\n### Step #4 -- Specifying the input shape in advance")
 
     # it can be very useful if you start your model by passing an Input object to your model, so that it knows its input shape from the start:
     model = Sequential()
@@ -162,7 +162,7 @@ if args.step == 4:
 args.step = auto_increment(args.step, args.all)
 ### Step #5 - A common debugging workflow: add() + summary()
 if args.step == 5:
-    print("\n### Step #4 - A common debugging workflow: add() + summary()")
+    print("\n### Step #5 - A common debugging workflow: add() + summary()")
 
     model = Sequential()
     # model.add(Input(shape=(250, 250, 3)))  # 250x250 RGB images
