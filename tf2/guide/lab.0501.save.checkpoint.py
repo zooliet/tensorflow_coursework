@@ -34,30 +34,7 @@ if args.step == 0:
     toc(__file__)
 
 
-args.step = auto_increment(args.step, args.all)
-### Step #1 - Training checkpoints
-if args.step == 1:
-    print("\n### Step #1 - Training checkpoints")
-
-    str = '''
-    The phrase "Saving a TensorFlow model" typically means one of two things:
-    1. Checkpoints, OR
-    2. SavedModel.
-
-    Checkpoints capture the exact value of all parameters (tf.Variable objects) 
-    used by a model. Checkpoints do not contain any description of the computation 
-    defined by the model and thus are typically only useful when source code is available.
-
-    The SavedModel format on the other hand includes a serialized description 
-    of the computation defined by the model in addition to the parameter values 
-    (checkpoint). Models in this format are independent of the source code.
-    They are thus suitable for deployment via TensorFlow Serving, TensorFlow Lite, 
-    TensorFlow.js, or programs in other programming languages.
-    '''
-    print(str)
-
-
-if True:
+if args.step or args.all:
     class Net(tf.keras.Model):
         """A simple linear model."""
 
@@ -70,18 +47,57 @@ if True:
 
 
 args.step = auto_increment(args.step, args.all)
+### Step #1 - Training checkpoints
+if args.step == 1:
+    print("\n### Step #1 - Training checkpoints")
+
+    __doc__ = '''
+    The phrase "Saving a TensorFlow model" typically means one of two things:
+    1. Checkpoints, OR 2. SavedModel.
+
+    Checkpoints capture the exact value of all parameters (tf.Variable objects)
+    used by a model. Checkpoints do not contain any description of the
+    computation defined by the model and thus are typically only useful when
+    source code is available.
+
+    The SavedModel format on the other hand includes a serialized description
+    of the computation defined by the model in addition to the parameter values
+    (checkpoint). Models in this format are independent of the source code.
+    They are thus suitable for deployment via TensorFlow Serving, TensorFlow
+    Lite, TensorFlow.js, or programs in other programming languages.
+    '''
+    print(__doc__)
+
+
+args.step = auto_increment(args.step, args.all)
 ### Step #2 - Saving from tf.keras training APIs
 if args.step == 2:
     print("\n### Step #2 - Saving from tf.keras training APIs")
 
     net = Net()
-    net.save_weights('tmp/easy_checkpoint')
-
+    net.save_weights('tmp/tf2_g0501/easy_checkpoint')
 
 args.step = auto_increment(args.step, args.all)
 ### Step #3 - Writing checkpoints: Manual checkpointing
 if args.step == 3:
     print("\n### Step #3 - Writing checkpoints: Manual checkpointing")
+
+    __doc__='''
+    The persistent state of a TensorFlow model is stored in tf.Variable
+    objects. These can be constructed directly, but are often created through
+    high-level APIs like tf.keras.layers or tf.keras.Model.
+
+    The easiest way to manage variables is by attaching them to Python objects,
+    then referencing those objects.
+
+    Subclasses of tf.train.Checkpoint, tf.keras.layers.Layer, and
+    tf.keras.Model automatically track variables assigned to their attributes.
+    The following example constructs a simple linear model, then writes
+    checkpoints which contain values for all of the model's variables.
+
+    You can easily save a model-checkpoint with Model.save_weights.
+    '''
+    print(__doc__)
 
     net = Net()
 
@@ -114,7 +130,7 @@ if args.step == 3:
         net=net, 
         iterator=iterator
     )
-    manager = tf.train.CheckpointManager(ckpt, 'tmp/tf_ckpts', max_to_keep=3)
+    manager = tf.train.CheckpointManager(ckpt, 'tmp/tf2_g0501/tf_ckpts', max_to_keep=3)
 
     # Train and checkpoint the model
     def train_and_checkpoint(net, manager):
@@ -147,11 +163,12 @@ if args.step == 3:
         net=net, 
         iterator=iterator
     )
-    manager = tf.train.CheckpointManager(ckpt, 'tmp/tf_ckpts', max_to_keep=3)
+    manager = tf.train.CheckpointManager(ckpt, 'tmp/tf2_g0501/tf_ckpts', max_to_keep=3)
     train_and_checkpoint(net, manager)
 
     logger.info('List the three remaining checkpoints:') 
     print(*manager.checkpoints, sep='\n') 
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)

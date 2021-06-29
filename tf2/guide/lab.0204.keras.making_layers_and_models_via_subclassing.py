@@ -43,6 +43,13 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 1:
     print("\n### Step #1 - The Layer class: the combination of state (weights) and some computation")
 
+    __doc__='''
+    One of the central abstraction in Keras is the Layer class. A layer
+    encapsulates both a state (the layer's "weights") and a transformation from
+    inputs to outputs (a "call", the layer's forward pass).
+    '''
+    print(__doc__)
+
     class Linear(Layer):
         def __init__(self, units=32, input_dim=32):
             super(Linear, self).__init__()
@@ -75,18 +82,26 @@ if args.step == 1:
     x = tf.ones((4, 3))
     linear_layer = Linear(10, 3)
     y = linear_layer(x)
-    logger.info(f'y is \n{y}')
+    logger.info(f'y is:\n{y}\n')
 
     assert linear_layer.weights == [linear_layer.w, linear_layer.b]
     logger.info(f"len(weights): {len(linear_layer.weights)}")
     for i, weight in enumerate(linear_layer.weights):
         logger.info(f"weight[{i}]'s shape: {weight.shape}")
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
 ### Step #2 - Layers can have non-trainable weights 
 if args.step == 2:
     print("\n### Step #2 - Layers can have non-trainable weights")
+
+    __doc__='''
+    Besides trainable weights, you can add non-trainable weights to a layer as
+    well. Such weights are meant not to be taken into account during
+    backpropagation, when you are training the layer.
+    '''
+    print(__doc__)
 
     class ComputeSum(Layer):
         def __init__(self, input_dim):
@@ -111,13 +126,27 @@ if args.step == 2:
     logger.info(f"len(non-trainable weights): {len(my_sum.non_trainable_weights)}")
     
     # It's not included in the trainable weights:
-    logger.info(f"len(trainable_weights): {len(my_sum.trainable_weights)}")
+    logger.info(f"len(trainable_weights): {len(my_sum.trainable_weights)}\n")
 
 
 args.step = auto_increment(args.step, args.all)
 ### Step #3 -- Best practice: deferring weight creation until the shape of the inputs is known
 if args.step == 3:
     print("\n### Step #3 -- Best practice: deferring weight creation until the shape of the inputs is known")
+
+    __doc__='''
+    In many cases, you may not know in advance the size of your inputs, and you
+    would like to lazily create weights when that value becomes known, some
+    time after instantiating the layer.
+
+    In the Keras API, we recommend creating layer weights in the build(self,
+    inputs_shape) method of your layer. 
+
+    The layer's weights are created dynamically the first time the layer is
+    called. (i.e., The call() method of your layer will automatically run build
+    the first time it is called) 
+    '''
+    print(__doc__)
 
     class Linear(Layer):
         def __init__(self, units=32):
@@ -142,20 +171,29 @@ if args.step == 3:
     # At instantiation, we don't know on what inputs this is going to get called
     linear_layer = Linear(32)
 
-    # The layer's weights are created dynamically the first time the layer is called
-    # The call() method of your layer will automatically run build the first time it is called. 
     x = tf.ones((3,4))
     y = linear_layer(x)
 
     logger.info(f"len(weights): {len(linear_layer.weights)}")
     for i, weight in enumerate(linear_layer.weights):
         logger.info(f"weight[{i}]'s shape: {weight.shape}")
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
 ### Step #4 - Layers are recursively composable
 if args.step == 4:
     print("\n### Step #4 - Layers are recursively composable")
+    
+    __doc__='''
+    If you assign a Layer instance as an attribute of another Layer, the outer
+    layer will start tracking the weights of the inner layer.
+
+    We recommend creating such sublayers in the __init__() method (since the
+    sublayers will typically have a build method, they will be built when the
+    outer layer gets built).
+    '''
+    print(__doc__)
 
     class Linear(Layer):
         def __init__(self, units=32):
@@ -199,12 +237,31 @@ if args.step == 4:
     logger.info(f"len(weights): {len(mlp.weights)}")
     for i, weight in enumerate(mlp.weights):
         logger.info(f"weight[{i}]'s shape: {weight.shape}")
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
 ### Step #5 - The add_loss() method
 if args.step == 5:
     print("\n### Step #5 - The add_loss() method")
+    
+    __doc__='''
+    When writing the call() method of a layer, you can create loss tensors that
+    you will want to use later, when writing your training loop. This is doable
+    by calling self.add_loss(value).
+
+    These losses (including those created by any inner layer) can be retrieved
+    via layer.losses. This property is reset at the start of every __call__()
+    to the top-level layer, so that layer.losses always contains the loss
+    values created during the last forward pass.
+
+    In addition, the loss property of the outer layer also contains
+    regularization losses created for the weights of any inner layer.
+
+    These losses are meant to be taken into account when writing training
+    loops.
+    '''
+    print(__doc__)
 
     # A layer that creates an activity regularization loss
     class ActivityRegularizationLayer(Layer):
@@ -244,13 +301,12 @@ if args.step == 5:
         def call(self, inputs):
             return self.dense(inputs)
 
-
     layer = OuterLayerWithKernelRegularizer()
     _ = layer(tf.zeros((1, 1)))
 
     # This is `1e-3 * sum(layer.dense.kernel ** 2)`,
     # created by the `kernel_regularizer` above.
-    logger.info(layer.losses)
+    logger.info(f'outer_layer.losses:\n{layer.losses}\n')
 
     # These losses are meant to be taken into account when writing training loops
     # Instantiate an optimizer.
@@ -287,12 +343,14 @@ if args.step == 5:
     # If there is a loss passed in `compile`, the regularization
     # losses get added to it
     model.compile(optimizer="adam", loss="mse")
+    logger.info('layer.losses are added to the main loss:')
     model.fit(
         np.random.random((2, 3)), 
         np.random.random((2, 3)),
         epochs=args.epochs,
         verbose=2
     )
+    print('')
 
     # It's also possible not to pass any loss in `compile`,
     # since the model already has a loss to minimize, via the `add_loss`
@@ -303,6 +361,7 @@ if args.step == 5:
         epochs=args.epochs,
         verbose=2
     )
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -337,7 +396,7 @@ if args.step == 6:
     y = layer(targets, logits)
 
     logger.info(f"layer.metrics: {layer.metrics}")
-    logger.info("current accuracy value: {}".format(float(layer.metrics[0].result())))
+    logger.info("current accuracy value: {}\n".format(float(layer.metrics[0].result())))
 
     # Just like for add_loss(), these metrics are tracked by fit():
     inputs = Input(shape=(3,), name="inputs")
@@ -357,12 +416,24 @@ if args.step == 6:
         epochs=args.epochs, 
         verbose=2
     )
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
 ### Step #7 - You can optionally enable serialization on your layers
 if args.step == 7:
     print("\n### Step #7 - You can optionally enable serialization on your layers")
+
+    __doc__='''
+    If you need your custom layers to be serializable as part of a Functional
+    model, you can optionally implement a get_config() method.
+    
+    Note that the __init__() method of the base Layer class takes some keyword
+    arguments, in particular a name and a dtype. It's good practice to pass
+    these arguments to the parent class in __init__() and to include them in
+    the layer config.
+    '''
+    print(__doc__)
 
     class Linear(Layer):
         def __init__(self, units=32, **kwargs):
@@ -389,7 +460,7 @@ if args.step == 7:
 
     layer = Linear(64)
     config = layer.get_config()
-    logger.info(config)
+    logger.info(f'layer.get_config():\n{config}\n')
     new_layer = Linear.from_config(config)
 
 
@@ -398,12 +469,18 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 8:
     print("\n### Step #8 - Privileged training argument in the call() method")
 
-    # Some layers, in particular the BatchNormalization layer and the Dropout layer,
-    # have different behaviors during training and inference. 
-    # For such layers, it is standard practice to expose a training (boolean) argument 
-    # in the call() method.
-    # By exposing this argument in call(), you enable the built-in training and 
-    # evaluation loops (e.g. fit()) to correctly use the layer in training and inference.
+    __doc__='''
+    Some layers, in particular the BatchNormalization layer and the Dropout
+    layer, have different behaviors during training and inference. For such
+    layers, it is standard practice to expose a training (boolean) argument in
+    the call() method.
+
+    By exposing this argument in call(), you enable the built-in training and
+    evaluation loops (e.g. fit()) to correctly use the layer in training and
+    inference.
+    '''
+    print(__doc__)
+
     class CustomDropout(Layer):
         def __init__(self, rate, **kwargs):
             super(CustomDropout, self).__init__(**kwargs)
@@ -421,7 +498,43 @@ if args.step == 9:
     print("\n### Step #9 - Privileged mask argument in the call() method")
     pass
 
-if args.step in [10, 11]: 
+
+args.step = auto_increment(args.step, args.all)
+### Step #10 - The Model class
+if args.step == 10:
+    print("\n### Step #10 - The Model class")
+
+    __doc__='''
+    In general, you will use the Layer class to define inner computation
+    blocks, and will use the Model class to define the outer model -- the
+    object you will train.
+
+    For instance, in a ResNet50 model, you would have several ResNet blocks
+    subclassing Layer, and a single Model encompassing the entire ResNet50
+    network.
+
+    The Model class has the same API as Layer, with the following differences:
+    - It exposes built-in training, evaluation, and prediction loops
+      (model.fit(), model.evaluate(), model.predict()).
+    - It exposes the list of its inner layers, via the model.layers property.
+    - It exposes saving and serialization APIs (save(), save_weights()...)
+
+    Effectively, the Layer class corresponds to what we refer to in the
+    literature as a "layer" (as in "convolution layer" or "recurrent layer") or
+    as a "block" (as in "ResNet block" or "Inception block").
+
+    Meanwhile, the Model class corresponds to what is referred to in the
+    literature as a "model" (as in "deep learning model") or as a "network" (as
+    in "deep neural network").
+    '''
+    print(__doc__)
+
+
+args.step = auto_increment(args.step, args.all)
+### Step #11 - Putting it all together: an end-to-end example
+if args.step == 11: 
+    print("\n### Step #11 - Putting it all together: an end-to-end example")
+
     (x_train, _), _ = tf.keras.datasets.mnist.load_data()
     x_train = x_train.reshape(60000, 784).astype("float32") / 255
 
@@ -436,12 +549,6 @@ if args.step in [10, 11]:
             dim = tf.shape(z_mean)[1]
             epsilon = tf.keras.backend.random_normal(shape=(batch, dim))
             return z_mean + tf.exp(0.5 * z_log_var) * epsilon
-
-
-args.step = auto_increment(args.step, args.all)
-### Step #10 - The Model class - Putting it all together: an end-to-end example
-if args.step == 10: 
-    print("\n### Step #10 - The Model class - Putting it all together: an end-to-end example")
     
     class Encoder(Layer):
         """Maps MNIST digits to a triplet (z_mean, z_log_var, z)."""
@@ -497,6 +604,7 @@ if args.step == 10:
 
     epochs = args.epochs
 
+    logger.info('with training loop:')
     # Iterate over epochs.
     for epoch in range(epochs):
         logger.info("Start of epoch %d" % (epoch,))
@@ -517,8 +625,9 @@ if args.step == 10:
 
             if step % 100 == 0:
                 logger.info("step %d: mean loss = %.4f" % (step, loss_metric.result()))
+        print('')
 
-    # fit()
+    logger.info('against fit():')
     vae = VariationalAutoEncoder(784, 64, 32)
     optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
     vae.compile(optimizer, loss=tf.keras.losses.MeanSquaredError())
@@ -528,12 +637,28 @@ if args.step == 10:
         batch_size=64, 
         verbose=2
     )
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #11 - Beyond object-oriented development: the Functional API
-if args.step == 11:
-    print("\n### Step #11 - Beyond object-oriented development: the Functional API")
+### Step #12 - Beyond object-oriented development: the Functional API
+if args.step == 12:
+    print("\n### Step #12 - Beyond object-oriented development: the Functional API")
+
+    (x_train, _), _ = tf.keras.datasets.mnist.load_data()
+    x_train = x_train.reshape(60000, 784).astype("float32") / 255
+
+    train_dataset = tf.data.Dataset.from_tensor_slices(x_train)
+    train_dataset = train_dataset.shuffle(buffer_size=1024).batch(64)
+
+    class Sampling(Layer):
+        """Uses (z_mean, z_log_var) to sample z, the vector encoding a digit."""
+        def call(self, inputs):
+            z_mean, z_log_var = inputs
+            batch = tf.shape(z_mean)[0]
+            dim = tf.shape(z_mean)[1]
+            epsilon = tf.keras.backend.random_normal(shape=(batch, dim))
+            return z_mean + tf.exp(0.5 * z_log_var) * epsilon
 
     original_dim = 784
     intermediate_dim = 64
@@ -570,6 +695,7 @@ if args.step == 11:
         batch_size=64, 
         verbose=2
     )
+    print('')
 
 
 ### End of File

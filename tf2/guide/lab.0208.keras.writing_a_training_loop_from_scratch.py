@@ -38,7 +38,7 @@ if args.step == 0:
     toc(__file__)
 
 
-if True:
+if args.step or args.all:
     # Prepare the training dataset.
     batch_size = 64
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
@@ -72,9 +72,32 @@ if True:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #1 - Using the GradientTape: a first end-to-end example 
+### Step #1 - Introduction
 if args.step == 1:
-    print("\n### Step #1 - Using the GradientTape: a first end-to-end example")
+    print("\n### Step #1 - Introduction")
+
+    __doc__='''
+    Keras provides default training and evaluation loops, fit() and evaluate().
+    Their usage is covered in the guide Training & evaluation with the built-in
+    methods.
+
+    If you want to customize the learning algorithm of your model while still
+    leveraging the convenience of fit() (for instance, to train a GAN using
+    fit()), you can subclass the Model class and implement your own
+    train_step() method, which is called repeatedly during fit(). This is
+    covered in the guide Customizing what happens in fit().
+
+    Now, if you want very low-level control over training & evaluation, you
+    should write your own training & evaluation loops from scratch. This is
+    what this guide is about.
+    '''
+    print(__doc__)
+
+
+args.step = auto_increment(args.step, args.all)
+### Step #2 - Using the GradientTape: a first end-to-end example 
+if args.step == 2:
+    print("\n### Step #2 - Using the GradientTape: a first end-to-end example")
 
     model = get_model()
 
@@ -110,17 +133,30 @@ if args.step == 1:
 
             # Log every 200 batches.
             if step % 200 == 0:
-                logger.info(
+                logger.debug(
                     "Training loss (for one batch) at step %d: %.4f"
                     % (step, float(loss_value))
                 )
-                logger.info("Seen so far: %s samples" % ((step + 1) * batch_size))
+                logger.debug("Seen so far: %s samples" % ((step + 1) * batch_size))
+        print('')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #2 - Low-level handling of metrics
-if args.step == 2:
-    print("\n### Step #2 - Low-level handling of metrics")
+### Step #3 - Low-level handling of metrics
+if args.step == 3:
+    print("\n### Step #3 - Low-level handling of metrics")
+
+    __doc__='''
+    You can readily reuse the built-in metrics in such training loops written
+    from scratch: 
+    - Instantiate the metric at the start of the loop
+    - Call metric.update_state() after each batch
+    - Call metric.result() when you need to display the current value of the
+      metric
+    - Call metric.reset_states() when you need to clear the state of the metric
+      (typically at the end of an epoch)
+    '''
+    print(__doc__)
 
     model = get_model()
 
@@ -174,11 +210,28 @@ if args.step == 2:
         logger.info("Validation acc: %.4f" % (float(val_acc),))
         logger.info("Time taken/epoch: %.2fs" % (time.time() - start_time))
 
+        print('') # end of an epoch
+
 
 args.step = auto_increment(args.step, args.all)
-### Step #3 - Speeding-up your training step with tf.function
-if args.step == 3:
-    print("\n### Step #3 - Speeding-up your training step with tf.function")
+### Step #4 - Speeding-up your training step with tf.function
+if args.step == 4:
+    print("\n### Step #4 - Speeding-up your training step with tf.function")
+
+    __doc__='''
+    The default runtime in TensorFlow 2.0 is eager execution. As such, our
+    training loop above executes eagerly.
+
+    This is great for debugging, but graph compilation has a definite
+    performance advantage.  Describing your computation as a static graph
+    enables the framework to apply global performance optimizations. This is
+    impossible when the framework is constrained to greedly execute one
+    operation after another, with no knowledge of what comes next.
+
+    You can compile into a static graph any function that takes tensors as
+    input. Just add a @tf.function decorator on it.
+    '''
+    print(__doc__)
 
     model = get_model()
 
@@ -238,12 +291,24 @@ if args.step == 3:
         val_acc_metric.reset_states()
         logger.info("Validation acc: %.4f" % (float(val_acc),))
         logger.info("Time taken/epoch: %.2fs" % (time.time() - start_time))
+        print('')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #4 - Low-level handling of losses tracked by the model
-if args.step == 4:
-    print("\n### Step #4 - Low-level handling of losses tracked by the model")
+### Step #5 - Low-level handling of losses tracked by the model
+if args.step == 5:
+    print("\n### Step #5 - Low-level handling of losses tracked by the model")
+
+    __doc__='''
+    Layers & models recursively track any losses created during the forward
+    pass by layers that call self.add_loss(value). The resulting list of scalar
+    loss values are available via the property model.losses at the end of the
+    forward pass.
+
+    If you want to be using these loss components, you should sum them and add
+    them to the main loss in your training step.
+    '''
+    print(__doc__)
 
     class ActivityRegularizationLayer(Layer):
         def call(self, inputs):
@@ -317,12 +382,13 @@ if args.step == 4:
         val_acc_metric.reset_states()
         logger.info("Validation acc: %.4f" % (float(val_acc),))
         logger.info("Time taken/epoch: %.2fs" % (time.time() - start_time))
+        print('')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #5 - End-to-end example: a GAN training loop from scratch
-if args.step == 5:
-    print("\n### Step #5 - End-to-end example: a GAN training loop from scratch")
+### Step #6 - End-to-end example: a GAN training loop from scratch
+if args.step == 6:
+    print("\n### Step #6 - End-to-end example: a GAN training loop from scratch")
     pass
 
 

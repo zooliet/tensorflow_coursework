@@ -42,7 +42,10 @@ if args.step == 0:
     toc(__file__)
 
 
-if True:
+if args.step or args.all:
+    if not os.path.exists('tmp/tf2_g0203/'):
+        os.mkdir('tmp/tf2_g0203/')
+
     # download the dataset
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 
@@ -108,10 +111,13 @@ if args.step == 1:
         validation_data=(x_val, y_val),
         verbose=2
     )
+    print('')
+
     logger.info('history.history:')
     for key, values in history.history.items():
         values = [round(v, 2) for v in values]
         print(f'{key}: {values}')
+    print('')
 
     # Evaluate the model on the test data using `evaluate`
     results = model.evaluate(x_test, y_test, batch_size=128, verbose=0)
@@ -122,13 +128,33 @@ if args.step == 1:
     # on new data using `predict`
     predictions = model.predict(x_test[:3])
     logger.info("predictions {}:".format(predictions.shape))
-    print(predictions)
+    print(predictions, '\n')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #2 - Custom losses
+### Step #2 - The compile() method: specifying a loss, metrics, and an optimizer
 if args.step == 2:
-    print("\n### Step #2 - Custom losses")
+    print("\n### Step #2 - The compile() method: specifying a loss, metrics, and an optimizer")
+
+    __doc__='''
+    To train a model with fit(), you need to specify a loss function, an
+    optimizer, and optionally, some metrics to monitor. You pass these to the
+    model as arguments to the compile() method
+
+    The metrics argument should be a list -- your model can have any number of
+    metrics.
+
+    If your model has multiple outputs, you can specify different losses and
+    metrics for each output, and you can modulate the contribution of each
+    output to the total loss of the model.
+    '''
+    print(__doc__)
+
+
+args.step = auto_increment(args.step, args.all)
+### Step #3 - The compile() method: Custom losses
+if args.step == 3:
+    print("\n### Step #3 - The compile() method: Custom losses")
 
     def custom_mean_squared_error(y_true, y_pred):
         return tf.math.reduce_mean(tf.square(y_true - y_pred))
@@ -155,12 +181,7 @@ if args.step == 2:
         print(f'{key}: {values}')
     print('')
 
-
-args.step = auto_increment(args.step, args.all)
-### Step #3 - Custom losses: using class
-if args.step == 3:
-    print("\n### Step #3 - Custom losses: using class")
-
+    # using class
     class CustomMSE(tf.keras.losses.Loss):
         def __init__(self, regularization_factor=0.1, name="custom_mse"):
             super().__init__(name=name)
@@ -192,9 +213,9 @@ if args.step == 3:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #4 - Custom metrics
+### Step #4 - The compile() method: Custom metrics
 if args.step == 4:
-    print("\n### Step #4 - Custom metrics")
+    print("\n### Step #4 - The compile() method: Custom metrics")
 
     class CategoricalTruePositives(tf.keras.metrics.Metric):
         def __init__(self, name="categorical_true_positives", **kwargs):
@@ -238,9 +259,24 @@ if args.step == 4:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #5 - Handling losses and metrics that don't fit the standard signature
+### Step #5 - The compile() method: Handling losses and metrics that don't fit the standard signature
 if args.step == 5:
-    print("\n### Step #5 - Handling losses and metrics that don't fit the standard signature")
+    print("\n### Step #5 - The compile() method: Handling losses and metrics that don't fit the standard signature")
+
+    __doc__='''
+    The overwhelming majority of losses and metrics can be computed from y_true
+    and y_pred, where y_pred is an output of your model -- but not all of them.
+    For instance, a regularization loss may only require the activation of a
+    layer (there are no targets in this case), and this activation may not be a
+    model output.
+
+    In such cases, you can call self.add_loss(loss_value) from inside the call
+    method of a custom layer. Losses added in this way get added to the "main"
+    loss during training (the one passed to compile()). Here's a simple example
+    that adds activity regularization (note that activity regularization is
+    built-in in all Keras layers -- this layer is just for the sake of
+    providing a concrete example).
+    '''
 
     class ActivityRegularizationLayer(Layer):
         def call(self, inputs):
@@ -278,9 +314,21 @@ if args.step == 5:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #6 - Automatically setting apart a validation holdout set
+### Step #6 - The compile() method: Automatically setting apart a validation holdout set
 if args.step == 6:
-    print("\n### Step #6 - Automatically setting apart a validation holdout set")
+    print("\n### Step #6 - The compile() method: Automatically setting apart a validation holdout set")
+
+    __doc__='''
+    The argument validation_split allows you to automatically reserve part of
+    your training data for validation. The argument value represents the
+    fraction of the data to be reserved for validation, so it should be set to
+    a number higher than 0 and lower than 1.  For instance,
+    validation_split=0.2 means "use 20% of the data for validation". 
+    
+    The way the validation is computed is by taking the last x% samples of the
+    arrays received by the fit() call, before any shuffling.
+    '''
+    print(__doc__)
 
     model = get_compiled_model()
     history = model.fit(
@@ -290,8 +338,6 @@ if args.step == 6:
         validation_split=0.2, 
         verbose=2
     )
-    # The way the validation is computed is by taking the last x% samples of the arrays
-    # received by the fit() call, before any shuffling
 
 
 args.step = auto_increment(args.step, args.all)
@@ -307,6 +353,10 @@ if args.step == 7:
     # Shuffle and slice the dataset.
     train_dataset = train_dataset.shuffle(buffer_size=1024).batch(64)
 
+    # Prepare the validation dataset
+    val_dataset = tf.data.Dataset.from_tensor_slices((x_val, y_val))
+    val_dataset = val_dataset.batch(64)
+
     # Now we get a test dataset.
     test_dataset = tf.data.Dataset.from_tensor_slices((x_test, y_test))
     test_dataset = test_dataset.batch(64)
@@ -316,8 +366,11 @@ if args.step == 7:
     history = model.fit(
         train_dataset, 
         epochs=args.epochs, 
+        validation_data=val_dataset,
         verbose=2
     )
+    print('')
+
     for key, values in history.history.items():
         values = [round(v, 2) for v in values]
         print(f'{key}: {values}')
@@ -327,12 +380,22 @@ if args.step == 7:
     result = model.evaluate(test_dataset, verbose=0)
     for name, value in dict(zip(model.metrics_names, result)).items():
         logger.info(f'{name}: {value:.2f}')
+    print('')
     
 
 args.step = auto_increment(args.step, args.all)
 ### Step #8 - Training & evaluation from tf.data Datasets: using steps_per_epoch
 if args.step == 8:
     print("\n### Step #8 - Training & evaluation from tf.data Datasets: using steps_per_epoch")
+
+    __doc__='''
+    steps_per_epcoh specifies how many training steps the model should run
+    using this Dataset before moving on to the next epoch. If you do this, the
+    dataset is not reset at the end of each epoch, instead we just keep drawing
+    the next batches.  The dataset will eventually run out of data (unless it
+    is an infinitely-looping dataset).
+    '''
+    print(__doc__)
 
     model = get_compiled_model()
 
@@ -343,19 +406,10 @@ if args.step == 8:
     # Only use the 100 batches per epoch (that's 64 * 100 samples)
     history=model.fit(
         train_dataset, 
-        epochs=args.epochs, 
+        epochs=args.epochs, # 2 is ok, but 10 needs more data
         steps_per_epoch=100, 
-        verbose=2
+        verbose=1
     )
-    # steps_per_epcoh specifies how many training steps the model should run 
-    # using this Dataset before moving on to the next epoch.
-    # If you do this, the dataset is not reset at the end of each epoch, 
-    # instead we just keep drawing the next batches. 
-    # The dataset will eventually run out of data (unless it is an infinitely-looping dataset).
-
-    for key, values in history.history.items():
-        values = [round(v, 2) for v in values]
-        print(f'{key}: {values}')
     print('')
 
 
@@ -380,9 +434,6 @@ if args.step == 9:
         validation_data=val_dataset,
         verbose=2
     )
-    for key, values in history.history.items():
-        values = [round(v, 2) for v in values]
-        print(f'{key}: {values}')
     print('')
 
 
@@ -390,13 +441,39 @@ args.step = auto_increment(args.step, args.all)
 ### Step #10 - Using a keras.utils.Sequence object as input
 if args.step == 10:
     print("\n### Step #10 - Using a keras.utils.Sequence object as input")
-    pass
+
+    __doc__='''
+    Besides NumPy arrays, eager tensors, and TensorFlow Datasets, it's possible
+    to train a Keras model using Pandas dataframes, or from Python generators
+    that yield batches of data & labels.
+
+    In particular, the keras.utils.Sequence class offers a simple interface to
+    build Python data generators that are multiprocessing-aware and can be
+    shuffled.
+
+    In general, we recommend that you use:
+    - NumPy input data if your data is small and fits in memory
+    - Dataset objects if you have large datasets and you need to do distributed
+      training
+    - Sequence objects if you have large datasets and you need to do a lot of
+      custom Python-side processing that cannot be done in TensorFlow (e.g. if
+      you rely on external libraries for data loading or preprocessing).
+    '''
+    print(__doc__)
 
 
 args.step = auto_increment(args.step, args.all)
 ### Step #11 - Using sample weighting and class weighting: Class weights
 if args.step == 11:
     print("\n### Step #11 - Using sample weighting and class weighting: Class weights")
+    
+    __doc__='''
+    This can be used to balance classes without resampling, or to train a model
+    that gives more importance to a particular class.  For instance, if class
+    "0" is half as represented as class "1" in your data, you could use
+    Model.fit(..., class_weight={0: 1., 1: 0.5}).
+    '''
+    print(__doc__)
 
     class_weight = {
         0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0,
@@ -414,9 +491,6 @@ if args.step == 11:
         batch_size=64, 
         verbose=2
     )
-    for key, values in history.history.items():
-        values = [round(v, 2) for v in values]
-        print(f'{key}: {values}')
     print('')
 
 
@@ -431,6 +505,15 @@ args.step = auto_increment(args.step, args.all)
 ### Step #13 - Passing data to multi-input, multi-output models
 if args.step == 13:
     print("\n### Step #13 - Passing data to multi-input, multi-output models")
+
+    __doc__='''
+    Consider the following model, which has an image input of shape (32, 32, 3)
+    (that's (height, width, channels)) and a time series input of shape (None,
+    10) (that's (timesteps, features)).  Our model will have two outputs
+    computed from the combination of these inputs: a "score" (of shape (1,))
+    and a probability distribution over five classes (of shape (5,)).
+    '''
+    print(__doc__)
 
     image_input = Input(shape=(32, 32, 3), name="img_input")
     timeseries_input = Input(shape=(None, 10), name="ts_input")
@@ -451,9 +534,11 @@ if args.step == 13:
         outputs=[score_output, class_output]
     )
 
-    tf.keras.utils.plot_model(model, "tmp/multi_input_and_output_model.png", show_shapes=True)
+    tf.keras.utils.plot_model(
+        model, "tmp/tf2_g0203/multi_input_and_output_model.png", show_shapes=True
+    )
     if args.plot:
-        image = Image.open('tmp/multi_input_and_output_model.png')
+        image = Image.open('tmp/tf2_g0203/multi_input_and_output_model.png')
         plt.figure()
         plt.imshow(image)
         plt.show(block=False)
@@ -516,6 +601,9 @@ if args.step == 13:
         epochs=args.epochs,
         verbose=2
     )
+    print('')
+
+    logger.info('history.history:')
     for key, values in history.history.items():
         values = [round(v, 2) for v in values]
         print(f'{key}: {values}')
@@ -527,6 +615,21 @@ args.step = auto_increment(args.step, args.all)
 ### Step #14 - Using callbacks
 if args.step == 14:
     print("\n### Step #14 - Using callbacks")
+
+    __doc__='''
+    Callbacks in Keras are objects that are called at different points during
+    training (at the start of an epoch, at the end of a batch, at the end of an
+    epoch, etc.). They can be used to implement certain behaviors, such as:
+    - Doing validation at different points during training (beyond the built-in
+      per-epoch) 
+    - Checkpointing the model at regular intervals or when it exceeds a certain
+      threshold
+    - Changing the learning rate of the model when training seems to be
+      plateauing
+    - Doing fine-tuning of the top layers when training seems to be plateauing
+    - Sending email or instant message notifications when training ends or so 
+    '''
+    print(__doc__)
 
     model = get_compiled_model()
 
@@ -544,15 +647,12 @@ if args.step == 14:
     history = model.fit(
         x_train,
         y_train,
-        epochs=args.epochs,
+        epochs=args.epochs, # 20
         batch_size=64,
         callbacks=callbacks,
         validation_split=0.2,
         verbose=2
     )
-    for key, values in history.history.items():
-        values = [round(v, 2) for v in values]
-        print(f'{key}: {values}')
     print('')
 
 
@@ -570,7 +670,7 @@ if args.step == 15:
             # the current checkpoint if and only if
             # the `val_loss` score has improved.
             # The saved model name will include the current epoch.
-            filepath="tmp/mymodel_{epoch}_{loss:.2f}",
+            filepath="tmp/tf2_g0203/mymodel_{epoch}_{loss:.2f}",
             save_best_only=True,  # Only save a model if `val_loss` has improved.
             monitor="val_loss",
             verbose=1,
@@ -584,9 +684,6 @@ if args.step == 15:
         validation_split=0.2,
         verbose=2
     )
-    for key, values in history.history.items():
-        values = [round(v, 2) for v in values]
-        print(f'{key}: {values}')
     print('')
 
 
@@ -596,7 +693,7 @@ if args.step == 16:
     print("\n### Step #16 - Checkingpoint models: restore")
 
     # Prepare a directory to store all the checkpoints.
-    checkpoint_dir = "tmp/ckpt"
+    checkpoint_dir = "tmp/tf2_g0203/ckpt"
     if not os.path.exists(checkpoint_dir):
         os.makedirs(checkpoint_dir)
 
@@ -627,9 +724,6 @@ if args.step == 16:
         callbacks=callbacks, 
         verbose=2
     )
-    for key, values in history.history.items():
-        values = [round(v, 2) for v in values]
-        print(f'{key}: {values}')
     print('')
 
 
@@ -637,6 +731,20 @@ args.step = auto_increment(args.step, args.all)
 ### Step #17 - Using learning rate schedules
 if args.step == 17:
     print("\n### Step #17 - Using learning rate schedules")
+
+    __doc__='''
+    A common pattern when training deep learning models is to gradually reduce
+    the learning as training progresses. This is generally known as "learning
+    rate decay".  The learning decay schedule could be static (fixed in
+    advance, as a function of the 
+
+    current epoch or the current batch index), or dynamic (responding to the
+    current behavior of the model, in particular the validation loss).
+
+    Several built-in schedules are available: ExponentialDecay,
+    PiecewiseConstantDecay, PolynomialDecay, and InverseTimeDecay.
+    '''
+    print(__doc__)
 
     initial_learning_rate = 0.1
     lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
@@ -649,11 +757,29 @@ if args.step == 17:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #18 - Visualizing loss and metrics during training
+### Step #18 - Using learning rate schedules: Using callbacks to implement a dynamic learning rate schedule
 if args.step == 18:
-    print("\n### Step #18 - Visualizing loss and metrics during training")
+    print("\n### Step #18 - Using learning rate schedules: Using callbacks to implement a dynamic learning rate schedule")
+
+    __doc__='''
+    A dynamic learning rate schedule (for instance, decreasing the learning
+    rate when the validation loss is no longer improving) cannot be achieved
+    with these schedule objects, since the optimizer does not have access to
+    validation metrics.
+
+    However, callbacks do have access to all metrics, including validation
+    metrics! You can thus achieve this pattern by using a callback that
+    modifies the current learning rate on the optimizer. In fact, this is even
+    built-in as the ReduceLROnPlateau callback.
+    '''
+    print(__doc__)
+
+    
+args.step = auto_increment(args.step, args.all)
+### Step #19 - Visualizing loss and metrics during training
+if args.step == 19:
+    print("\n### Step #19 - Visualizing loss and metrics during training")
     logger.info("https://www.tensorflow.org/tensorboard")
-    pass
 
 
 ### End of File

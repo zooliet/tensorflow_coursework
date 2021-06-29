@@ -39,14 +39,16 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 1:
     print("\n### Step #1 - Computing gradients")
 
-    str='''
-    Automatic differentiation is useful for implementing machine learning algorithms such
-    as backpropagation for training neural networks.
-    To differentiate automatically, TensorFlow needs to remember what operations happen in 
-    what order during the forward pass. Then, during the backward pass, TensorFlow traverses 
-    this list of operations in reverse order to compute gradients.
+    __doc__='''
+    Automatic differentiation is useful for implementing machine learning
+    algorithms such as backpropagation for training neural networks.
+
+    To differentiate automatically, TensorFlow needs to remember what
+    operations happen in what order during the forward pass. Then, during the
+    backward pass, TensorFlow traverses this list of operations in reverse
+    order to compute gradients.
     '''
-    print(str)
+    print(__doc__)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -54,25 +56,26 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 2:
     print("\n### Step #2 - Gradient tapes")
 
-    str='''
-    TensorFlow provides the tf.GradientTape API for automatic differentiation; that is, 
-    computing the gradient of a computation with respect to some inputs, usually tf.Variables. 
-    TensorFlow "records" relevant operations executed inside the context of a tf.GradientTape 
-    onto a "tape". TensorFlow then uses that tape to compute the gradients of a "recorded" 
-    computation using reverse mode differentiation.
+    __doc__='''
+    TensorFlow provides the tf.GradientTape API for automatic differentiation;
+    that is, computing the gradient of a computation with respect to some
+    inputs, usually tf.Variables. TensorFlow "records" relevant operations
+    executed inside the context of a tf.GradientTape onto a "tape". TensorFlow
+    then uses that tape to compute the gradients of a "recorded" computation
+    using reverse mode differentiation.
     '''
-    print(str)
+    print(__doc__)
 
     x = tf.Variable(3.0)
     with tf.GradientTape() as tape:
         y = x**2
 
-    str='''
-    Once you've recorded some operations, use GradientTape.gradient(target, sources) to 
-    calculate the gradient of some target (often a loss) relative to some source 
-    (often the model's variables):
+    __doc__='''
+    Once you've recorded some operations, use GradientTape.gradient(target,
+    sources) to calculate the gradient of some target (often a loss) relative
+    to some source (often the model's variables):
     '''
-    print(str)
+    print(__doc__)
 
     # dy = 2x * dx
     dy_dx = tape.gradient(y, x)
@@ -88,16 +91,17 @@ if args.step == 2:
         loss = tf.reduce_mean(y**2)
 
     [dl_dw, dl_db] = tape.gradient(loss, [w, b])
-    print(w.shape)
-    print(dl_dw.shape)
+    print('d(loss)/dw:\n', dl_dw, '\n')
+    print('d(loss)/db:\n', dl_db, '\n')
     
-    logger.info('Here is the gradient calculation again, this time passing a dictionary of variables:')
+    logger.info('passing a dictionary of variables for gradient calculation:')
     my_vars = {
         'w': w,
         'b': b
     }
 
     grad = tape.gradient(loss, my_vars)
+    print(grad['w'], '\n')
     print(grad['b'], '\n')
 
 
@@ -105,6 +109,17 @@ args.step = auto_increment(args.step, args.all)
 ### Step #3 - Gradients with respect to a model
 if args.step == 3:
     print("\n### Step #3 - Gradients with respect to a model")
+
+    __doc__='''
+    It's common to collect tf.Variables into a tf.Module or one of its
+    subclasses (layers.Layer, keras.Model) for checkpointing and exporting.
+
+    In most cases, you will want to calculate gradients with respect to a
+    model's trainable variables. Since all subclasses of tf.Module aggregate
+    their variables in the Module.trainable_variables property, you can
+    calculate these gradients in a few lines of code
+    '''
+    print(__doc__)
 
     layer = tf.keras.layers.Dense(2, activation='relu')
     x = tf.constant([[1., 2., 3.]])
@@ -126,6 +141,18 @@ args.step = auto_increment(args.step, args.all)
 ### Step #4 - Controlling what the tape watches
 if args.step == 4:
     print("\n### Step #4 - Controlling what the tape watches")
+    
+    __doc__='''
+    The default behavior is to record all operations after accessing a
+    trainable tf.Variable. The reasons for this are:
+    - The tape needs to know which operations to record in the forward pass to
+      calculate the gradients in the backwards pass.
+    - The tape holds references to intermediate outputs, so you don't want to
+      record unnecessary operations.
+    - The most common use case involves calculating the gradient of a loss with
+      respect to all a model's trainable variables.
+    '''
+    print(__doc__)
 
     logger.info('Not all variables are watched:')
     # A trainable variable
@@ -147,7 +174,7 @@ if args.step == 4:
     print('')
 
     logger.info('list the variables being watched by the tape:')
-    print([var.name for var in tape.watched_variables()])
+    print([var.name for var in tape.watched_variables()], '\n')
 
     logger.info('To record gradients with respect to a tf.Tensor, use GradientTape.watch(x):')
     x = tf.constant(3.0)
@@ -174,16 +201,16 @@ if args.step == 5:
     # Use the tape to compute the gradient of z with respect to the
     # intermediate value y.
     # dz_dy = 2 * y and y = x ** 2 = 9
-    print(tape.gradient(z, y).numpy())
+    print('tape.gradient(z,y): ', tape.gradient(z, y).numpy())
 
-    str='''
-    By default, the resources held by a GradientTape are released as soon as the 
-    GradientTape.gradient method is called. To compute multiple gradients over the same 
-    computation, create a gradient tape with persistent=True. This allows multiple calls 
-    to the gradient method as resources are released when the tape object is garbage 
-    collected. For example:
+    __doc__='''
+    By default, the resources held by a GradientTape are released as soon as
+    the GradientTape.gradient method is called. To compute multiple gradients
+    over the same computation, create a gradient tape with persistent=True.
+    This allows multiple calls to the gradient method as resources are released
+    when the tape object is garbage collected.:
     '''
-    print(str)
+    print(__doc__)
 
     x = tf.constant([1, 3.0])
     with tf.GradientTape(persistent=True) as tape:
@@ -191,10 +218,11 @@ if args.step == 5:
         y = x * x
         z = y * y
 
-    print(tape.gradient(z, x).numpy())  # 108.0 (4 * x**3 at x = 3)
-    print(tape.gradient(y, x).numpy())  # 6.0 (2 * x)
+    print('tape.gradient(z,x):\n', tape.gradient(z, x).numpy(), '\n')  # 108.0 (4 * x**3 at x = 3)
+    print('tape.gradient(z,y):\n', tape.gradient(y, x).numpy(), '\n')  # 6.0 (2 * x)
 
-    del tape   # Drop the reference to the tape
+    # Drop the reference to the tape
+    del tape  
 
 
 args.step = auto_increment(args.step, args.all)
@@ -202,17 +230,21 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 6:
     print("\n### Step #6 - Notes on performance")
 
-    str='''
-    There is a tiny overhead associated with doing operations inside a gradient tape 
-    context. For most eager execution this will not be a noticeable cost, but you should 
-    still use tape context around the areas only where it is required.
-    Gradient tapes use memory to store intermediate results, including inputs and outputs, 
-    for use during the backwards pass.
-    For efficiency, some ops (like ReLU) don't need to keep their intermediate results and 
-    they are pruned during the forward pass. However, if you use persistent=True on your 
-    tape, nothing is discarded and your peak memory usage will be higher.
+    __doc__='''
+    There is a tiny overhead associated with doing operations inside a gradient
+    tape context. For most eager execution this will not be a noticeable cost,
+    but you should still use tape context around the areas only where it is
+    required.
+
+    Gradient tapes use memory to store intermediate results, including inputs
+    and outputs, for use during the backwards pass.
+
+    For efficiency, some ops (like ReLU) don't need to keep their intermediate
+    results and they are pruned during the forward pass. However, if you use
+    persistent=True on your tape, nothing is discarded and your peak memory
+    usage will be higher.
     '''
-    print(str)
+    print(__doc__)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -226,21 +258,36 @@ if args.step == 7:
         y0 = x**2
         y1 = 1 / x
 
-    print(tape.gradient(y0, x).numpy())
-    print(tape.gradient(y1, x).numpy(), '\n')
+    print('tape.gradient(y0,x): ', tape.gradient(y0, x).numpy())
+    print('tape.gradient(y1,x): ', tape.gradient(y1, x).numpy(), '\n')
+
+
+    __doc__='''
+    If you ask for the gradient of multiple targets, the result for each source
+    is:
+    - The gradient of the sum of the targets, or equivalently
+    - The sum of the gradients of each target.
+    '''
+    print(__doc__)
 
     x = tf.Variable(2.0)
     with tf.GradientTape() as tape:
         y0 = x**2
         y1 = 1 / x
 
-    print(tape.gradient({'y0': y0, 'y1': y1}, x).numpy(), '\n')
+    print(
+        "tape.gradient({'y0': y0, 'y1': y1}, x): ", 
+        tape.gradient({'y0': y0, 'y1': y1}, x).numpy(), '\n'
+    )
 
     x = tf.Variable(2.)
     with tf.GradientTape() as tape:
         y = x * [3., 4.]
 
-    print(tape.gradient(y, x).numpy(), '\n')
+    print(
+        "tape.gradient(y, x): ", 
+        tape.gradient(y, x).numpy(), '\n'
+    )
 
     x = tf.linspace(-10.0, 10.0, 200+1)
     with tf.GradientTape() as tape:
@@ -250,6 +297,7 @@ if args.step == 7:
     dy_dx = tape.gradient(y, x)
 
     if args.plot:
+        plt.figure()
         plt.plot(x, y, label='y')
         plt.plot(x, dy_dx, label='dy/dx')
         plt.legend()
@@ -275,12 +323,8 @@ if args.step == 8:
 
     dv0, dv1 = tape.gradient(result, [v0, v1])
 
-    print(dv0)
-    print(dv1)  
-    print('')
-
-    dx = tape.gradient(result, x)
-    print(dx, '\n')
+    print('tape.gradient(result, v0): ', dv0)
+    print('tape.gradient(result, v1): ', dv1, '\n')  
 
 
 args.step = auto_increment(args.step, args.all)
@@ -290,10 +334,11 @@ if args.step == 9:
 
     x = tf.Variable(2.)
     y = tf.Variable(3.)
-
     with tf.GradientTape() as tape:
         z = y * y
-    print(tape.gradient(z, x), '\n')
+
+    logger.info('When a target is not connected to a source you will get a gradient of None:')
+    print('tape.gradient(z,x): ', tape.gradient(z, x), '\n')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -302,7 +347,6 @@ if args.step == 10:
     print("\n### Step #10 - Getting a gradient of None: Replaced a variable with a tensor")
 
     x = tf.Variable(2.0)
-
     for epoch in range(2):
         with tf.GradientTape() as tape:
             y = x+1
@@ -310,6 +354,7 @@ if args.step == 10:
         print(type(x).__name__, ":", tape.gradient(y, x))
         x = x + 1   # This should be `x.assign_add(1)`
     print('')
+
 
 args.step = auto_increment(args.step, args.all)
 ### Step #11 - Getting a gradient of None: Did calculations outside of TensorFlow
@@ -327,7 +372,7 @@ if args.step == 11:
         # using `tf.convert_to_tensor`.
         y = tf.reduce_mean(y, axis=0)
 
-    print(tape.gradient(y, x), '\n')
+    print('tape.gradient(y,x): ', tape.gradient(y, x), '\n')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -335,13 +380,12 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 12:
     print("\n### Step #12 - Getting a gradient of None: Took gradients through an integer or string")
 
-    x = tf.constant(10)
-
-    with tf.GradientTape() as g:
-        g.watch(x)
+    x = tf.constant(10) # should be 10.0
+    with tf.GradientTape() as tape:
+        tape.watch(x)
         y = x * x
 
-    print(g.gradient(y, x), '\n')
+    print('tape.gradient(y,x):', tape.gradient(y, x), '\n')
  
 
 args.step = auto_increment(args.step, args.all)

@@ -39,6 +39,16 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 1:
     print("\n### Step #1 - Setup and basic usage")
 
+    __doc__='''
+    TensorFlow's eager execution is an operation return concrete values instead
+    of constructing a computational graph to run later. This makes it easy to
+    get started with TensorFlow and debug models providing: 
+    - An intuitive interface
+    - Easier debugging
+    - Natural control flow
+    '''
+    print(__doc__)
+
     # In Tensorflow 2.0, eager execution is enabled by default.
     logger.info(f'tf.executing_eagerly(): {tf.executing_eagerly()}')
 
@@ -79,7 +89,7 @@ if args.step == 2:
     # these values at runtime
     def fizzbuzz(max_num):
         counter = tf.constant(0)
-        max_num = tf.convert_to_tensor(max_num) # == tf.constant(max_num)
+        max_num = tf.convert_to_tensor(max_num)
         for num in range(1, max_num.numpy()+1):
             num = tf.constant(num)
             if int(num % 3) == 0 and int(num % 5) == 0:
@@ -91,6 +101,7 @@ if args.step == 2:
             else:
                 print(num.numpy())
             counter += 1
+        print('')
 
     fizzbuzz(15)
 
@@ -105,7 +116,7 @@ if args.step == 3:
         loss = w * w
 
     grad = tape.gradient(loss, w)
-    print(grad)  # => tf.Tensor([[ 2.]], shape=(1, 1), dtype=float32)
+    print(grad, '\n')  # => tf.Tensor([[ 2.]], shape=(1, 1), dtype=float32)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -157,9 +168,9 @@ if args.step == 4:
             for (batch, (images, labels)) in enumerate(dataset):
                 train_step(images, labels)
             print ('Epoch {} finished'.format(epoch))
+        print('')
 
     train(epochs = 3)
-    print('')
 
     if args.plot:
         plt.plot(loss_history)
@@ -172,6 +183,14 @@ args.step = auto_increment(args.step, args.all)
 ### Step #5 - Eager training: Variables and optimizers
 if args.step == 5:
     print("\n### Step #5 - Eager training: Variables and optimizers")
+
+    __doc__='''
+    The collections of variables can be encapsulated into layers or models,
+    along with methods that operate on them. See Custom Keras layers and models
+    for details. The main difference between layers and models is that models
+    add methods like Model.fit, Model.evaluate, and Model.save
+    '''
+    print(__doc__)
 
     class Linear(tf.keras.Model):
         def __init__(self):
@@ -209,7 +228,7 @@ if args.step == 5:
             print("Loss at step {:03d}: {:.3f}".format(i, loss(model, training_inputs, training_outputs)))
 
     print("Final loss: {:.3f}\n".format(loss(model, training_inputs, training_outputs)))
-    print("W = {}, B = {}\n".format(model.W.numpy(), model.B.numpy()))
+    print("W={:.3f}, B={:.3f}\n".format(model.W.numpy(), model.B.numpy()))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -220,18 +239,22 @@ if args.step == 6:
     x = tf.Variable(10.)
     checkpoint = tf.train.Checkpoint(x=x)
     x.assign(2.)   # Assign a new value to the variables and save.
-    checkpoint_path = 'tmp/ckpt/'
+    checkpoint_path = 'tmp/tf2_g0101/ckpt/'
     checkpoint.save(checkpoint_path)
 
     x.assign(11.)  # Change the variable after saving.
 
     # Restore values from the checkpoint
     checkpoint.restore(tf.train.latest_checkpoint(checkpoint_path))
-    print(x, '\n')  # => 2.0
+    print(x)  # => 2.0
 
-    # To save and load models, tf.train.Checkpoint stores the internal state of objects, 
-    # without requiring hidden variables. To record the state of a model, an optimizer, 
-    # and a global step, pass them to a tf.train.Checkpoint:
+    __doc__='''
+    To save and load models, tf.train.Checkpoint stores the internal state of
+    objects, without requiring hidden variables. To record the state of a
+    model, an optimizer, and a global step, pass them to a tf.train.Checkpoint:
+    '''
+    print(__doc__)
+
     model = tf.keras.Sequential([
       tf.keras.layers.Conv2D(16,[3,3], activation='relu'),
       tf.keras.layers.GlobalAveragePooling2D(),
@@ -239,10 +262,11 @@ if args.step == 6:
     ])
     optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
 
-    checkpoint_dir = 'tmp/model_path'
+    checkpoint_dir = 'tmp/tf2_g0101/model_path'
     if not os.path.exists(checkpoint_dir):
         os.makedirs(checkpoint_dir)
     checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
+
     root = tf.train.Checkpoint(optimizer=optimizer, model=model)
     root.save(checkpoint_prefix)
     root.restore(tf.train.latest_checkpoint(checkpoint_dir))
@@ -253,13 +277,20 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 7:
     print("\n### Step #7 - Eager training: Object-oriented metrics")
 
+    __doc__='''
+    tf.keras.metrics are stored as objects. Update a metric by passing the new
+    data to the callable, and retrieve the result using the
+    tf.keras.metrics.result method.
+    '''
+    print(__doc__)
+
     m = tf.keras.metrics.Mean("loss")
     m(0)
     m(5)
     logger.info(f'm.result(): {m.result()}')
 
     m([8, 9])
-    logger.info(f'm.result(): {m.result()}')
+    logger.info(f'm.result(): {m.result()}\n')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -267,12 +298,17 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 8:
     print("\n### Step #8 - Eager training: Summaries and TensorBoard")
 
-    # TensorBoard is a visualization tool for understanding, debugging and optimizing 
-    # the model training process. 
-    # It uses summary events that are written while executing the program.
-    # You can use tf.summary to record summaries of variable in eager execution. 
-    # For example, to record summaries of loss once every 100 training steps:
-    logdir = "tmp/tb/"
+    __doc__='''
+    TensorBoard is a visualization tool for understanding, debugging and
+    optimizing the model training process. It uses summary events that are
+    written while executing the program.
+
+    You can use tf.summary to record summaries of variable in eager execution.
+    For example, to record summaries of loss once every 100 training steps.
+    '''
+    print(__doc__)
+
+    logdir = "tmp/tf2_g0101/tb/"
     writer = tf.summary.create_file_writer(logdir)
 
     steps = 1000
@@ -363,6 +399,13 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 11:
     print("\n### Step #11 - Performance")
 
+    __doc__='''
+    Computation is automatically offloaded to GPUs during eager execution. If
+    you want control over where a computation runs you can enclose it in a
+    tf.device('/gpu:0') block (or the CPU equivalent)
+    '''
+    print(__doc__)
+
     def measure(x, steps):
         # TensorFlow initializes a GPU the first time it's used, exclude from timing.
         tf.matmul(x, x)
@@ -385,12 +428,12 @@ if args.step == 11:
 
     # Run on CPU:
     with tf.device("/cpu:0"):
-        logger.info("CPU: {} secs".format(measure(tf.random.normal(shape), steps)))
+        logger.info("CPU: {:.3f} secs".format(measure(tf.random.normal(shape), steps)))
 
     # Run on GPU, if available:
     if tf.config.list_physical_devices("GPU"):
         with tf.device("/gpu:0"):
-            logger.info("GPU: {} secs\n".format(measure(tf.random.normal(shape), steps)))
+            logger.info("GPU: {:.3f} secs\n".format(measure(tf.random.normal(shape), steps)))
     else:
         logger.info("GPU: not found\n")
 
@@ -400,13 +443,13 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 12:
     print("\n### Step #12 - Performance: Benchmarks")
     
-    str = '''
-    For compute-heavy models, such as ResNet50 training on a GPU, eager execution 
-    performance is comparable to tf.function execution. But this gap grows larger for 
-    models with less computation and there is work to be done for optimizing hot code paths 
-    for models with lots of small operations.
+    __doc__='''
+    For compute-heavy models, such as ResNet50 training on a GPU, eager
+    execution performance is comparable to tf.function execution. But this gap
+    grows larger for models with less computation and there is work to be done
+    for optimizing hot code paths for models with lots of small operations.
     '''
-    print(str)
+    print(__doc__)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -414,13 +457,14 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 13:
     print("\n### Step #13 - Work with functions")
 
-    str = '''
-    While eager execution makes development and debugging more interactive, TensorFlow 1.x
-    style graph execution has advantages for distributed training, performance optimizations, 
-    and production deployment. To bridge this gap, TensorFlow 2.0 introduces functions via 
-    the tf.function API. For more information, see the tf.function guide.
+    __doc__='''
+    While eager execution makes development and debugging more interactive,
+    TensorFlow 1.x style graph execution has advantages for distributed
+    training, performance optimizations, and production deployment. To bridge
+    this gap, TensorFlow 2.0 introduces functions via the tf.function API. For
+    more information, see the tf.function guide.
     '''
-    print(str)
+    print(__doc__)
 
 
 ### End of File

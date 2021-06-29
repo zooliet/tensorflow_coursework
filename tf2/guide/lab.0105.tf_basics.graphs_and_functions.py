@@ -42,20 +42,20 @@ if args.step == 1:
     print("\n### Step #1 - Overview: What are graphs?")
 
     __doc__='''
-    In the previous three guides, you ran TensorFlow eagerly. This means TensorFlow 
-    operations are executed by Python, operation by operation, and returning results back 
-    to Python.
+    In the previous three guides, you ran TensorFlow eagerly. This means
+    TensorFlow operations are executed by Python, operation by operation, and
+    returning results back to Python.
 
-    While eager execution has several unique advantages, graph execution enables 
-    portability outside Python and tends to offer better performance. Graph execution means 
-    that tensor computations are executed as a TensorFlow graph, sometimes referred to as a 
-    tf.Graph or simply a "graph."
+    While eager execution has several unique advantages, graph execution
+    enables portability outside Python and tends to offer better performance.
+    Graph execution means that tensor computations are executed as a TensorFlow
+    graph, sometimes referred to as a tf.Graph or simply a "graph."
 
-    Graphs are data structures that contain a set of tf.Operation objects, which represent 
-    units of computation; and tf.Tensor objects, which represent the units of data that 
-    flow between operations. They are defined in a tf.Graph context. Since these graphs are 
-    data structures, they can be saved, run, and restored all without the original Python 
-    code.
+    Graphs are data structures that contain a set of tf.Operation objects,
+    which represent units of computation; and tf.Tensor objects, which
+    represent the units of data that flow between operations. They are defined
+    in a tf.Graph context. Since these graphs are data structures, they can be
+    saved, run, and restored all without the original Python code.
     '''
     print(__doc__)
 
@@ -66,22 +66,17 @@ if args.step == 2:
     print("\n### Step #2 - The benefits of graphs")
 
     __doc__='''
-    With a graph, you have a great deal of flexibility. You can use your TensorFlow graph 
-    in environments that don't have a Python interpreter, like mobile applications, 
-    embedded devices, and backend servers. TensorFlow uses graphs as the format for saved 
-    models when it exports them from Python.
-    '''
-    print(__doc__)
+    With a graph, you have a great deal of flexibility. You can use your
+    TensorFlow graph in environments that don't have a Python interpreter, like
+    mobile applications, embedded devices, and backend servers. TensorFlow uses
+    graphs as the format for saved models when it exports them from Python.
 
-    __doc__='''
-    In short, graphs are extremely useful and let your TensorFlow run fast, run in parallel, 
-    and run efficiently on multiple devices.
-    '''
-    print(__doc__)
+    In short, graphs are extremely useful and let your TensorFlow run fast, run
+    in parallel, and run efficiently on multiple devices.
 
-    __doc__='''
-    However, you still want to define your machine learning models (or other computations)
-    in Python for convenience, and then automatically construct graphs when you need them.
+    However, you still want to define your machine learning models (or other
+    computations) in Python for convenience, and then automatically construct
+    graphs when you need them.
     '''
     print(__doc__)
 
@@ -92,10 +87,11 @@ if args.step == 3:
     print("\n### Step #3 - Taking advantage of graphs")
 
     __doc__='''
-    You create and run a graph in TensorFlow by using tf.function, either as a direct call 
-    or as a decorator. tf.function takes a regular function as input and returns a Function. 
-    A Function is a Python callable that builds TensorFlow graphs from the Python function. 
-    You use a Function in the same way as its Python equivalent.
+    You create and run a graph in TensorFlow by using tf.function, either as a
+    direct call or as a decorator. tf.function takes a regular function as
+    input and returns a Function. A Function is a Python callable that builds
+    TensorFlow graphs from the Python function. You use a Function in the same
+    way as its Python equivalent.
     '''
     print(__doc__)
     
@@ -119,10 +115,11 @@ if args.step == 3:
     assert(orig_value == tf_function_value)
 
     __doc__='''
-    On the outside, a Function looks like a regular function you write using TensorFlow 
-    operations. Underneath, however, it is very different. A Function encapsulates several 
-    tf.Graphs behind one API. That is how Function is able to give you the benefits of 
-    graph execution, like speed and deployability.
+    On the outside, a Function looks like a regular function you write using
+    TensorFlow operations. Underneath, however, it is very different. A
+    Function encapsulates several tf.Graphs behind one API. That is how
+    Function is able to give you the benefits of graph execution, like speed
+    and deployability.
     '''
     print(__doc__)
 
@@ -164,7 +161,6 @@ if args.step == 4:
     print("Second branch, with graph:", tf_simple_relu(tf.constant(-1)).numpy())
     print('')
 
-
     logger.info('This is the graph-generating output of AutoGraph:')
     print(tf.autograph.to_code(simple_relu), '\n')
 
@@ -178,12 +174,13 @@ if args.step == 5:
     print("\n### Step #5 - Taking advantage of graphs: Polymorphism: one Function, many graphs")
 
     __doc__='''
-    Each time you invoke a Function with new dtypes and shapes in its arguments, Function 
-    creates a new tf.Graph for the new arguments. The dtypes and shapes of a tf.Graph's 
-    inputs are known as an input signature or just a signature.
+    Each time you invoke a Function with new dtypes and shapes in its
+    arguments, Function creates a new tf.Graph for the new arguments. The
+    dtypes and shapes of a tf.Graph's inputs are known as an input signature or
+    just a signature.
 
-    The Function stores the tf.Graph corresponding to that signature in a ConcreteFunction. 
-    A ConcreteFunction is a wrapper around a tf.Graph
+    The Function stores the tf.Graph corresponding to that signature in a
+    ConcreteFunction.  A ConcreteFunction is a wrapper around a tf.Graph
     '''
     print(__doc__)
 
@@ -196,8 +193,7 @@ if args.step == 5:
     print(my_relu([1, -1]))
     print(my_relu(tf.constant([3., -3.])), '\n')
 
-    logger.info('If the Function has already been called with that signature, \
-        \rFunction does not create a new tf.Graph:')
+    logger.info('If the Function has already been called with that signature, Function does not create a new tf.Graph:')
     # These two calls do *not* create new graphs.
     print(my_relu(tf.constant(-2.5))) # Signature matches `tf.constant(5.5)`.
     print(my_relu(tf.constant([-1., 1.])), '\n') # Signature matches `tf.constant([3., -3.])`.
@@ -228,13 +224,15 @@ if args.step == 6:
 
     __doc__='''
     get_MSE only printed once even though it was called three times.
-    To explain, the print statement is executed when Function runs the original code in 
-    order to create the graph in a process known as "tracing". Tracing captures the 
-    TensorFlow operations into a graph, and print is not captured in the graph. 
-    That graph is then executed for all three calls without ever running the Python code 
-    again.
-    If you would like to print values in both eager and graph execution, 
-    use tf.print instead.
+
+    To explain, the print statement is executed when Function runs the original
+    code in order to create the graph in a process known as "tracing". Tracing
+    captures the TensorFlow operations into a graph, and print is not captured
+    in the graph.  That graph is then executed for all three calls without ever
+    running the Python code again.
+
+    If you would like to print values in both eager and graph execution, use
+    tf.print instead.
     '''
     print(__doc__)
 
@@ -258,18 +256,19 @@ if args.step == 7:
     print("\n### Step #7 - Using tf.function: tf.function best practices")
 
     __doc__='''
-    - Toggle between eager and graph execution early and often with 
-      tf.config.run_functions_eagerly to pinpoint if/ when the two modes diverge.
-    - Create tf.Variables outside the Python function and modify them on the inside. 
-      The same goes for objects that use tf.Variable, like keras.layers, keras.Models and 
-      tf.optimizers.
-    - Avoid writing functions that depend on outer Python variables, excluding tf.Variables 
-      and Keras objects.
-    - Prefer to write functions which take tensors and other TensorFlow types as input. 
-      You can pass in other object types but be careful!
-    - Include as much computation as possible under a tf.function to maximize the 
-      performance gain. For example, decorate a whole training step or the entire training 
-      loop
+    - Toggle between eager and graph execution early and often with
+      tf.config.run_functions_eagerly to pinpoint if/ when the two modes
+      diverge.
+    - Create tf.Variables outside the Python function and modify them on the
+      inside.  The same goes for objects that use tf.Variable, like
+      keras.layers, keras.Models and tf.optimizers.
+    - Avoid writing functions that depend on outer Python variables, excluding
+      tf.Variables and Keras objects.
+    - Prefer to write functions which take tensors and other TensorFlow types
+      as input.  You can pass in other object types but be careful!
+    - Include as much computation as possible under a tf.function to maximize
+      the performance gain. For example, decorate a whole training step or the
+      entire training loop
     '''
     print(__doc__)
 
@@ -280,9 +279,9 @@ if args.step == 8:
     print("\n### Step #8 - Seeing the speed-up")
     
     __doc__='''
-    tf.function usually improves the performance of your code, but the amount of speed-up 
-    depends on the kind of computation you run. Small computations can be dominated by the 
-    overhead of calling a graph.
+    tf.function usually improves the performance of your code, but the amount
+    of speed-up depends on the kind of computation you run. Small computations
+    can be dominated by the overhead of calling a graph.
     '''
     print(__doc__)
 
@@ -307,19 +306,17 @@ if args.step == 9:
     print("\n### Step #9 - Seeing the speed-up: Performance and trade-offs")
 
     __doc__='''
-    Graphs can speed up your code, but the process of creating them has some overhead. 
-    For some functions, the creation of the graph takes more time than the execution of 
-    the graph. This investment is usually quickly paid back with the performance boost of 
-    subsequent executions, but it's important to be aware that the first few steps of any 
-    large model training can be slower due to tracing.
-    '''
-    print(__doc__)
+    Graphs can speed up your code, but the process of creating them has some
+    overhead.  For some functions, the creation of the graph takes more time
+    than the execution of the graph. This investment is usually quickly paid
+    back with the performance boost of subsequent executions, but it's
+    important to be aware that the first few steps of any large model training
+    can be slower due to tracing.
 
-    __doc__ ='''
-    No matter how large your model, you want to avoid tracing frequently. The tf.function 
-    guide discusses how to set input specifications and use tensor arguments to avoid 
-    retracing. If you find you are getting unusually poor performance, it's a good idea to 
-    check if you are retracing accidentally.
+    No matter how large your model, you want to avoid tracing frequently. The
+    tf.function guide discusses how to set input specifications and use tensor
+    arguments to avoid retracing. If you find you are getting unusually poor
+    performance, it's a good idea to check if you are retracing accidentally.
     '''
     print(__doc__)
 
@@ -330,8 +327,9 @@ if args.step == 10:
     print("\n### Step #10 - When is a Function tracing")
 
     __doc__ = '''
-    To figure out when your Function is tracing, add a print statement to its code. 
-    As a rule of thumb, Function will execute the print statement every time it traces.   
+    To figure out when your Function is tracing, add a print statement to its
+    code. As a rule of thumb, Function will execute the print statement every
+    time it traces.   
     '''
     print(__doc__)
 
@@ -342,6 +340,7 @@ if args.step == 10:
 
     logger.info('This is traced the first time:')
     print(a_function_with_python_side_effect(tf.constant(2)), '\n')
+
     logger.info('The second time through, you won\'t see the side effect:')
     print(a_function_with_python_side_effect(tf.constant(3)), '\n')
 
@@ -349,9 +348,13 @@ if args.step == 10:
     \ras a Python argument could be an epoch count or other hyperparameter:'''
     logger.info(str)
     print(a_function_with_python_side_effect(2))
-    print(a_function_with_python_side_effect(3), '\n')
-    # New Python arguments always trigger the creation of a new graph, 
-    # hence the extra tracing.
+    print(a_function_with_python_side_effect(3))
+
+    __doc__='''
+    New Python arguments always trigger the creation of a new graph, hence the
+    extra tracing.
+    '''
+    print(__doc__)
 
 
 ### End of File

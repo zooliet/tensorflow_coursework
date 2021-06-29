@@ -41,10 +41,25 @@ if args.step == 0:
     toc(__file__)
 
 
+if args.step or args.all:
+    if not os.path.exists('tmp/tf2_g0202/'):
+        os.mkdir('tmp/tf2_g0202/') 
+
+
 args.step = auto_increment(args.step, args.all)
 ### Step #1 - Introduction
 if args.step in [1,2,3]:
     print("\n### Step #1 - Introduction")
+
+    __doc__='''
+    The Keras functional API is a way to create models that are more flexible
+    than the tf.keras.Sequential API. The functional API can handle models with
+    non-linear topology, shared layers, and even multiple inputs or outputs.
+    The main idea is that a deep learning model is usually a directed acyclic
+    graph (DAG) of layers. So the functional API is a way to build graphs of
+    layers.
+    '''
+    if args.step == 1: print(__doc__)
 
     inputs = Input(shape=(784,)) # TensorShape([None, 784]), tf.float32
 
@@ -53,13 +68,16 @@ if args.step in [1,2,3]:
     model = Model(inputs=inputs, outputs=outputs, name='mnist_model')
 
     if args.step == 1:
-        logger.info('inputs: {}, {}'.format(inputs.shape, inputs.dtype))
+        logger.info('inputs: {}, {}\n'.format(inputs.shape, inputs.dtype))
 
         model.summary()
+        print('')
 
-        tf.keras.utils.plot_model(model, "tmp/my_first_model_with_shape_info.png", show_shapes=True)
+        tf.keras.utils.plot_model(
+            model, "tmp/tf2_g0202/my_first_model_with_shape_info.png", show_shapes=True
+        )
         if args.plot:
-            image = Image.open('tmp/my_first_model_with_shape_info.png')
+            image = Image.open('tmp/tf2_g0202/my_first_model_with_shape_info.png')
             plt.figure()
             plt.imshow(image)
             plt.show(block=False)
@@ -100,10 +118,25 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 3:
     print("\n### Step #3 - Save and serialize")
 
-    model.save("tmp/my_model")
+    __doc__='''
+    Saving the model and serialization work the same way for models built using
+    the functional API as they do for Sequential models. The standard way to
+    save a functional model is to call model.save() to save the entire model as
+    a single file. You can later recreate the same model from this file, even
+    if the code that built the model is no longer available. This saved file
+    includes the:
+    - model architecture
+    - model weight values (that were learned during training)
+    - model training config, if any (as passed to compile)
+    - optimizer and its state, if any (to restart training where you left off)
+    '''
+    print(__doc__)
+
+    model.save("tmp/tf2_g0202/my_model")
     del model
     # Recreate the exact same model purely from the file:
-    model = tf.keras.models.load_model("tmp/my_model")
+    model = tf.keras.models.load_model("tmp/tf2_g0202/my_model")
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -120,6 +153,7 @@ if args.step == 4:
     encoder_output = GlobalMaxPooling2D()(x)
     encoder = Model(encoder_input, encoder_output, name="encoder")
     encoder.summary()
+    print('')
 
     x = Reshape((4, 4, 1))(encoder_output)
     x = Conv2DTranspose(16, 3, activation="relu")(x)
@@ -129,6 +163,7 @@ if args.step == 4:
     decoder_output = Conv2DTranspose(1, 3, activation="relu")(x)
     autoencoder = Model(encoder_input, decoder_output, name="autoencoder")
     autoencoder.summary()    
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -145,6 +180,7 @@ if args.step == 5:
     encoder_output = GlobalMaxPooling2D()(x)
     encoder = Model(encoder_input, encoder_output, name="encoder")
     encoder.summary()
+    print('')
 
     decoder_input = Input(shape=(16,), name="encoded_img")
     x = Reshape((4, 4, 1))(decoder_input)
@@ -155,12 +191,14 @@ if args.step == 5:
     decoder_output = Conv2DTranspose(1, 3, activation="relu")(x)
     decoder = Model(decoder_input, decoder_output, name="decoder")
     decoder.summary()
+    print('')
 
     autoencoder_input = Input(shape=(28, 28, 1), name="img")
     encoded_img = encoder(autoencoder_input)
     decoded_img = decoder(encoded_img)
     autoencoder = Model(autoencoder_input, decoded_img, name="autoencoder")
     autoencoder.summary()
+    print('')
 
     # ensemble model
     def get_model():
@@ -185,6 +223,24 @@ args.step = auto_increment(args.step, args.all)
 ### Step #6 - Manipulate complex graph topologies: with multiple inputs and outputs
 if args.step == 6:
     print("\n### Step #6 - Manipulate complex graph topologies: with multiple inputs and outputs")
+
+    __doc__='''
+    The functional API makes it easy to manipulate multiple inputs and outputs.
+    This cannot be handled with the Sequential API.
+
+    For example, if you're building a system for ranking customer issue tickets
+    by priority and routing them to the correct department, then the model will
+    have three inputs:
+    - the title of the ticket (text input),
+    - the text body of the ticket (text input), and
+    - any tags added by the user (categorical input)
+    
+    This model will have two outputs:
+    - the priority score between 0 and 1 (scalar sigmoid output), and
+    - the department that should handle the ticket (softmax output over the set
+      of departments)
+    '''
+    print(__doc__)
 
     num_tags = 12  # Number of unique issue tags
     num_words = 10000  # Size of vocabulary obtained when preprocessing text data
@@ -218,9 +274,11 @@ if args.step == 6:
         outputs=[priority_pred, department_pred],
     )
 
-    tf.keras.utils.plot_model(model, "tmp/multi_input_and_output_model.png", show_shapes=True)
+    tf.keras.utils.plot_model(
+        model, "tmp/tf2_g0202/multi_input_and_output_model.png", show_shapes=True
+    )
     if args.plot:
-        img = Image.open('tmp/multi_input_and_output_model.png')
+        img = Image.open('tmp/tf2_g0202/multi_input_and_output_model.png')
         plt.figure()
         plt.imshow(img)
         plt.show(block=False)
@@ -250,12 +308,21 @@ if args.step == 6:
         batch_size=32,
         verbose=2 
     )
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
 ### Step #7 - Manipulate complex graph topologies: A toy ResNet model
 if args.step == 7:
     print("\n### Step #7 - Manipulate complex graph topologies: A toy ResNet model")
+
+    __doc__='''
+    In addition to models with multiple inputs and outputs, the functional API
+    makes it easy to manipulate non-linear connectivity topologies -- these are
+    models with layers that are not connected sequentially, which the
+    Sequential API cannot handle.
+    '''
+    print(__doc__)
 
     inputs = Input(shape=(32, 32, 3), name="img")
     x = Conv2D(32, 3, activation="relu")(inputs)
@@ -278,10 +345,13 @@ if args.step == 7:
 
     model = Model(inputs, outputs, name="toy_resnet")
     model.summary()
+    print('')
 
-    tf.keras.utils.plot_model(model, "tmp/mini_resnet.png", show_shapes=True)
+    tf.keras.utils.plot_model(
+        model, "tmp/tf2_g0202/mini_resnet.png", show_shapes=True
+    )
     if args.plot:
-        img = Image.open('tmp/mini_resnet.png')
+        img = Image.open('tmp/tf2_g0202/mini_resnet.png')
         plt.figure()
         plt.imshow(img)
         plt.show(block=False)
@@ -312,12 +382,21 @@ if args.step == 7:
         validation_split=0.2,
         verbose=2
     )
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
 ### Step #8 - Shared layers 
 if args.step == 8:
     print("\n### Step #8 - Shared layers ")
+
+    __doc__='''
+    Another good use for the functional API are models that use shared layers.
+    Shared layers are layer instances that are reused multiple times in the
+    same model -- they learn features that correspond to multiple paths in the
+    graph-of-layers.
+    '''
+    print(__doc__)
 
     # Embedding for 1000 unique words mapped to 128-dimensional vectors
     shared_embedding = Embedding(1000, 128)
@@ -337,12 +416,23 @@ args.step = auto_increment(args.step, args.all)
 ### Step #9 - Extract and reuse nodes in the graph of layers
 if args.step == 9:
     print("\n### Step #9 - Extract and reuse nodes in the graph of layers")
+    
+    __doc__='''
+    Because the graph of layers you are manipulating is a static data
+    structure, it can be accessed and inspected. And this is how you are able
+    to plot functional models as images.  This also means that you can access
+    the activations of intermediate layers ("nodes" in the graph) and reuse
+    them elsewhere -- which is very useful for something like feature
+    extraction.
+    '''
+    print(__doc__)
 
     vgg19 = tf.keras.applications.VGG19()
     features_list = [layer.output for layer in vgg19.layers]
     feat_extraction_model = Model(inputs=vgg19.input, outputs=features_list)
     for feat in feat_extraction_model.output:
         logger.info(f"{feat.name}: {feat.shape}")
+    print('')
 
     img = np.random.random((1, 224, 224, 3)).astype("float32")
     extracted_features = feat_extraction_model(img)
@@ -352,6 +442,16 @@ args.step = auto_increment(args.step, args.all)
 ### Step #10 - Extend the API using custom layers
 if args.step == 10:
     print("\n### Step #10 - Extend the API using custom layers")
+
+    __doc__='''
+    tf.keras includes a wide range of built-in layers, but if you don't find
+    what you need, it's easy to extend the API by creating your own layers. All
+    layers subclass the Layer class and implement:
+    - call method, that specifies the computation done by the layer.
+    - build method, that creates the weights of the layer (this is just a style
+      convention since you can create weights in __init__, as well).
+    '''
+    print(__doc__)
 
     class CustomDense(Layer):
         def __init__(self, units=32):
@@ -380,7 +480,7 @@ args.step = auto_increment(args.step, args.all)
 ### Step #11 - When to use the functional API
 if args.step == 11:
     print("\n### Step #11 - When to use the functional API")
-    logger.info("https://www.tensorflow.org/guide/keras/functional#when_to_use_the_functional_api")
+    logger.info("https://www.tensorflow.org/guide/keras/functional#when_to_use_the_functional_api\n")
 
 
 args.step = auto_increment(args.step, args.all)

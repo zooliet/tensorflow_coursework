@@ -40,9 +40,65 @@ if args.step == 0:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #1 - A first simple example
+### Step #1 - Introduction
 if args.step == 1:
+    print("\n### Step #1 - Introduction")
+
+    __doc__='''
+    When you're doing supervised learning, you can use fit() and everything
+    works smoothly.  When you need to write your own training loop from
+    scratch, you can use the GradientTape and take control of every little
+    detail.  But what if you need a custom training algorithm, but you still
+    want to benefit from the convenient features of fit(), such as callbacks,
+    built-in distribution support, or step fusing?
+
+    A core principle of Keras is progressive disclosure of complexity. You
+    should always be able to get into lower-level workflows in a gradual way.
+    You shouldn't fall off a cliff if the high-level functionality doesn't
+    exactly match your use case. You should be able to gain more control over
+    the small details while retaining a commensurate amount of high-level
+    convenience.
+
+    When you need to customize what fit() does, you should override the
+    training step function of the Model class. This is the function that is
+    called by fit() for every batch of data. You will then be able to call
+    fit() as usual -- and it will be running your own learning algorithm.
+
+    Note that this pattern does not prevent you from building models with the
+    Functional API. You can do this whether you're building Sequential models,
+    Functional API models, or subclassed models.
+    '''
+    print(__doc__)
+
+
+args.step = auto_increment(args.step, args.all)
+### Step #2 - A first simple example
+if args.step == 2:
     print("\n### Step #1 - A first simple example")
+
+    __doc__='''
+    Let's start from a simple example:
+    - We create a new class that subclasses keras.Model.
+    - We just override the method train_step(self, data).
+    - We return a dictionary mapping metric names (including the loss) to their
+      current value.
+
+    The input argument data is what gets passed to fit as training data:
+    - If you pass Numpy arrays, by calling fit(x, y, ...), then data will be
+      the tuple (x, y)
+    - If you pass a tf.data.Dataset, by calling fit(dataset, ...), then data
+      will be what gets yielded by dataset at each batch.
+
+    In the body of the train_step method, we implement a regular training
+    update, similar to what you are already familiar with. Importantly, we
+    compute the loss via self.compiled_loss, which wraps the loss(es)
+    function(s) that were passed to compile().
+
+    Similarly, we call self.compiled_metrics.update_state(y, y_pred) to update
+    the state of the metrics that were passed in compile(), and we query
+    results from self.metrics at the end to retrieve their current value.
+    '''
+    print(__doc__)
 
     class CustomModel(Model):
         def train_step(self, data):
@@ -76,13 +132,36 @@ if args.step == 1:
     # Just use `fit` as usual
     x = np.random.random((1000, 32))
     y = np.random.random((1000, 1))
+
     model.fit(x, y, epochs=args.epochs, verbose=2)
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #2 - Going lower-level
-if args.step == 2:
-    print("\n### Step #2 - Going lower-level")
+### Step #3 - Going lower-level
+if args.step == 3:
+    print("\n### Step #3 - Going lower-level")
+
+    __doc__='''
+    Naturally, you could just skip passing a loss function in compile(), and
+    instead do everything manually in train_step. Likewise for metrics.
+
+    Here's a lower-level example, that only uses compile() to configure the
+    optimizer:
+    - We start by creating Metric instances to track our loss and a MAE score.
+    - We implement a custom train_step() that updates the state of these
+      metrics (by calling update_state() on them), then query them (via
+      result()) to return their current average value, to be displayed by the
+      progress bar and to be pass to any callback.
+    - Note that we would need to call reset_states() on our metrics between
+      each epoch!  Otherwise calling result() would return an average since the
+      start of training, whereas we usually work with per-epoch averages.
+      Thankfully, the framework can do that for us: just list any metric you
+      want to reset in the metrics property of the model. The model will call
+      reset_states() on any object listed here at the beginning of each fit()
+      epoch or at the beginning of a call to evaluate().
+    '''
+    print(__doc__)
 
     loss_tracker = tf.keras.metrics.Mean(name="loss")
     mae_metric = tf.keras.metrics.MeanAbsoluteError(name="mae")
@@ -129,13 +208,26 @@ if args.step == 2:
     # Just use `fit` as usual -- you can use callbacks, etc.
     x = np.random.random((1000, 32))
     y = np.random.random((1000, 1))
+
     model.fit(x, y, epochs=args.epochs, verbose=2)
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #3 - Supporting sample_weight & class_weight
-if args.step == 3:
-    print("\n### Step #3 - Supporting sample_weight & class_weight")
+### Step #4 - Supporting sample_weight & class_weight
+if args.step == 4:
+    print("\n### Step #4 - Supporting sample_weight & class_weight")
+
+    __doc__='''
+    You may have noticed that our first basic example didn't make any mention
+    of sample weighting. If you want to support the fit() arguments
+    sample_weight and class_weight, you'd simply do the following:
+    - Unpack sample_weight from the data argument
+    - Pass it to compiled_loss & compiled_metrics (of course, you could also
+      just apply it manually if you don't rely on compile() for losses &
+      metrics)
+    '''
+    print(__doc__)
 
     class CustomModel(Model):
         def train_step(self, data):
@@ -172,7 +264,6 @@ if args.step == 3:
             # Note that it will include the loss (tracked in self.metrics).
             return {m.name: m.result() for m in self.metrics}
 
-
     # Construct and compile an instance of CustomModel
     inputs = Input(shape=(32,))
     outputs = Dense(1)(inputs)
@@ -185,12 +276,13 @@ if args.step == 3:
     y = np.random.random((1000, 1))
     sw = np.random.random((1000, 1))
     model.fit(x, y, sample_weight=sw, epochs=args.epochs, verbose=2)
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #4 - Providing your own evaluation step
-if args.step == 4:
-    print("\n### Step #4 - Providing your own evaluation step")
+### Step #5 - Providing your own evaluation step
+if args.step == 5:
+    print("\n### Step #5 - Providing your own evaluation step")
 
     class CustomModel(Model):
         def test_step(self, data):
@@ -216,13 +308,14 @@ if args.step == 4:
     # Evaluate with our custom test_step
     x = np.random.random((1000, 32))
     y = np.random.random((1000, 1))
-    model.evaluate(x, y, verbose=0)
+    model.evaluate(x, y)
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #5 - Wrapping up: an end-to-end GAN example
-if args.step == 5:
-    print("\n### Step #5 - Wrapping up: an end-to-end GAN example")
+### Step #6 - Wrapping up: an end-to-end GAN example
+if args.step == 6:
+    print("\n### Step #6 - Wrapping up: an end-to-end GAN example")
 
     # Create the discriminator
     discriminator = Sequential([
@@ -326,6 +419,7 @@ if args.step == 5:
     # To limit the execution time, we only train on 100 batches. You can train on
     # the entire dataset. You will need about 20 epochs to get nice results.
     gan.fit(dataset.take(100), epochs=args.epochs, verbose=2)
+    print('')
 
 
 ### End of File

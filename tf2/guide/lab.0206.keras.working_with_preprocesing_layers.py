@@ -46,16 +46,51 @@ if args.step == 0:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #1 - The adapt() method
+### Step #1 - Keras preprocessing layers
 if args.step == 1:
-    print("\n### Step #1 - The adapt() method")
+    print("\n### Step #1 - Keras preprocessing layers")
+
+    __doc__='''
+    The Keras preprocessing layers API allows developers to build Keras-native
+    input processing pipelines. These input processing pipelines can be used as
+    independent preprocessing code in non-Keras workflows, combined directly
+    with Keras models, and exported as part of a Keras SavedModel.
+
+    With Keras preprocessing layers, you can build and export models that are
+    truly end-to-end: models that accept raw images or raw structured data as
+    input; models that handle feature normalization or feature value indexing
+    on their own.
+    '''
+    print(__doc__)
+
+
+args.step = auto_increment(args.step, args.all)
+### Step #2 - The adapt() method
+if args.step == 2:
+    print("\n### Step #2 - The adapt() method")
+
+    __doc__='''
+    Some preprocessing layers have an internal state that must be computed
+    based on a sample of the training data. The list of stateful preprocessing
+    layers is:
+    - TextVectorization: mapping between string tokens and integer indices
+    - Normalization: mean and standard deviation of the features
+    - StringLookup and IntegerLookup: mapping between input values and output
+      indices.
+    - CategoryEncoding: index of input values.
+    - Discretization: information about value bucket boundaries.
+
+    Crucially, these layers are non-trainable. Their state is not set during
+    training; it must be set before training, a step called "adaptation".
+    '''
+    print(__doc__)
 
     data = np.array([[0.1, 0.2, 0.3], [0.8, 0.9, 1.0], [1.5, 1.6, 1.7],])
     layer = preprocessing.Normalization()
     layer.adapt(data)
     normalized_data = layer(data)
 
-    logger.info(f"normalized_data:\n{normalized_data}")
+    logger.info(f"Normalization():\n{normalized_data}\n")
     logger.info("normalized_data.mean(): %.2f" % (normalized_data.numpy().mean()))
     logger.info("normalized_datea.std(): %.2f\n" % (normalized_data.numpy().std()))
 
@@ -72,23 +107,22 @@ if args.step == 1:
     layer = preprocessing.TextVectorization()
     layer.adapt(data)
     vectorized_text = layer(data)
-    logger.info(f'vectorized_text:\n{vectorized_text}\n')
+    logger.info(f'TextVectorization():\n{vectorized_text}\n')
 
-    ##
+    # Here's an example where we instantiate a StringLookup layer with precomputed vocabulary:
     vocab = ["a", "b", "c", "d"]
     data = tf.constant([["a", "c", "d"], ["d", "z", "b"], ["e", "f", "g"]])
     layer = preprocessing.StringLookup(vocabulary=vocab)
     vectorized_data = layer(data)
-    logger.info(f'vectorized_data:\n{vectorized_data}\n')
+    logger.info(f'StringLookup():\n{vectorized_data}\n')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #2 - Preprocessing data before the model or inside the model 
-if args.step == 2:
-    print("\n### Step #2 - Preprocessing data before the model or inside the model")
+### Step #3 - Preprocessing data before the model or inside the model 
+if args.step == 3:
+    print("\n### Step #3 - Preprocessing data before the model or inside the model")
 
-    # Make them part of the model
-    logger.info("Make them part of the model:")
+    logger.info("Option 1: Make them part of the model:")
     str = '''
     inputs = Input(shape=input_shape)
     x = preprocessing_layer(inputs)
@@ -97,8 +131,7 @@ if args.step == 2:
     '''
     print(str)
 
-    # or apply it to your tf.data.Dataset
-    logger.info("Or apply it to your tf.data.Dataset:")
+    logger.info("Option 2: Apply it to your tf.data.Dataset:")
     str = '''
     dataset = dataset.map(lambda x, y: (preprocessing_layer(x), y))
     '''
@@ -106,25 +139,32 @@ if args.step == 2:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #3 - Benefits of doing preprocessing inside the model at inference time
-if args.step == 3:
-    print("\n### Step #3 - Benefits of doing preprocessing inside the model at inference time")
+### Step #4 - Benefits of doing preprocessing inside the model at inference time
+if args.step == 4:
+    print("\n### Step #4 - Benefits of doing preprocessing inside the model at inference time")
 
-    # The key benefit to doing this is that it makes your model portable and 
-    # it helps reduce the training/serving skew.
-    str = '''
-    inputs = Input(shape=input_shape)
-    x = preprocessing_layer(inputs)
-    outputs = training_model(x)
-    inference_model = Model(inputs, outputs)
+    __doc__='''
+    The key benefit to doing this is that it makes your model portable and it
+    helps reduce the training/serving skew.
+
+    When all data preprocessing is part of the model, other people can load and
+    use your model without having to be aware of how each feature is expected
+    to be encoded & normalized. Your inference model will be able to process
+    raw images or raw structured data, and will not require users of the model
+    to be aware of the details of e.g. the tokenization scheme used for text,
+    the indexing scheme used for categorical features, whether image pixel
+    values are normalized to [-1, +1] or to [0, 1], etc. This is especially
+    powerful if you're exporting your model to another runtime, such as
+    TensorFlow.js: you won't have to reimplement your preprocessing pipeline in
+    JavaScript.
     '''
-    print(str)
+    print(__doc__)
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #4 - Quick recipes: Image data augmentation (on-device)
-if args.step == 4:
-    print("\n### Step #4 - Quick recipes: Image data augmentation (on-device)")
+### Step #5 - Quick recipes: Image data augmentation (on-device)
+if args.step == 5:
+    print("\n### Step #5 - Quick recipes: Image data augmentation (on-device)")
 
     # Create a data augmentation stage with horizontal flipping, rotations, zooms
     data_augmentation = Sequential([
@@ -148,13 +188,13 @@ if args.step == 4:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #5 - Quick recipes: Normalizing numerical features
-if args.step == 5:
-    print("\n### Step #5 - Quick recipes: Normalizing numerical features")
+### Step #6 - Quick recipes: Normalizing numerical features
+if args.step == 6:
+    print("\n### Step #6 - Quick recipes: Normalizing numerical features")
 
     # Load some data
     (x_train, y_train), _ = tf.keras.datasets.cifar10.load_data()
-    x_train = x_train.reshape((len(x_train), -1))
+    x_train = x_train.reshape((len(x_train), -1)) # (50000,32,32,3) => (50000, 3072)
     input_shape = x_train.shape[1:]
     classes = 10
 
@@ -171,12 +211,13 @@ if args.step == 5:
     # Train the model
     model.compile(optimizer="adam", loss="sparse_categorical_crossentropy")
     model.fit(x_train, y_train, verbose=2)
+    print('')
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #6 - Quick recipes: Encoding string categorical features via one-hot encoding
-if args.step == 6:
-    print("\n### Step #6 - Quick recipes: Encoding string categorical features via one-hot encoding")
+### Step #7 - Quick recipes: Encoding string categorical features via one-hot encoding
+if args.step == 7:
+    print("\n### Step #7 - Quick recipes: Encoding string categorical features via one-hot encoding")
 
     # Define some toy data
     data = tf.constant(["a", "b", "c", "b", "c", "a"])
@@ -200,9 +241,9 @@ if args.step == 6:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #7 - Quick recipes: Encoding integer categorical features via one-hot encoding
-if args.step == 7:
-    print("\n### Step #7 - Quick recipes: Encoding integer categorical features via one-hot encoding")
+### Step #8 - Quick recipes: Encoding integer categorical features via one-hot encoding
+if args.step == 8:
+    print("\n### Step #8 - Quick recipes: Encoding integer categorical features via one-hot encoding")
 
     # Define some toy data
     data = tf.constant([10, 20, 20, 10, 30, 0])
@@ -226,9 +267,9 @@ if args.step == 7:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #8 - Quick recipes: Applying the hashing trick to an integer categorical feature
-if args.step == 8:
-    print("\n### Step #8 - Quick recipes: Applying the hashing trick to an integer categorical feature")
+### Step #9 - Quick recipes: Applying the hashing trick to an integer categorical feature
+if args.step == 9:
+    print("\n### Step #9 - Quick recipes: Applying the hashing trick to an integer categorical feature")
 
     # Sample data: 10,000 random integers with values between 0 and 100,000
     data = np.random.randint(0, 100000, size=(10000, 1))
@@ -247,9 +288,9 @@ if args.step == 8:
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #9 - Quick recipes: Encoding text as a sequence of token indices
-if args.step == 9:
-    print("\n### Step #9 - Quick recipes: Encoding text as a sequence of token indices")
+### Step #10 - Quick recipes: Encoding text as a sequence of token indices
+if args.step == 10:
+    print("\n### Step #10 - Quick recipes: Encoding text as a sequence of token indices")
 
     # Define some text data to adapt the layer
     data = tf.constant(
@@ -267,7 +308,7 @@ if args.step == 9:
 
     # You can retrieve the vocabulary we indexed via get_vocabulary()
     vocab = text_vectorizer.get_vocabulary()
-    logger.info("Vocabulary: {}".format(vocab))
+    logger.info("Vocabulary:\n{}".format(vocab))
 
     # Create an Embedding + LSTM model
     inputs = Input(shape=(1,), dtype="string")
@@ -279,14 +320,15 @@ if args.step == 9:
     # Call the model on test data (which includes unknown tokens)
     test_data = tf.constant(["The Brain is deeper than the sea"])
     test_output = model(test_data)
-    logger.info("Input: {}".format(test_data))
+    logger.info(f"Input: {test_data}")
+    logger.info(f"text_vectorizer(): {text_vectorizer(test_data)}")
     logger.info("Model output: {}\n".format(test_output))
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #10 - Quick recipes: Encoding text as a dense matrix of ngrams with multi-hot encoding
-if args.step == 10:
-    print("\n### Step #10 - Quick recipes: Encoding text as a dense matrix of ngrams with multi-hot encoding")
+### Step #11 - Quick recipes: Encoding text as a dense matrix of ngrams with multi-hot encoding
+if args.step == 11:
+    print("\n### Step #11 - Quick recipes: Encoding text as a dense matrix of ngrams with multi-hot encoding")
 
     # Define some text data to adapt the layer
     data = tf.constant(
@@ -304,11 +346,6 @@ if args.step == 10:
     # Index the bigrams via `adapt()`
     text_vectorizer.adapt(data)
 
-    logger.info(
-        "Encoded text:\n{}\n".format(
-            text_vectorizer(["The Brain is deeper than the sea"]).numpy())
-    )
-
     # Create a Dense model
     inputs = Input(shape=(1,), dtype="string")
     x = text_vectorizer(inputs)
@@ -318,13 +355,19 @@ if args.step == 10:
     # Call the model on test data (which includes unknown tokens)
     test_data = tf.constant(["The Brain is deeper than the sea"])
     test_output = model(test_data)
+
+    logger.info(f'test_data: {test_data}')
+    logger.info(
+        "Encoded text:\n{}".format(
+            text_vectorizer(["The Brain is deeper than the sea"]).numpy())
+    )
     logger.info("Model output: {}\n".format(test_output))
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #11 - Quick recipes: Encoding text as a dense matrix of ngrams with TF-IDF weightin
-if args.step == 11:
-    print("\n### Step #11 - Quick recipes: Encoding text as a dense matrix of ngrams with TF-IDF weightin")
+### Step #12 - Quick recipes: Encoding text as a dense matrix of ngrams with TF-IDF weightin
+if args.step == 12:
+    print("\n### Step #12 - Quick recipes: Encoding text as a dense matrix of ngrams with TF-IDF weightin")
 
     # Define some text data to adapt the layer
     data = tf.constant(
@@ -341,11 +384,6 @@ if args.step == 11:
     # Index the bigrams and learn the TF-IDF weights via `adapt()`
     text_vectorizer.adapt(data)
 
-    logger.info(
-        "Encoded text:\n{}\n".format(
-            text_vectorizer(["The Brain is deeper than the sea"]).numpy())
-    )
-
     # Create a Dense model
     inputs = Input(shape=(1,), dtype="string")
     x = text_vectorizer(inputs)
@@ -355,6 +393,12 @@ if args.step == 11:
     # Call the model on test data (which includes unknown tokens)
     test_data = tf.constant(["The Brain is deeper than the sea"])
     test_output = model(test_data)
+
+    logger.info(f'test_data: {test_data}')
+    logger.info(
+        "Encoded text:\n{}".format(
+            text_vectorizer(["The Brain is deeper than the sea"]).numpy())
+    )
     logger.info("Model output: {}\n".format(test_output))
 
 

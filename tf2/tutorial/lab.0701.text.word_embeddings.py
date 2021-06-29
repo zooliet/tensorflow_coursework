@@ -223,7 +223,7 @@ if args.step in [7, 8]:
 
     if args.step == 7:
         model.summary()
-        logger.info('tensorboard --logdir logs --bind-all')
+        logger.info('tensorboard --logdir logs --bind_all')
 
 
 args.step = auto_increment(args.step, args.all)
