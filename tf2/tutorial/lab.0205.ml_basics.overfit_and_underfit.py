@@ -46,14 +46,16 @@ if args.step == 0:
     toc(__file__)
 
 
+if args.step or args.all:
+    # logdir = pathlib.Path(tempfile.mkdtemp())/"tensorboard_logs"
+    # shutil.rmtree(logdir, ignore_errors=True)
+    logdir = pathlib.Path("tmp/tf2_t0205/tensorboard_logs")
+
+
 args.step = auto_increment(args.step, args.all)
 ### Step #1 - The Higgs Dataset
-if args.step >= 1: 
+if args.step >= 1 and args.step not in [8, 13]: 
     print("\n### Step #1 - The Higgs Dataset")
-
-    # logdir
-    logdir = pathlib.Path(tempfile.mkdtemp())/"tensorboard_logs"
-    shutil.rmtree(logdir, ignore_errors=True)
 
     url = 'http://mlphysics.ics.uci.edu/data/higgs/HIGGS.csv.gz'
     dataset = f'{os.getenv("HOME")}/.keras/datasets/HIGGS.csv.gz'
@@ -113,7 +115,7 @@ if args.step >= 1:
 
 args.step = auto_increment(args.step, args.all)
 ### Step #2 - Demonstrate overfitting: Training procedure
-if args.step >= 2:
+if args.step >= 2 and args.step not in [8, 13]:
     print("\n### Step #2 - Demonstrate overfitting: Training procedure")
 
     lr_schedule = tf.keras.optimizers.schedules.InverseTimeDecay(
@@ -138,7 +140,7 @@ if args.step >= 2:
 
     def get_callbacks(name):
         return [
-            tfdocs.modeling.EpochDots(),
+            # tfdocs.modeling.EpochDots(),
             tf.keras.callbacks.EarlyStopping(monitor='val_binary_crossentropy', patience=200),
             tf.keras.callbacks.TensorBoard(logdir/name),
         ]
@@ -172,7 +174,7 @@ if args.step >= 2:
 
 args.step = auto_increment(args.step, args.all)
 ### Step #3 - Demonstrate overfitting: Tiny model
-if args.step in [3, 7, 8, 9, 10, 11, 12, 13]:
+if args.step in [3, 7, 9, 10, 11, 12]:
     print("\n### Step #3 - Demonstrate overfitting: Tiny model")
 
     tiny_model = Sequential([
@@ -180,6 +182,7 @@ if args.step in [3, 7, 8, 9, 10, 11, 12, 13]:
         Dense(1)
     ])
 
+    shutil.rmtree(logdir/'sizes/Tiny', ignore_errors=True)
     size_histories['Tiny'] = compile_and_fit(tiny_model, 'sizes/Tiny', max_epochs=args.epochs)
 
     if args.step == 3 and args.plot:
@@ -192,7 +195,7 @@ if args.step in [3, 7, 8, 9, 10, 11, 12, 13]:
 
 args.step = auto_increment(args.step, args.all)
 ### Step #4 - Demonstrate overfitting: Small model
-if args.step in [4, 7, 8]:
+if args.step in [4, 7]:
     print("\n### Step #4 - Demonstrate overfitting: Small model")
 
     small_model = Sequential([
@@ -202,12 +205,13 @@ if args.step in [4, 7, 8]:
         Dense(1)
     ])
 
+    shutil.rmtree(logdir/'sizes/Small', ignore_errors=True)
     size_histories['Small'] = compile_and_fit(small_model, 'sizes/Small', max_epochs=args.epochs)
 
 
 args.step = auto_increment(args.step, args.all)
 ### Step #5 - Demonstrate overfitting: Medium model
-if args.step in [5, 7, 8]:
+if args.step in [5, 7]:
     print("\n### Step #5 - Demonstrate overfitting: Medium model")
     
     medium_model = Sequential([
@@ -217,12 +221,13 @@ if args.step in [5, 7, 8]:
         Dense(1)
     ])
 
+    shutil.rmtree(logdir/'sizes/Medium', ignore_errors=True)
     size_histories['Medium'] = compile_and_fit(medium_model, 'sizes/Medium', max_epochs=args.epochs)
 
 
 args.step = auto_increment(args.step, args.all)
 ### Step #6 - Demonstrate overfitting: Large model
-if args.step in [6, 7, 8]:
+if args.step in [6, 7]:
     print("\n### Step #6 - Demonstrate overfitting: Large model")
     
     large_model = Sequential([
@@ -232,6 +237,7 @@ if args.step in [6, 7, 8]:
         Dense(1)
     ])
 
+    shutil.rmtree(logdir/'sizes/Large', ignore_errors=True)
     size_histories['Large'] = compile_and_fit(large_model, 'sizes/Large', max_epochs=args.epochs)
 
 
@@ -262,7 +268,7 @@ if args.step == 8:
 
 args.step = auto_increment(args.step, args.all)
 ### Step #9 - Strategies to prevent overfitting
-if args.step >= 9:
+if args.step in [9, 10, 11, 12]:
     print("\n### Step #9 - Strategies to prevent overfitting")
 
     shutil.rmtree(logdir/'regularizers/Tiny', ignore_errors=True)
@@ -273,7 +279,7 @@ if args.step >= 9:
 
 args.step = auto_increment(args.step, args.all)
 ### Step #10 - Strategies to prevent overfitting: Add weight regularization
-if args.step >= 10:
+if args.step in [10, 11, 12]:
     print("\n### Step #10 - Strategies to prevent overfitting: Add weight regularization")
 
     l2_model = Sequential([
@@ -297,6 +303,7 @@ if args.step >= 10:
         Dense(1)
     ])
 
+    shutil.rmtree(logdir/'regularizers/l2', ignore_errors=True)
     regularizer_histories['l2'] = compile_and_fit(l2_model, "regularizers/l2")
 
     if args.step == 10 and args.plot:
@@ -309,7 +316,7 @@ if args.step >= 10:
 
 args.step = auto_increment(args.step, args.all)
 ### Step #11 - Strategies to prevent overfitting: Add dropout
-if args.step >= 11:
+if args.step in [11, 12]:
     print("\n### Step #11 - Strategies to prevent overfitting: Add dropout")
 
     dropout_model = Sequential([
@@ -324,6 +331,7 @@ if args.step >= 11:
         Dense(1)
     ])
 
+    shutil.rmtree(logdir/'regularizers/dropout', ignore_errors=True)
     regularizer_histories['dropout'] = compile_and_fit(dropout_model, "regularizers/dropout")
 
     if args.step == 11 and args.plot:
@@ -351,6 +359,7 @@ if args.step == 12:
         Dense(1)
     ])
 
+    shutil.rmtree(logdir/'regularizers/combined', ignore_errors=True)
     regularizer_histories['combined'] = compile_and_fit(combined_model, "regularizers/combined")
 
     if args.plot:
@@ -365,11 +374,13 @@ args.step = auto_increment(args.step, args.all)
 ### Step #13 - Strategies to prevent overfitting: View in TensorBoard
 if args.step == 13:
     print("\n### Step #13 - Strategies to prevent overfitting: View in TensorBoard")
+
     logger.info(f'tensorboard --logdir {logdir}/regularizers --bind_all')
     logger.info(f'tensorboard dev upload --logdir {logdir}/regularizers')
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

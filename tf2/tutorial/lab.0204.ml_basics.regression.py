@@ -71,7 +71,7 @@ if args.step >= 2:
     print("\n### Step #2 - The Auto MPG dataset: Clean the data")
 
     if args.step == 2:
-        logger.info(f'inspect na values:\n{dataset.isna().sum()}')
+        logger.info(f'inspect na values:\n{dataset.isna().sum()}\n')
 
     dataset = dataset.dropna()
 
@@ -129,7 +129,7 @@ if args.step >= 6:
     if args.step == 6:
         logger.info('different the ranges of each feature:')
         print(train_dataset.describe().transpose()[['mean', 'std']])
-        print('')
+        print()
 
     # The Normalization layer
     normalizer = tf.keras.layers.experimental.preprocessing.Normalization()
@@ -141,11 +141,11 @@ if args.step >= 6:
         first = train_features[:1]
         with np.printoptions(precision=2, suppress=True):
             logger.info(f'Before normalization:\n{first.values}')
-            logger.info(f'After Normalized:\n{normalizer(first).numpy()}\n')
+            logger.info(f'After Normalized:\n{normalizer(first).numpy()}')
 
 
 ### Plot utilities
-if True:
+if args.step:
     def plot_loss(history):
         plt.figure()
         plt.plot(history.history['loss'], label='loss')
@@ -183,10 +183,11 @@ if args.step >= 7:
 
     if args.step == 7:
         horsepower_model.summary()
+        print()
 
         # run the untrained model
         preds = horsepower_model.predict(horsepower[:10])
-        logger.info(f'untrained model predictions:\n{preds.reshape((10,))}')
+        logger.info(f'untrained model predictions:\n{preds.reshape((10,))}\n')
 
     horsepower_model.compile(
         optimizer=tf.keras.optimizers.Adam(learning_rate=0.1),
@@ -203,12 +204,13 @@ if args.step >= 7:
         validation_split=0.2
     )
     end = time.time()
-    logger.info(f"Time taken of horsepower_model is {end - start:.2f} secs\n")
 
     if args.step == 7:
+        logger.info(f"Time taken of horsepower_model is {end - start:.2f} secs\n")
+
         hist = pd.DataFrame(history.history)
         hist['epoch'] = history.epoch
-        logger.info(f'history\n{hist.tail()}\n')
+        logger.info(f'history\n{hist.tail()}')
 
         if args.plot:
             plot_loss(history)
@@ -241,9 +243,9 @@ if args.step >= 8:
         validation_split=0.2
     )
     end = time.time()
-    logger.info(f"Time taken of linear_model is {end - start:.2f} secs\n")
 
-    if args.step == 8:
+    if args.step == 8: 
+        logger.info(f"Time taken of linear_model is {end - start:.2f} secs")
         if args.plot:
             plot_loss(history)
 
@@ -284,10 +286,12 @@ if args.step >= 10:
         validation_split=0.2
     )
     end = time.time()
-    logger.info(f"Time taken of dnn_horsepower_model is {end - start:.2f} secs\n")
 
     if args.step == 10:
+        logger.info(f"Time taken of dnn_horsepower_model is {end - start:.2f} secs\n")
+
         dnn_horsepower_model.summary()
+
         if  args.plot:
             plot_loss(history)
 
@@ -312,9 +316,10 @@ if args.step >= 11:
         validation_split=0.2
     )
     end = time.time()
-    logger.info(f"Time taken of dnn_model is {end - start:.2f} secs\n")
 
     if args.step == 11:
+        logger.info(f"Time taken of dnn_model is {end - start:.2f} secs\n")
+
         dnn_model.summary()
 
         if args.plot:
@@ -352,7 +357,7 @@ if args.step == 12:
         verbose=0
     )
 
-    logger.info(f"Test performance:\n{pd.DataFrame(test_results, index=['Mean absolute error [MPG]']).T}")
+    logger.info(f"Test performance:\n{pd.DataFrame(test_results, index=['Mean absolute error [MPG]']).T}\n")
 
     # make prediction
     test_predictions = dnn_model.predict(test_features).flatten()
@@ -378,19 +383,19 @@ if args.step == 12:
         plt.show(block=False)
 
     # save and reload 
-    dnn_model.save('tmp/dnn_model')
-    reloaded = tf.keras.models.load_model('tmp/dnn_model')
+    dnn_model.save('tmp/tf2_t0204/dnn_model')
+    reloaded = tf.keras.models.load_model('tmp/tf2_t0204/dnn_model')
 
     test_results['reloaded'] = reloaded.evaluate(
         test_features, 
         test_labels, 
-        verbose=2
+        verbose=0
     )
-    
     logger.info(f"Reloaded against dnn_model:\n{pd.DataFrame(test_results, index=['Mean absolute error [MPG]']).T}")
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

@@ -111,13 +111,13 @@ if args.step == 1:
         validation_data=(x_val, y_val),
         verbose=2
     )
-    print('')
+    print()
 
     logger.info('history.history:')
     for key, values in history.history.items():
         values = [round(v, 2) for v in values]
         print(f'{key}: {values}')
-    print('')
+    print()
 
     # Evaluate the model on the test data using `evaluate`
     results = model.evaluate(x_test, y_test, batch_size=128, verbose=0)
@@ -128,7 +128,7 @@ if args.step == 1:
     # on new data using `predict`
     predictions = model.predict(x_test[:3])
     logger.info("predictions {}:".format(predictions.shape))
-    print(predictions, '\n')
+    print(predictions)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -179,7 +179,7 @@ if args.step == 3:
     for key, values in history.history.items():
         values = [round(v, 2) for v in values]
         print(f'{key}: {values}')
-    print('')
+    print()
 
     # using class
     class CustomMSE(tf.keras.losses.Loss):
@@ -209,7 +209,6 @@ if args.step == 3:
     for key, values in history.history.items():
         values = [round(v, 2) for v in values]
         print(f'{key}: {values}')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -255,7 +254,6 @@ if args.step == 4:
     for key, values in history.history.items():
         values = [round(v, 2) for v in values]
         print(f'{key}: {values}')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -310,7 +308,6 @@ if args.step == 5:
     for key, values in history.history.items():
         values = [round(v, 2) for v in values]
         print(f'{key}: {values}')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -369,18 +366,17 @@ if args.step == 7:
         validation_data=val_dataset,
         verbose=2
     )
-    print('')
+    print()
 
     for key, values in history.history.items():
         values = [round(v, 2) for v in values]
         print(f'{key}: {values}')
-    print('')
+    print()
 
     # You can also evaluate or predict on a dataset.
     result = model.evaluate(test_dataset, verbose=0)
     for name, value in dict(zip(model.metrics_names, result)).items():
         logger.info(f'{name}: {value:.2f}')
-    print('')
     
 
 args.step = auto_increment(args.step, args.all)
@@ -410,7 +406,6 @@ if args.step == 8:
         steps_per_epoch=100, 
         verbose=1
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -434,7 +429,6 @@ if args.step == 9:
         validation_data=val_dataset,
         verbose=2
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -491,7 +485,6 @@ if args.step == 11:
         batch_size=64, 
         verbose=2
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -601,13 +594,12 @@ if args.step == 13:
         epochs=args.epochs,
         verbose=2
     )
-    print('')
+    print()
 
     logger.info('history.history:')
     for key, values in history.history.items():
         values = [round(v, 2) for v in values]
         print(f'{key}: {values}')
-    print('')
     # logger.info(model.metrics_names)
 
 
@@ -653,7 +645,6 @@ if args.step == 14:
         validation_split=0.2,
         verbose=2
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -684,7 +675,6 @@ if args.step == 15:
         validation_split=0.2,
         verbose=2
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -724,7 +714,6 @@ if args.step == 16:
         callbacks=callbacks, 
         verbose=2
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -783,6 +772,7 @@ if args.step == 19:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

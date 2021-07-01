@@ -57,7 +57,7 @@ if args.step == 1:
 
     logger.info('tf.matmul([[1]], [[2, 3]])')
     x = tf.matmul([[1]], [[2, 3]])
-    print(x, '\n')
+    print(x)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -75,7 +75,7 @@ if args.step == 2:
     print(np.add(tensor, 1), '\n')
 
     logger.info("The .numpy() explicitly converts a Tensor to a numpy array")
-    print(tensor.numpy(), '\n')
+    print(tensor.numpy())
 
 
 args.step = auto_increment(args.step, args.all)
@@ -89,7 +89,7 @@ if args.step == 3:
     print(tf.config.list_physical_devices("GPU"), '\n')
 
     logger.info("Is the Tensor on GPU #0:  "),
-    print(x.device.endswith('GPU:0'), '\n')
+    print(x.device.endswith('GPU:0'))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -130,6 +130,7 @@ if args.step == 5:
     
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

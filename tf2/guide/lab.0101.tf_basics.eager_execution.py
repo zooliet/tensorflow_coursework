@@ -75,7 +75,7 @@ if args.step == 1:
     print(c, type(c), '\n')
 
     logger.info('Obtain numpy value from a tensor:')
-    print(a.numpy(), '\n')
+    print(a.numpy())
 
 
 args.step = auto_increment(args.step, args.all)
@@ -101,7 +101,6 @@ if args.step == 2:
             else:
                 print(num.numpy())
             counter += 1
-        print('')
 
     fizzbuzz(15)
 
@@ -116,7 +115,7 @@ if args.step == 3:
         loss = w * w
 
     grad = tape.gradient(loss, w)
-    print(grad, '\n')  # => tf.Tensor([[ 2.]], shape=(1, 1), dtype=float32)
+    print(grad)  # => tf.Tensor([[ 2.]], shape=(1, 1), dtype=float32)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -168,7 +167,6 @@ if args.step == 4:
             for (batch, (images, labels)) in enumerate(dataset):
                 train_step(images, labels)
             print ('Epoch {} finished'.format(epoch))
-        print('')
 
     train(epochs = 3)
 
@@ -228,7 +226,7 @@ if args.step == 5:
             print("Loss at step {:03d}: {:.3f}".format(i, loss(model, training_inputs, training_outputs)))
 
     print("Final loss: {:.3f}\n".format(loss(model, training_inputs, training_outputs)))
-    print("W={:.3f}, B={:.3f}\n".format(model.W.numpy(), model.B.numpy()))
+    print("W={:.3f}, B={:.3f}".format(model.W.numpy(), model.B.numpy()))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -290,7 +288,7 @@ if args.step == 7:
     logger.info(f'm.result(): {m.result()}')
 
     m([8, 9])
-    logger.info(f'm.result(): {m.result()}\n')
+    logger.info(f'm.result(): {m.result()}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -321,7 +319,6 @@ if args.step == 8:
                 tf.summary.scalar('loss', loss, step=step)
 
     print(*os.listdir(logdir), sep='\n')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -433,9 +430,9 @@ if args.step == 11:
     # Run on GPU, if available:
     if tf.config.list_physical_devices("GPU"):
         with tf.device("/gpu:0"):
-            logger.info("GPU: {:.3f} secs\n".format(measure(tf.random.normal(shape), steps)))
+            logger.info("GPU: {:.3f} secs".format(measure(tf.random.normal(shape), steps)))
     else:
-        logger.info("GPU: not found\n")
+        logger.info("GPU: not found")
 
 
 args.step = auto_increment(args.step, args.all)
@@ -468,6 +465,7 @@ if args.step == 13:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

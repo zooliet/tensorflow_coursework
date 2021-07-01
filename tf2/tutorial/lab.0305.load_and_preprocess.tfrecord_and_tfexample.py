@@ -38,6 +38,11 @@ if args.step == 0:
     toc(__file__)
 
 
+if args.step or args.all:
+    if not os.path.exists('tmp/tf2_t0305/'):
+        os.mkdir('tmp/tf2_t0305/') 
+
+
 args.step = auto_increment(args.step, args.all)
 ### Step #1 - tf.train.Example: Data types for tf.train.Example
 if args.step >= 1: 
@@ -124,8 +129,7 @@ if args.step == 3:
     uint64 length
     uint32 masked_crc32_of_length
     byte   data[length]
-    uint32 masked_crc32_of_data
-    """
+    uint32 masked_crc32_of_data """
     print(format_str)
 
 
@@ -162,7 +166,7 @@ if args.step in [4, 5, 6, 7]:
             print(f1)
             print(f2)
             print(f3)
-            print('')
+            print()
 
     def tf_serialize_example(f0,f1,f2,f3):
         tf_string = tf.py_function(
@@ -176,14 +180,14 @@ if args.step in [4, 5, 6, 7]:
         example_binary_string = tf_serialize_example(f0,f1,f2,f3)
         logger.info('(f0,f1,f2,f3) => tf.train.Example => Serialized:') 
         print(example_binary_string)
-        print('')
+        print()
 
     serialized_features_dataset = features_dataset.map(tf_serialize_example)
     if args.step == 4:
         logger.info('features_dataset => tf.train.Example => Serialized:') 
         for serialized_features_data in serialized_features_dataset.take(2):
             print(serialized_features_data)
-            print('')
+            print()
 
     def generator():
         for features in features_dataset:
@@ -196,10 +200,9 @@ if args.step in [4, 5, 6, 7]:
         logger.info('features_dataset => generator(tf.train.Example => Serialized):') 
         for serialized_features_data in serialized_features_dataset.take(2):
             print(serialized_features_data)
-            print('')
 
     # write them to a TFRecord file
-    filename = 'tmp/test.tfrecord'
+    filename = 'tmp/tf2_t0305/test.tfrecord'
     writer = tf.data.experimental.TFRecordWriter(filename)
     writer.write(serialized_features_dataset)
 
@@ -209,7 +212,7 @@ args.step = auto_increment(args.step, args.all)
 if args.step in [5, 6, 7]: 
     print("\n### Step #5 - TFRecord files using tf.data: Reading a TFRecord file")
 
-    filename = 'tmp/test.tfrecord'
+    filename = 'tmp/tf2_t0305/test.tfrecord'
     filenames = [filename]
     raw_dataset = tf.data.TFRecordDataset(filenames)
 
@@ -217,7 +220,7 @@ if args.step in [5, 6, 7]:
         logger.info('tf.data.TFRecordDataset(filenames):')
         for raw_record in raw_dataset.take(2):
             print(repr(raw_record))
-            print('')
+            print()
 
     # Create a description of the features.
     feature_description = {
@@ -236,7 +239,7 @@ if args.step in [5, 6, 7]:
         logger.info('tf.data.TFRecordDataset() => tf.io.parse_sigle_example() => features')
         for parsed_record in parsed_dataset.take(2):
             print(repr(parsed_record))
-            print('')
+            print()
 
 
 args.step = auto_increment(args.step, args.all)
@@ -244,13 +247,14 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 6: 
     print("\n### Step #6 - TFRecord files in Python: Writing a TFRecord file")
 
-    filename = 'tmp/test6.tfrecord'
+    filename = 'tmp/tf2_t0305/test6.tfrecord'
     # Write the `tf.train.Example` observations to the file.
     with tf.io.TFRecordWriter(filename) as writer:
         for i in range(n_observations):
             example = serialize_example(feature0[i], feature1[i], feature2[i], feature3[i])
             writer.write(example)
 
+    print()
     logger.info(f"du -sh {filename}")
     os.system(f"du -sh {filename}")
 
@@ -260,7 +264,7 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 7: 
     print("\n### Step #7 - TFRecord files in Python: Reading a TFRecord file")
 
-    filename = 'tmp/test6.tfrecord'
+    filename = 'tmp/tf2_t0305/test6.tfrecord'
     filenames = [filename]
     raw_dataset = tf.data.TFRecordDataset(filenames)
     logger.info(raw_dataset)
@@ -333,7 +337,7 @@ if args.step == 9:
     # Write the raw image files to `images.tfrecords`.
     # First, process the two images into `tf.train.Example` messages.
     # Then, write to a `.tfrecords` file.
-    record_file = 'tmp/images.tfrecords'
+    record_file = 'tmp/tf2_t0305/images.tfrecords'
     with tf.io.TFRecordWriter(record_file) as writer:
         for filename, label in image_labels.items():
             image_string = open(filename, 'rb').read()
@@ -350,7 +354,7 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 10: 
     print("\n### Step #10 - Walkthrough: Reading and writing image data: Read the TFRecord data")
 
-    raw_image_dataset = tf.data.TFRecordDataset('tmp/images.tfrecords')
+    raw_image_dataset = tf.data.TFRecordDataset('tmp/tf2_t0305/images.tfrecords')
 
     # Create a dictionary describing the features.
     image_feature_description = {
@@ -366,7 +370,7 @@ if args.step == 10:
         return tf.io.parse_single_example(example_proto, image_feature_description)
 
     parsed_image_dataset = raw_image_dataset.map(_parse_image_function)
-    logger.info(parsed_image_dataset)
+    logger.info(f'parsed_image_dataset:\n{parsed_image_dataset}')
         
     if args.plot:
         for image_features in parsed_image_dataset:
@@ -378,6 +382,7 @@ if args.step == 10:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

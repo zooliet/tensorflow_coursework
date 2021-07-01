@@ -67,14 +67,14 @@ if args.step == 1:
 
     # All trainable variables
     simple_module.trainable_variables
-    print('')
+    print()
     print("trainable variables:")
     print(*simple_module.trainable_variables, sep='\n')
-    print('')
+    print()
     # Every variable
     print("all variables:")
     print(*simple_module.variables, sep='\n')
-    print('')
+    print()
 
     # example of a two-layer linear layer model made out of modules
     class Dense(tf.Module):
@@ -113,11 +113,10 @@ if args.step == 1:
 
     logger.info('Submodules:') 
     print(*my_model.submodules, sep='\n')
-    print('')
+    print()
 
     logger.info('Varaiables:')
     print(*my_model.variables, sep='\n\n')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -171,7 +170,7 @@ if args.step in [2, 3]:
     result = my_model(tf.constant([[2.0, 2.0, 2.0]]))
 
     if args.step == 2:
-        logger.info(f'Model results: {result}\n')
+        logger.info(f'Model results: {result}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -192,11 +191,11 @@ if args.step == 3:
 
     logger.info("tf.io.gfile.glob(chkp_path+'*')")
     print(*tf.io.gfile.glob(chkp_path+'*'), sep='\n')
-    print('')
+    print()
 
     logger.info('the whole collection of variables is saved inside the checkpoint:')
     print(*tf.train.list_variables(chkp_path), sep='\n')
-    print('')
+    print()
 
     logger.info('When you load models back in:')
     new_model = MySequentialModule()
@@ -205,7 +204,7 @@ if args.step == 3:
 
     # Should be the same result as above
     result = new_model(tf.constant([[2.0, 2.0, 2.0]]))
-    print(result, '\n')
+    print(result)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -282,7 +281,7 @@ if args.step in [4, 5]:
 
     if args.step == 4:
         logger.info('Launch TensorBoard to view the resulting trace:')
-        print('tensorboard --logdir tmp/tf2_g0106/logs/func --bind_all\n') 
+        print('tensorboard --logdir tmp/tf2_g0106/logs/func --bind_all') 
 
 
 args.step = auto_increment(args.step, args.all)
@@ -302,7 +301,7 @@ if args.step == 5:
 
     logger.info('ls -l tmp/tf2_g0106/the_saved_model:')
     print(*os.listdir('tmp/tf2_g0106/the_saved_model'), sep='\n')
-    print('')
+    print()
 
     # The variables/ directory contains a checkpoint of the variables
     logger.info('ls -l the_saved_model/tf2_g0106/variables:')
@@ -326,7 +325,7 @@ if args.step == 5:
     print(__doc__)
 
     new_model = tf.saved_model.load("tmp/tf2_g0106/the_saved_model")
-    logger.info(f'It is not of type MySequentialModule: {isinstance(new_model, MySequentialModule)}\n')
+    logger.info(f'It is not of type MySequentialModule: {isinstance(new_model, MySequentialModule)}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -356,7 +355,7 @@ if args.step == 6:
 
     simple_layer = MyDense(name="simple", in_features=3, out_features=3)
     logger.info('simple_layer([[2.0, 2.0, 2.0]]:')
-    print(simple_layer([[2.0, 2.0, 2.0]]), '\n')
+    print(simple_layer([[2.0, 2.0, 2.0]]))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -412,7 +411,7 @@ if args.step in [7, 8, 9]:
         try:
             print("Model results:", flexible_dense(tf.constant([[2.0, 2.0, 2.0, 2.0]])))
         except tf.errors.InvalidArgumentError as e:
-            print("Failed:", e, '\n')
+            print("Failed:", e)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -448,7 +447,7 @@ if args.step in [8, 9]:
 
         logger.info('my_sequential_model\'s variables and submodules:')
         print(*my_sequential_model.variables, sep='\n\n')
-        print('')
+        print()
         print(*my_sequential_model.submodules, sep='\n')
 
     __doc__='''
@@ -472,10 +471,10 @@ if args.step in [8, 9]:
         my_functional_model = tf.keras.Model(inputs=inputs, outputs=x)
         logger.info('functional api model summary:')
         my_functional_model.summary()
-        print('')
+        print()
 
         logger.info('functional api model result:')
-        print(my_functional_model(tf.constant([[2.0, 2.0, 2.0]])), '\n')
+        print(my_functional_model(tf.constant([[2.0, 2.0, 2.0]])))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -494,10 +493,11 @@ if args.step == 9:
     my_sequential_model.save("tmp/tf2_g0106/exname_of_file")
     reconstructed_model = tf.keras.models.load_model("tmp/tf2_g0106/exname_of_file")
     logger.info('reconstructed_model result:')
-    print(reconstructed_model(tf.constant([[2.0, 2.0, 2.0]])), '\n')
+    print(reconstructed_model(tf.constant([[2.0, 2.0, 2.0]])))
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

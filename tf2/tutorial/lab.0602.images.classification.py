@@ -98,7 +98,7 @@ if args.step >= 2:
 
     class_names = train_ds.class_names
     if args.step == 2:
-        logger.info(f'class_names: {class_names}')
+        logger.info(f'class_names:\n{class_names}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -288,6 +288,7 @@ if args.step >= 13:
 
     if args.step == 13:
         model.summary()
+        print()
 
     history = model.fit(
         train_ds, 
@@ -359,6 +360,7 @@ if args.step == 15:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

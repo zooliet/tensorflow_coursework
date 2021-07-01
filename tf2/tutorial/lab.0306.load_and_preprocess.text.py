@@ -91,11 +91,11 @@ if args.step in [1, 2, 3, 4, 5, 6, 7]:
     if args.step == 1:
         logger.info(dataset_dir)
         print(*list(dataset_dir.iterdir()), sep="\n")
-        print('')
+        print()
 
         logger.info(train_dir)
         print(*list(train_dir.iterdir()), sep="\n")
-        print('')
+        print()
 
         sample_file = train_dir/'python/1755.txt'
         logger.info(f'{os.path.basename(sample_file)}:')
@@ -176,10 +176,10 @@ if args.step in [3, 4, 5, 6, 7]:
         text_batch, label_batch = next(iter(raw_train_ds))
         first_question, first_label = text_batch[0], label_batch[0]
         logger.info(f"Question: {first_question.numpy()[:30]}")
-        logger.info(f"Label: {first_label}")
+        logger.info(f"Label: {first_label}\n")
 
-        logger.info(f"'binary' vectorized question:\n{binary_vectorize_text(first_question, first_label)[0]}")
-        logger.info(f"'int' vectorized question:\n{int_vectorize_text(first_question, first_label)[0]}")
+        logger.info(f"'binary' vectorized question:\n{binary_vectorize_text(first_question, first_label)[0]}\n")
+        logger.info(f"'int' vectorized question:\n{int_vectorize_text(first_question, first_label)[0]}\n")
 
         logger.info(f"1289 ---> {int_vectorize_layer.get_vocabulary()[1289]}")
         logger.info(f"313 ---> {int_vectorize_layer.get_vocabulary()[313]}")
@@ -219,7 +219,7 @@ if args.step in [5, 6, 7]:
         optimizer='adam',
         metrics=['accuracy']
     )
-    logger.info('binary_model.fit()')
+
     history = binary_model.fit(
         binary_train_ds, 
         validation_data=binary_val_ds, 
@@ -234,7 +234,7 @@ if args.step in [5, 6, 7]:
         optimizer='adam',
         metrics=['accuracy']
     )
-    logger.info('int_model.fit()')
+
     history = int_model.fit(
         int_train_ds, 
         validation_data=int_val_ds, 
@@ -246,9 +246,11 @@ if args.step in [5, 6, 7]:
         # Compare the two models
         logger.info("Linear model on binary vectorized data:")
         binary_model.summary()
+        print()
 
         logger.info("ConvNet model on int vectorized data:")
         int_model.summary()
+        print()
 
         # Evaluate both models on the test data
         binary_loss, binary_accuracy = binary_model.evaluate(binary_test_ds, verbose=0)
@@ -297,12 +299,12 @@ if args.step == 7:
     ]
 
     predicted_scores = export_model.predict(inputs)
-    logger.info(f'predicted_scores:\n{predicted_scores}\n')
+    logger.info(f'predicted_scores:\n{predicted_scores}')
     predicted_labels = get_string_labels(predicted_scores)
     for input, label in zip(inputs, predicted_labels):
+        print()
         print("Question: ", input)
         print("Predicted label: ", label.numpy())
-        print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -319,7 +321,7 @@ if args.step in [8, 9, 10, 11, 12, 13, 14]:
 
     parent_dir = pathlib.Path(text_dir).parent
     if args.step == 8:
-        logger.info(f'parent_dir: {parent_dir}\n')
+        logger.info(f'parent_dir: {parent_dir}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -348,7 +350,6 @@ if args.step in [9, 10, 11, 12, 13, 14]:
     if args.step == 9:
         for text, label in all_labeled_data.take(10):
             print(f"Sentence: {text.numpy()[:30]}... => Label: {label.numpy()}")
-        print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -369,7 +370,7 @@ if args.step in [10, 11, 12, 13, 14]:
         logger.info('tokenized_ds.take(5):')
         for text_batch in tokenized_ds.take(5):
             print(text_batch.numpy()[:5], "...")
-        print('')
+        print()
 
     tokenized_ds = configure_dataset(tokenized_ds)
     vocab_dict = collections.defaultdict(lambda: 0)
@@ -407,7 +408,6 @@ if args.step in [10, 11, 12, 13, 14]:
         print("Sentence: {}".format(example_text.numpy()))
         vectorized_text, example_label = preprocess_text(example_text, example_label)
         print("Vectorized sentence: ", vectorized_text.numpy())
-        print('')
 
     all_encoded_data = all_labeled_data.map(preprocess_text)
 
@@ -427,6 +427,7 @@ if args.step in [11, 12, 13, 14]:
         sample_text, sample_labels = next(iter(validation_data))
         print("Text batch shape: ", sample_text.shape)
         print("Label batch shape: ", sample_labels.shape)
+        print()
         print("First text example: ", sample_text[0])
         print("First label example: ", sample_labels[0])
 
@@ -455,6 +456,7 @@ if args.step in [12, 13, 14]:
 
     loss, accuracy = model.evaluate(validation_data, verbose=0)
     if args.step == 12:
+        print()
         logger.info("Loss: {:.2f}".format(loss)) 
         logger.info("Accuracy: {:2.2%}".format(accuracy))
 
@@ -490,6 +492,7 @@ if args.step in [13, 14]:
     test_ds = configure_dataset(test_ds)
     loss, accuracy = export_model.evaluate(test_ds, verbose=0)
     if args.step == 13:
+        print()
         logger.info("Loss: {:.2f}".format(loss))
         logger.info("Accuracy: {:2.2%}".format(accuracy))
 
@@ -508,6 +511,7 @@ if args.step == 14:
     predicted_scores = export_model.predict(inputs)
     predicted_labels = tf.argmax(predicted_scores, axis=1)
     for input, label in zip(inputs, predicted_labels):
+        print()
         print(f"Question: {input}... => Label: {label.numpy()}")
 
 
@@ -533,6 +537,7 @@ if args.step >= 15:
     )
 
     if args.step == 15:
+        print()
         for review_batch, label_batch in val_ds.take(1):
             for i in range(5):
                 print(f"Review: {review_batch.numpy()[i][:30]}... => Label: {label_batch.numpy()[i]}")
@@ -573,6 +578,7 @@ if args.step >= 17:
     model = create_model(vocab_size=VOCAB_SIZE + 1, num_labels=1)
     if args.step == 17:
         model.summary()
+        print()
 
     model.compile(
         loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
@@ -588,6 +594,7 @@ if args.step >= 17:
 
     loss, accuracy = model.evaluate(val_ds, verbose=0)
     if args.step == 17:
+        print()
         logger.info("Loss: {:.2f}".format(loss))
         logger.info("Accuracy: {:2.2%}".format(accuracy))
 
@@ -620,12 +627,13 @@ if args.step == 18:
     predicted_scores = export_model.predict(inputs)
     predicted_labels = [int(round(x[0])) for x in predicted_scores]
     for input, label in zip(inputs, predicted_labels):
+        print()
         print("Question: ", input)
         print("Predicted label: ", label)
-        print('')
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

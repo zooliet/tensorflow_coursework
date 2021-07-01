@@ -58,7 +58,7 @@ if args.step >= 1:
 args.step = auto_increment(args.step, args.all)
 ### Step #2 - Setup: Define a model
 if args.step >= 2: 
-    print("\n### Step #1 - Setup: Define a model")
+    print("\n### Step #2 - Setup: Define a model")
 
     def create_model():
         model = Sequential([
@@ -74,7 +74,6 @@ if args.step >= 2:
         )
         return model
 
-
     if args.step == 2:
         # Create a basic model instance
         model = create_model()
@@ -86,8 +85,8 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 3:
     print("\n### Step #3 - Save checkpoints during training: Checkpoint callback usage")
 
-    shutil.rmtree('tmp/training_1', ignore_errors=True)
-    checkpoint_path = "tmp/training_1/cp.ckpt"
+    shutil.rmtree('tmp/tf2_t0206/training_1', ignore_errors=True)
+    checkpoint_path = "tmp/tf2_t0206/training_1/cp.ckpt"
     checkpoint_dir = os.path.dirname(checkpoint_path)
     logger.info(f'checkpoint_dir: {checkpoint_dir}')
 
@@ -102,7 +101,6 @@ if args.step == 3:
     model = create_model()
 
     # Train the model with the new callback
-    logger.info('model.fit()')
     model.fit(
         train_images,
         train_labels,
@@ -113,7 +111,7 @@ if args.step == 3:
     )
     logger.info('ls -l checkpoint_dir:')
     print(*os.listdir(checkpoint_dir), sep="\n")
-    print('')
+    print()
 
     # This may generate warnings related to saving the state of the optimizer.
     # These warnings (and similar warnings throughout this notebook)
@@ -140,8 +138,8 @@ if args.step == 4:
     print("\n### Step #4 - Save checkpoints during training: Checkpoint callback options")
 
     # Include the epoch in the file name (uses `str.format`)
-    shutil.rmtree('tmp/training_2', ignore_errors=True)
-    checkpoint_path = "tmp/training_2/cp-{epoch:04d}.ckpt"
+    shutil.rmtree('tmp/tf2_t0206/training_2', ignore_errors=True)
+    checkpoint_path = "tmp/tf2_t0206/training_2/cp-{epoch:04d}.ckpt"
     checkpoint_dir = os.path.dirname(checkpoint_path)
     logger.info(f'checkpoint_dir: {checkpoint_dir}')
 
@@ -173,6 +171,7 @@ if args.step == 4:
 
     logger.info('ls -l checkpoint_dir:')
     print(*os.listdir(checkpoint_dir), sep="\n")
+    print()
 
     latest = tf.train.latest_checkpoint(checkpoint_dir)
     model = create_model()
@@ -196,7 +195,7 @@ if args.step == 5:
     If you are training a model on a single machine, 
     you'll have one shard with the suffix: .data-00000-of-00001
     """
-    tf.print(doc)
+    print(doc)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -215,16 +214,16 @@ if args.step == 6:
         verbose=0
     )
 
-    shutil.rmtree('tmp/checkpoints', ignore_errors=True)
+    shutil.rmtree('tmp/tf2_t0206/checkpoints', ignore_errors=True)
 
     # Save the weights
-    model.save_weights('tmp/checkpoints/my_checkpoint')
+    model.save_weights('tmp/tf2_t0206/checkpoints/my_checkpoint')
 
     # Create a new model instance
     new_model = create_model()
 
     # Restore the weights
-    new_model.load_weights('tmp/checkpoints/my_checkpoint')
+    new_model.load_weights('tmp/tf2_t0206/checkpoints/my_checkpoint')
 
     # Evaluate the model
     loss, acc = model.evaluate(test_images, test_labels, verbose=0)
@@ -238,16 +237,16 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 7:
     print("\n### Step #7 - Save the entire model: SavedModel format")
 
-    shutil.rmtree('tmp/saved_model', ignore_errors=True)
+    shutil.rmtree('tmp/tf2_t0206/saved_model', ignore_errors=True)
 
     model = create_model()
     model.fit(train_images, train_labels, epochs=5, verbose=0)
-    model.save('tmp/saved_model/my_model')
-    logger.info('ls -l tmp/saved_model/my_model:')
-    print(*os.listdir('tmp/saved_model/my_model'), sep="\n")
-    print('')
+    model.save('tmp/tf2_t0206/saved_model/my_model')
+    logger.info('ls -l tmp/tf2_t0206/saved_model/my_model:')
+    print(*os.listdir('tmp/tf2_t0206/saved_model/my_model'), sep="\n")
+    print()
 
-    new_model = tf.keras.models.load_model('tmp/saved_model/my_model')
+    new_model = tf.keras.models.load_model('tmp/tf2_t0206/saved_model/my_model')
     new_model.summary()
     loss, acc = new_model.evaluate(test_images, test_labels, verbose=0)
     logger.info("Restored model's accuracy: {:5.2f}%".format(100 * acc))
@@ -259,14 +258,15 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 8:
     print("\n### Step #8 - Save the entire model: HDF5 format")
 
-    shutil.rmtree('tmp/saved_model', ignore_errors=True)
+    shutil.rmtree('tmp/tf2_t0206/saved_model', ignore_errors=True)
     model = create_model()
     model.fit(train_images, train_labels, epochs=5, verbose=0)
 
     # The '.h5' extension indicates that the model should be saved to HDF5.
-    model.save('tmp/saved_model/my_model.h5')
-    new_model = tf.keras.models.load_model('tmp/saved_model/my_model.h5')
+    model.save('tmp/tf2_t0206/saved_model/my_model.h5')
+    new_model = tf.keras.models.load_model('tmp/tf2_t0206/saved_model/my_model.h5')
     new_model.summary()
+    print()
     loss, acc = new_model.evaluate(test_images, test_labels, verbose=0)
     logger.info("Restored model's accuracy: {:5.2f}%".format(100 * acc))
 
@@ -279,6 +279,7 @@ if args.step == 9:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

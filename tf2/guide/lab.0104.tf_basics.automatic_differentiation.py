@@ -102,7 +102,7 @@ if args.step == 2:
 
     grad = tape.gradient(loss, my_vars)
     print(grad['w'], '\n')
-    print(grad['b'], '\n')
+    print(grad['b'])
 
 
 args.step = auto_increment(args.step, args.all)
@@ -134,7 +134,6 @@ if args.step == 3:
 
     for var, g in zip(layer.trainable_variables, grad):
         print(f'{var.name}, shape: {g.shape}')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -171,7 +170,7 @@ if args.step == 4:
 
     for g in grad:
         print(g)
-    print('')
+    print()
 
     logger.info('list the variables being watched by the tape:')
     print([var.name for var in tape.watched_variables()], '\n')
@@ -184,7 +183,7 @@ if args.step == 4:
 
     # dy = 2x * dx
     dy_dx = tape.gradient(y, x)
-    print(dy_dx.numpy(), '\n')
+    print(dy_dx.numpy())
 
 
 args.step = auto_increment(args.step, args.all)
@@ -218,8 +217,8 @@ if args.step == 5:
         y = x * x
         z = y * y
 
-    print('tape.gradient(z,x):\n', tape.gradient(z, x).numpy(), '\n')  # 108.0 (4 * x**3 at x = 3)
-    print('tape.gradient(z,y):\n', tape.gradient(y, x).numpy(), '\n')  # 6.0 (2 * x)
+    print('tape.gradient(z,x): ', tape.gradient(z, x).numpy())  # 108.0 (4 * x**3 at x = 3)
+    print('tape.gradient(z,y): ', tape.gradient(y, x).numpy())  # 6.0 (2 * x)
 
     # Drop the reference to the tape
     del tape  
@@ -286,7 +285,7 @@ if args.step == 7:
 
     print(
         "tape.gradient(y, x): ", 
-        tape.gradient(y, x).numpy(), '\n'
+        tape.gradient(y, x).numpy()
     )
 
     x = tf.linspace(-10.0, 10.0, 200+1)
@@ -324,7 +323,7 @@ if args.step == 8:
     dv0, dv1 = tape.gradient(result, [v0, v1])
 
     print('tape.gradient(result, v0): ', dv0)
-    print('tape.gradient(result, v1): ', dv1, '\n')  
+    print('tape.gradient(result, v1): ', dv1)  
 
 
 args.step = auto_increment(args.step, args.all)
@@ -338,7 +337,7 @@ if args.step == 9:
         z = y * y
 
     logger.info('When a target is not connected to a source you will get a gradient of None:')
-    print('tape.gradient(z,x): ', tape.gradient(z, x), '\n')
+    print('tape.gradient(z,x): ', tape.gradient(z, x))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -353,7 +352,6 @@ if args.step == 10:
 
         print(type(x).__name__, ":", tape.gradient(y, x))
         x = x + 1   # This should be `x.assign_add(1)`
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -372,7 +370,7 @@ if args.step == 11:
         # using `tf.convert_to_tensor`.
         y = tf.reduce_mean(y, axis=0)
 
-    print('tape.gradient(y,x): ', tape.gradient(y, x), '\n')
+    print('tape.gradient(y,x): ', tape.gradient(y, x))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -385,7 +383,7 @@ if args.step == 12:
         tape.watch(x)
         y = x * x
 
-    print('tape.gradient(y,x):', tape.gradient(y, x), '\n')
+    print('tape.gradient(y,x):', tape.gradient(y, x))
  
 
 args.step = auto_increment(args.step, args.all)
@@ -403,7 +401,7 @@ if args.step == 13:
         y = x1**2   # y = (x1 + x0)**2
 
     # This doesn't work.
-    print(tape.gradient(y, x0), '\n')   #dy/dx0 = 2*(x1 + x0)    
+    print(tape.gradient(y, x0))   #dy/dx0 = 2*(x1 + x0)    
 
 
 args.step = auto_increment(args.step, args.all)
@@ -421,7 +419,7 @@ if args.step == 14:
         print(tape.gradient(new_image, [image, delta]))
         assert False   # This should not happen.
     except LookupError as e:
-        print(f'{type(e).__name__}: {e}\n')
+        print(f'{type(e).__name__}: {e}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -434,10 +432,11 @@ if args.step == 15:
 
     with tf.GradientTape() as tape:
         z = y**2
-    print(tape.gradient(z, x, unconnected_gradients=tf.UnconnectedGradients.ZERO), '\n')
+    print(tape.gradient(z, x, unconnected_gradients=tf.UnconnectedGradients.ZERO))
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

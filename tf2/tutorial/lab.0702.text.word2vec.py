@@ -77,7 +77,7 @@ if args.step in [1, 2, 3, 4]:
 
     if args.step == 1:
         logger.info(f'{sentence} => ')
-        logger.info(f'{example_sequence}\n')
+        logger.info(f'{example_sequence}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -99,7 +99,6 @@ if args.step in [2, 3, 4]:
 
         for target, context in positive_skip_grams[:5]:
             print(f"({target}, {context}): ({inverse_vocab[target]}, {inverse_vocab[context]})")
-        print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -166,12 +165,11 @@ if args.step == 5:
     sampling_table = tf.keras.preprocessing.sequence.make_sampling_table(size=10)
     print(sampling_table)
 
-
-logger.info('To be continued...')
-
+    logger.info('To be continued...')
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

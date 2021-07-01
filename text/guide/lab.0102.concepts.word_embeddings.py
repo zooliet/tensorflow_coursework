@@ -48,40 +48,43 @@ if args.step == 1:
     print("\n### Step #1 - Representing text as numbers")
 
     logger.info('One-hot encodings:')
-    # str = '''
-    # This approach is inefficient.
-    # A one-hot encoded vector is sparse (meaning, most indices are zero).
-    # Imagine you have 10,000 words in the vocabulary. To one-hot encode each word,
-    # you would create a vector where 99.99% of the elements are zero.\n'''
-    # tf.print(str)
+    __doc__ ='''
+    This approach is inefficient.
+    A one-hot encoded vector is sparse (meaning, most indices are zero).
+    Imagine you have 10,000 words in the vocabulary. To one-hot encode each word,
+    you would create a vector where 99.99% of the elements are zero.
+    '''
+    print(__doc__)
 
     logger.info('Encode each word with a unique number:')
-    # str = '''
-    # This appoach is efficient. Instead of a sparse vector,
-    # you now have a dense one (where all elements are full).
-    # There are two downsides to this approach, however:
-    # - The integer-encoding is arbitrary
-    #   (it does not capture any relationship between words).
-    # - An integer-encoding can be challenging for a model to interpret.
-    #   A linear classifier, for example, learns a single weight for each
-    #   feature. Because there is no relationship between the similarity
-    #   of any two words and the similarity of their encodings, this feature-weight
-    #   combination is not meaningful.\n'''
-    # tf.print(str)
+    __doc__='''
+    This appoach is efficient. Instead of a sparse vector,
+    you now have a dense one (where all elements are full).
+    There are two downsides to this approach, however:
+    - The integer-encoding is arbitrary
+      (it does not capture any relationship between words).
+    - An integer-encoding can be challenging for a model to interpret.
+      A linear classifier, for example, learns a single weight for each
+      feature. Because there is no relationship between the similarity
+      of any two words and the similarity of their encodings, this feature-weight
+      combination is not meaningful.
+    '''
+    print(__doc__)
 
     logger.info('Word embeddings:')
-    # str = '''
-    # Word embeddings give us a way to use an efficient, dense representation
-    # in which similar words have a similar encoding. Importantly, you do not
-    # have to specify this encoding by hand.  An embedding is a dense vector of
-    # floating point values (the length of the vector is a parameter you specify).
-    # Instead of specifying the values for the embedding manually, they are
-    # trainable parameters (weights learned by the model during training).
-    # It is common to see word embeddings that are 8-dimensional (for small
-    # datasets), up to 1024-dimensions when working with large datasets.
-    # A higher dimensional embedding can capture fine-grained relationships
-    # between words, but takes more data to learn.\n'''
-    # tf.print(str)
+    __doc__='''
+    Word embeddings give us a way to use an efficient, dense representation
+    in which similar words have a similar encoding. Importantly, you do not
+    have to specify this encoding by hand.  An embedding is a dense vector of
+    floating point values (the length of the vector is a parameter you specify).
+    Instead of specifying the values for the embedding manually, they are
+    trainable parameters (weights learned by the model during training).
+    It is common to see word embeddings that are 8-dimensional (for small
+    datasets), up to 1024-dimensions when working with large datasets.
+    A higher dimensional embedding can capture fine-grained relationships
+    between words, but takes more data to learn.
+    '''
+    print(__doc__)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -115,9 +118,10 @@ if args.step in [2, 3, 5, 6, 7, 8]:
     )
 
     if args.step == 2:
+        print()
         logger.info(dataset_dir)
         print(*os.listdir(dataset_dir), sep='\n')
-        print('')
+        print()
         logger.info('samples:')
         for text_batch, label_batch in train_ds.take(1):
             for i in range(5):
@@ -150,7 +154,7 @@ if args.step == 4:
     input_text = tf.constant([[0, 1, 2], [3, 4, 5]])
     result = embedding_layer(input_text)
     logger.info(f'shape of input_text: {input_text.shape}')
-    logger.info(f'shape of embedding_layer: {result.shape}\n')
+    logger.info(f'shape of embedding_layer: {result.shape}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -205,7 +209,7 @@ args.step = auto_increment(args.step, args.all)
 if args.step in [7, 8]: 
     print("\n### Step #7 - Compile and train the model")
 
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="logs")
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="tmp/tf2_t0701/logs")
 
     model.compile(
         optimizer='adam',
@@ -222,8 +226,9 @@ if args.step in [7, 8]:
     )
 
     if args.step == 7:
+        print()
         model.summary()
-        logger.info('tensorboard --logdir logs --bind_all')
+        print('\ntensorboard --logdir tmp/tf2_t0701/logs --bind_all')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -234,8 +239,8 @@ if args.step == 8:
     weights = model.get_layer('embedding').get_weights()[0]
     vocab = vectorize_layer.get_vocabulary()
 
-    out_v = io.open('tmp/vectors.tsv', 'w', encoding='utf-8')
-    out_m = io.open('tmp/metadata.tsv', 'w', encoding='utf-8')
+    out_v = io.open('tmp/tf2_t0701/vectors.tsv', 'w', encoding='utf-8')
+    out_m = io.open('tmp/tf2_t0701/metadata.tsv', 'w', encoding='utf-8')
 
     for index, word in enumerate(vocab):
         if index == 0:
@@ -252,17 +257,19 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 9:
     print("\n### Step #9 - Visualize the embeddings")
 
-    str = '''
+    __doc__ = '''
     To visualize the embeddings, upload them to the embedding projector.
     1. Open the Embedding Projector[http://projector.tensorflow.org/]
        (this can also run in a local TensorBoard instance).
     2. Click on "Load data".
-    3. Upload the two files you created above: vecs.tsv and meta.tsv.\n'''
-    tf.print(str)
+    3. Upload the two files you created above: vecs.tsv and meta.tsv.
+    '''
+    print(__doc__)
 
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

@@ -91,7 +91,7 @@ if args.step == 2:
     ])
     logger.info('model.layers:')
     print(*[layer.name for layer in model.layers], sep='\n')
-    print('')
+    print()
 
     logger.info('create a Sequential model incrementally via the add() method:')
     model = Sequential()
@@ -100,12 +100,12 @@ if args.step == 2:
     model.add(Dense(4))
     logger.info('model.layers:')
     print(*[layer.name for layer in model.layers], sep='\n')
-    print('')
+    print()
 
     model.pop()
     logger.info('after model.pop():')
     print(*[layer.name for layer in model.layers], sep='\n')
-    print('')
+    print()
     logger.info("len(model.layers): {}".format(len(model.layers))) # 2
 
     model = Sequential(name="my_sequential")
@@ -114,7 +114,6 @@ if args.step == 2:
     model.add(Dense(4, name="layer3"))
     logger.info('model.layers:')
     print(*[layer.name for layer in model.layers], sep='\n')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -140,7 +139,7 @@ if args.step == 3:
     # Now it has weights, of shape (4, 3) and (3,) 
     logger.info('layer.weights:')
     print(*[f"{weight.name} {weight.shape}" for weight in layer.weights], sep='\n')
-    print('')
+    print()
 
     model = Sequential([
         Dense(2, activation="relu"),
@@ -179,17 +178,16 @@ if args.step == 3:
     model.add(InputLayer(input_shape=(4,)))
     model.add(Dense(2, activation="relu"))
     model.summary()
-    print('')
+    print()
 
     logger.info("InputLayer object is not displayed as part of model.layers:")
     print(*[layer.name for layer in model.layers], sep='\n')
-    print('')
+    print()
 
     logger.info('A simple alternative is to just pass an input_shape argument to your first layer:')
     model = Sequential()
     model.add(Dense(2, activation="relu", input_shape=(4,)))
     model.summary()
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -218,7 +216,6 @@ if args.step == 4:
 
     # And now?
     model.summary()
-    print('')
 
     # Now that we have 4x4 feature maps, time to apply global max pooling.
     model.add(GlobalMaxPooling2D())
@@ -267,7 +264,7 @@ if args.step == 6:
 
     logger.info('model.layers:')
     print(*[layer.output.name for layer in initial_model.layers], sep='\n')
-    print('')
+    print()
 
     feature_extractor = Model(
         inputs=initial_model.inputs,
@@ -280,7 +277,7 @@ if args.step == 6:
     logger.info(f'len(features): {len(features)}')
     logger.info('shape of each feature:')
     print(*[feature.shape for feature in features], sep='\n')
-    print('')
+    print()
 
     # Here's a similar example that only extract features from one layer:
     initial_model = Sequential( [
@@ -301,7 +298,6 @@ if args.step == 6:
     logger.info(f'len(features): {len(features)}')
     logger.info('shape of each feature:')
     print(*[feature.shape for feature in features], sep='\n')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -366,6 +362,7 @@ if args.step == 7:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

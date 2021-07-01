@@ -114,7 +114,7 @@ if args.step == 2:
     data = tf.constant([["a", "c", "d"], ["d", "z", "b"], ["e", "f", "g"]])
     layer = preprocessing.StringLookup(vocabulary=vocab)
     vectorized_data = layer(data)
-    logger.info(f'StringLookup():\n{vectorized_data}\n')
+    logger.info(f'StringLookup():\n{vectorized_data}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -127,14 +127,13 @@ if args.step == 3:
     inputs = Input(shape=input_shape)
     x = preprocessing_layer(inputs)
     outputs = rest_of_the_model(x)
-    model = Model(inputs, outputs)
+    model = Model(inputs, outputs) 
     '''
     print(str)
 
     logger.info("Option 2: Apply it to your tf.data.Dataset:")
     str = '''
-    dataset = dataset.map(lambda x, y: (preprocessing_layer(x), y))
-    '''
+    dataset = dataset.map(lambda x, y: (preprocessing_layer(x), y)) '''
     print(str) 
 
 
@@ -211,7 +210,6 @@ if args.step == 6:
     # Train the model
     model.compile(optimizer="adam", loss="sparse_categorical_crossentropy")
     model.fit(x_train, y_train, verbose=2)
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -237,7 +235,7 @@ if args.step == 7:
 
     logger.info(f'test_data: {test_data.numpy()}')
     logger.info(f'indexer(test_data): {test_data_index.numpy()}')
-    logger.info(f'encoded_data: \n{encoded_data.numpy()}\n')
+    logger.info(f'encoded_data: \n{encoded_data.numpy()}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -263,7 +261,7 @@ if args.step == 8:
 
     logger.info(f'test_data: {test_data.numpy()}')
     logger.info(f'indexer(test_data): {test_data_index.numpy()}')
-    logger.info(f'encoded_data: \n{encoded_data.numpy()}\n')
+    logger.info(f'encoded_data: \n{encoded_data.numpy()}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -284,7 +282,7 @@ if args.step == 9:
     logger.info(encoded_data.shape)
 
     logger.info(f'data[0] is {data[0]},')
-    logger.info(f'hashed into {data_hashed[0]}, and then encoded as \n{encoded_data[0]}\n')
+    logger.info(f'hashed into {data_hashed[0]}, and then encoded as \n{encoded_data[0]}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -322,7 +320,7 @@ if args.step == 10:
     test_output = model(test_data)
     logger.info(f"Input: {test_data}")
     logger.info(f"text_vectorizer(): {text_vectorizer(test_data)}")
-    logger.info("Model output: {}\n".format(test_output))
+    logger.info("Model output: {}".format(test_output))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -361,7 +359,7 @@ if args.step == 11:
         "Encoded text:\n{}".format(
             text_vectorizer(["The Brain is deeper than the sea"]).numpy())
     )
-    logger.info("Model output: {}\n".format(test_output))
+    logger.info("Model output: {}".format(test_output))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -399,10 +397,11 @@ if args.step == 12:
         "Encoded text:\n{}".format(
             text_vectorizer(["The Brain is deeper than the sea"]).numpy())
     )
-    logger.info("Model output: {}\n".format(test_output))
+    logger.info("Model output: {}".format(test_output))
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

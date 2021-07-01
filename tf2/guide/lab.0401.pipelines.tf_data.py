@@ -103,7 +103,7 @@ if args.step == 2:
     dataset = tf.data.Dataset.from_tensor_slices([8, 3, 0, 8, 2, 1])
     logger.info(f'dataset.element_spec:\n{dataset.element_spec}')
     print(*list(iter(dataset)), sep='\n')
-    logger.info(f'dataset.reduce(): {dataset.reduce(0, lambda state, value: state + value).numpy()}\n')
+    logger.info(f'dataset.reduce(): {dataset.reduce(0, lambda state, value: state + value).numpy()}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -139,7 +139,7 @@ if args.step == 3:
     dataset1 = tf.data.Dataset.from_tensor_slices(tf.random.uniform([4, 6]))
     logger.info(f'dataset1.element_spec:\n{dataset1.element_spec}\n')
     print(*list(iter(dataset1)), sep='\n')
-    print('')
+    print()
 
     dataset2 = tf.data.Dataset.from_tensor_slices( 
         (tf.random.uniform([4]), 
@@ -147,23 +147,23 @@ if args.step == 3:
     )
     logger.info('dataset2.element_spec:')
     print(*dataset2.element_spec, sep='\n')
-    print('')
+    print()
 
     dataset3 = tf.data.Dataset.zip((dataset1, dataset2))
     logger.info('dataset3.element_spec:')
     print(*dataset3.element_spec, sep='\n')
-    print('')
+    print()
     for a, (b,c) in dataset3:
         logger.info('shapes: {a.shape}, {b.shape}, {c.shape}'.format(a=a, b=b, c=c))
         break
-    print('')
+    print()
 
     # Dataset containing a sparse tensor.
     sparse_tensor = tf.SparseTensor(indices=[[0, 0], [1, 2]], values=[1, 2], dense_shape=[3, 4])
     logger.info(f'sparse_tensor\n{tf.sparse.to_dense(sparse_tensor)}\n')
     dataset4 = tf.data.Dataset.from_tensors(sparse_tensor)
     logger.info(f'dataset4.element_spec:\n{dataset4.element_spec}')
-    logger.info(f'dataset4.element_spec.value_type:\n{dataset4.element_spec.value_type}\n')
+    logger.info(f'dataset4.element_spec.value_type:\n{dataset4.element_spec.value_type}')
     # Use value_type to see the type of value represented by the element spec
 
 
@@ -186,12 +186,11 @@ if args.step == 4:
     dataset = tf.data.Dataset.from_tensor_slices((images, labels))
     logger.info('dataset.element_spec:')
     print(*dataset.element_spec, sep='\n')
-    print('')
+    print()
     for image, label in dataset.take(1):
         logger.info(f"image's shape: {image.shape}, label's shape: {label.shape}")
     for image_batch, label_batch in dataset.batch(32).take(1):
         logger.info(f"image_batch's shape: {image_batch.shape}, label_batch's shape: {label_batch.shape}")
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -214,12 +213,12 @@ if args.step == 5:
     logger.info('ds_counter.batch(10).take(3):')
     for count_batch in ds_counter.batch(10).take(3):
         print(count_batch.numpy())
-    print('')
+    print()
 
     logger.info('ds_counter.repeat().batch(10).take(3):')
     for count_batch in ds_counter.repeat().batch(10).take(3):
         print(count_batch.numpy())
-    print('')
+    print()
 
     def gen_series():
         i = 0
@@ -243,7 +242,7 @@ if args.step == 5:
     for ids, sequence_batch in ds_series.padded_batch(3).take(2):
         for id, sequence in zip(ids, sequence_batch):
             print(f'{id.numpy()}: {sequence.numpy()}')
-        print('')
+        print()
 
     img_gen = tf.keras.preprocessing.image.ImageDataGenerator(
         rescale=1./255, rotation_range=20
@@ -261,12 +260,11 @@ if args.step == 5:
     )
     logger.info('ds.element_spec:')
     print(*ds.element_spec, sep='\n')
-    print('')
+    print()
     
     for images_batch, labels_batch in ds.take(1):
         logger.info(f'images_batch.shape: {images_batch.shape}')
         logger.info(f'labels_batch.shape: {labels_batch.shape}')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -299,7 +297,7 @@ if args.step == 6:
     # decode
     parsed = tf.train.Example.FromString(raw_example.numpy())
     logger.info('decoded by tf.train.Example.FromString():')
-    print(parsed.features.feature['image/text'], '\n')
+    print(parsed.features.feature['image/text'])
 
 
 args.step = auto_increment(args.step, args.all)
@@ -327,7 +325,7 @@ if args.step == 7:
     logger.info('dataset.take(5):')
     for line in dataset.take(5):
         print(line.numpy())
-    print('')
+    print()
 
     #
     files_ds = tf.data.Dataset.from_tensor_slices(file_paths)
@@ -338,7 +336,7 @@ if args.step == 7:
       if i % 3 == 0:
         tf.print()
       print(line.numpy())
-    print('')
+    print()
 
     #
     titanic_file = tf.keras.utils.get_file("train.csv", "https://storage.googleapis.com/tf-datasets/titanic/train.csv")
@@ -346,7 +344,7 @@ if args.step == 7:
     logger.info('titanic_lines.take(5):')
     for line in titanic_lines.take(5):
         print(line.numpy())
-    print('')
+    print()
 
     # 0th 위치, 1길이 값이 "0"이 아닌 라인
     def survived(line):
@@ -356,7 +354,6 @@ if args.step == 7:
     logger.info('titanic_lines.skip(1).filter(survived).take(5):')
     for line in survivors.take(5):
         print(line.numpy())
-    print('')
     
 
 args.step = auto_increment(args.step, args.all)
@@ -372,12 +369,12 @@ if args.step == 8:
     titanic_slices = tf.data.Dataset.from_tensor_slices(dict(df))
     logger.info('titanic_slices.element_spec:')
     print(*titanic_slices.element_spec.items(), sep='\n')
-    print('')
+    print()
     logger.info('titanic_slices.batch(2).take(2):')
     for feature_batch in titanic_slices.batch(2).take(2):
         for key, value in feature_batch.items():
             print("{!r:20s}: {}".format(key, value))
-        print('')
+        print()
 
     # from disk
     titanic_batches = tf.data.experimental.make_csv_dataset(
@@ -388,10 +385,10 @@ if args.step == 8:
     logger.info(f'len(titanic_batches.element_spec): {len(titanic_batches.element_spec)}\n') # features, label
     logger.info('titanic_batches.element_spec[0] - features:')
     print(*(dict(titanic_batches.element_spec[0]).items()), sep='\n')
-    print('')
+    print()
     logger.info('titanic_batches.element_spec[1] - label:')
     print(titanic_batches.element_spec[1])
-    print('')
+    print()
 
     logger.info('titanic_batches.take(2): batch=4') # batch = 4
     for feature_batch, label_batch in titanic_batches.take(2):
@@ -399,7 +396,7 @@ if args.step == 8:
         # logger.info("features:")
         for key, value in feature_batch.items():
             print("{!r:20s}: {}".format(key, value))
-        print('')
+        print()
 
     # from disk: select columns
     titanic_batches2 = tf.data.experimental.make_csv_dataset(
@@ -415,7 +412,7 @@ if args.step == 8:
         # logger.info("features:")
         for key, value in feature_batch.items():
             print("{!r:20s}: {}".format(key, value))
-        print('')
+        print()
 
     # lower-level
     titanic_types  = [
@@ -431,7 +428,6 @@ if args.step == 8:
     logger.info('tf.data.experimental.CsvDataset().take(4):')
     for line in dataset.take(4): 
         print([item.numpy() for item in line])
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -444,7 +440,7 @@ if args.step == 9:
     list_ds = tf.data.Dataset.list_files(str(flowers_root/'*/*'))
     for f in list_ds.take(5):
         print(f.numpy())
-    print('')
+    print()
 
     def process_path(file_path):
         label = tf.strings.split(file_path, os.sep)[-2]
@@ -453,7 +449,7 @@ if args.step == 9:
     labeled_ds = list_ds.map(process_path)
     logger.info('labeled_ds.element_spec:')
     print(*labeled_ds.element_spec, sep='\n')
-    print('')
+    print()
 
     logger.info('labeled_ds.take(2):')
     for image_raw, label_text in labeled_ds.take(2):
@@ -476,15 +472,14 @@ if args.step == 10:
     logger.info('dataset.batch(4).take(3):')
     for batch in batched_dataset.take(3):
         # print(*[arr for arr in batch], sep='\n')
-        print(*batch, sep='\n')
-        print('')
+        print(*batch, sep='\n\n')
+    print()
 
     # using drop_remainder
     logger.info('dataset.batch(7, drop_remainder=True):')
     batched_dataset = dataset.batch(7, drop_remainder=True)
     for batch in batched_dataset:
-        print(*batch, sep='\n')
-        print('')
+        print(*batch, sep='\n\n')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -499,7 +494,7 @@ if args.step == 11:
 
     logger.info('dataset.batch(4).take(3):')
     for i, batch in enumerate(dataset.take(3)):
-        print(f'{i+1}th batch:\n{batch.numpy()}\n')
+        print(f'{i+1}th batch:\n{batch.numpy()}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -539,7 +534,7 @@ if args.step == 12:
     for epoch in range(epochs):
         for batch in dataset:
             print(batch.shape)
-        logger.info("End of epoch: %d\n" % epoch)
+        logger.info("End of epoch: %d" % epoch)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -559,7 +554,8 @@ if args.step == 13:
     dataset = dataset.batch(10)
     logger.info('ds.shuffle(buffer_size=30).batch(10):')
     for n, line_batch in dataset.take(3):
-        print(n.numpy(), '\n') 
+        print(n.numpy()) 
+    print()
 
     #
     dataset = tf.data.Dataset.zip((counter, lines))
@@ -569,8 +565,8 @@ if args.step == 13:
     # Here are the item ID's near the epoch boundary
     logger.info('ds.shuffle(buffer_size=100).batch(10).repeat(2):')
     for n, line_batch in shuffled.skip(60).take(5):
-        print(n.numpy(), '\n') 
-
+        print(n.numpy()) 
+    print()
 
     dataset = tf.data.Dataset.zip((counter, lines))
     shuffled = dataset.repeat(2).shuffle(buffer_size=100).batch(10)
@@ -578,7 +574,7 @@ if args.step == 13:
 
     logger.info('ds.repeat(2).shuffle(buffer_size=100).batch(10):')
     for n, line_batch in shuffled.skip(55).take(15):
-        print(n.numpy(), '\n') 
+        print(n.numpy()) 
 
     if args.plot:
         plt.figure()
@@ -729,7 +725,6 @@ if args.step == 17:
     image_batch, text_batch = next(iter(decoded.batch(10)))
     logger.info('dataset.map(tf_parse):')
     print(*text_batch, sep='\n')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -743,7 +738,7 @@ if args.step == 18:
     logger.info('batches.take(5): when batch_size is 10')
     for batch in batches.take(5):
         print(batch.numpy())
-    print('')
+    print()
 
     #
     def dense_1_step(batch):
@@ -755,7 +750,7 @@ if args.step == 18:
     logger.info('predict_dense_1_step.take(3):')
     for features, label in predict_dense_1_step.take(3):
         print(features.numpy(), " => ", label.numpy())
-    print('')
+    print()
 
     #
     batches = range_ds.batch(15, drop_remainder=True)
@@ -771,7 +766,7 @@ if args.step == 18:
     logger.info('predict_5_steps.take(3):')
     for features, label in predict_5_steps.take(3):
         print(features.numpy(), " => ", label.numpy())
-    print('')
+    print()
 
     #
     feature_length = 10
@@ -820,7 +815,7 @@ if args.step == 18:
     logger.info('windows.flat_map(sub_to_batch).take(30):')
     for example in windows.flat_map(sub_to_batch).take(5):
         print(example.numpy())
-    print('')
+    print()
 
     #
     def make_window_dataset(ds, window_size=5, shift=1, stride=1):
@@ -836,13 +831,12 @@ if args.step == 18:
 
     for example in ds.take(10):
         print(example.numpy())
-    print('')
+    print()
 
     dense_labels_ds = ds.map(dense_1_step)
 
     for inputs,labels in dense_labels_ds.take(3):
         print(inputs.numpy(), "=>", labels.numpy())
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -920,7 +914,7 @@ if args.step == 19:
     logger.info('balanced_ds.take(10):')
     for features, labels in balanced_ds.take(10):
         print(labels.numpy())
-    print('')
+    print()
 
     # Rejection resampling
     __doc__='''
@@ -964,7 +958,6 @@ if args.step == 19:
     logger.info('balanced_ds.take(10):')
     for features, labels in balanced_ds.take(10):
         print(labels.numpy())
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -1000,7 +993,6 @@ if args.step == 20:
     ckpt.restore(manager.latest_checkpoint)
 
     print([next(iterator).numpy() for _ in range(5)])
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -1030,11 +1022,11 @@ if args.step == 21:
 
     logger.info('model.fit(fmist_train_ds):')
     model.fit(fmnist_train_ds, epochs=2, verbose=2)
-    print('')
+    print()
 
     logger.info('model.fit(fmist_train_ds.repeat()):')
     model.fit(fmnist_train_ds.repeat(), epochs=2, steps_per_epoch=20, verbose=2)
-    print('')
+    print()
 
     # For evaluation you can pass the number of evaluation steps:
     loss, accuracy = model.evaluate(fmnist_train_ds, verbose=0)
@@ -1053,10 +1045,11 @@ if args.step == 21:
 
     # But the labels are ignored if you do pass a dataset containing them:
     result = model.predict(fmnist_train_ds, steps = 10)
-    logger.info(f'result.shape: {result.shape}\n')  # (320, 10)
+    logger.info(f'result.shape: {result.shape}')  # (320, 10)
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

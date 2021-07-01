@@ -100,23 +100,25 @@ if args.step == 3:
     )
 
     model.summary()
+    print()
     features, labels = next(iter(train_ds))
     predictions = model(features) 
     batch_loss = loss_fn(labels, predictions)
-    logger.info(f"loss before training: {batch_loss:.2f}")
+    logger.info(f"loss before training: {batch_loss:.2f}\n")
 
     epochs = args.epochs # 10
     start = time.time()
     model.fit(x_train, y_train, epochs=epochs, batch_size=32, shuffle=True, verbose=2)
     end = time.time()
+    print()
     logger.info(f"Sequential model with fit(x_train,y_train): {end - start:.2f} secs\n")
 
     test_loss, test_acc = model.evaluate(x_test, y_test, verbose=0)
-    logger.info(f'Test accuracy: {test_acc:.4f}')
+    logger.info(f'Test accuracy: {test_acc:.4f}\n')
     
     predictions = model(x_test[:3])
-    logger.info(f'Predictions(logits):\n{predictions}')
-    logger.info(f'Predictions(softmax):\n{tf.nn.softmax(predictions)}')
+    logger.info(f'Predictions(logits):\n{predictions}\n')
+    logger.info(f'Predictions(softmax):\n{tf.nn.softmax(predictions)}\n')
     # or
     probability_model = Sequential([model, Softmax()])
     predictions = probability_model(x_test[:3])
@@ -142,6 +144,7 @@ if args.step == 4:
     start = time.time()
     model.fit(train_ds, epochs=epochs, verbose=2)
     end = time.time()
+    print()
     logger.info(f"Sequential model with fit(train_ds): {end - start:.2f} secs\n")
 
     test_loss, test_acc = model.evaluate(x_test, y_test, verbose=0)
@@ -234,8 +237,9 @@ if args.step == 6:
     epochs = args.epochs # 10
     start = time.time()
     model.fit(x_train, y_train, epochs=epochs, batch_size=32, shuffle=True, verbose=2)
+    print()
     end  = time.time()
-    logger.info(f"Functional model with fit(x_train,y_train): {end - start:.2f} secs\n")
+    logger.info(f"Functional model with fit(x_train,y_train): {end - start:.2f} secs")
 
 
 args.step = auto_increment(args.step, args.all)
@@ -257,7 +261,8 @@ if args.step == 7:
     start = time.time()
     model.fit(train_ds, epochs=epochs, verbose=2)
     end = time.time()
-    logger.info(f"Functional model with fit(train_ds)")
+    print()
+    logger.info(f"Functional model with fit(train_ds): {end-start:.2f} secs\n")
 
     test_loss, test_acc = model.evaluate(x_test, y_test, verbose=0)
     logger.info(f'Test accuracy: {test_acc:.4f}')
@@ -332,6 +337,7 @@ if args.step == 8:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

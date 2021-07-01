@@ -59,14 +59,16 @@ if args.step >= 1:
         as_supervised=True
     )
 
+
 args.step = auto_increment(args.step, args.all)
 ### Step #2 - Explore the IMDB dataset
 if args.step == 2:
     print("\n### Step #2 - Explore the IMDB dataset")
 
     train_examples_batch, train_labels_batch = next(iter(train_data.batch(10)))
+    logger.info('one batch(text, label):')
     for i, (text, label) in enumerate(zip(train_examples_batch, train_labels_batch)):
-        logger.info(f'{i+1}. {label.numpy()}: {text.numpy()[:30]}...')
+        print(f'{i+1}. {label.numpy()}: {text.numpy()[:30]}...')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -85,7 +87,8 @@ if args.step >= 3:
 
     if args.step == 3:
         train_examples_batch, train_labels_batch = next(iter(train_data.batch(10)))
-        logger.info(hub_layer(train_examples_batch[:3]))
+        logger.info('hub_layer(train_examples_batch[:3]):')
+        print(hub_layer(train_examples_batch[:3]), '\n')
 
     model = Sequential()
     model.add(hub_layer)
@@ -94,6 +97,7 @@ if args.step >= 3:
 
     if args.step == 3:
         model.summary()
+
 
 args.step = auto_increment(args.step, args.all)
 ### Step #4 - Build the model: Loss function and optimizer
@@ -121,8 +125,10 @@ if args.step >= 5:
     )
 
     if args.step == 5:
+        print()
+        logger.info('history.history.items():')
         for key, vals in history.history.items():
-            logger.info(f'{key}: {list(map(lambda x: round(x,2), vals))}')
+            print(f'{key}: {list(map(lambda x: round(x,2), vals))}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -137,6 +143,7 @@ if args.step == 6:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

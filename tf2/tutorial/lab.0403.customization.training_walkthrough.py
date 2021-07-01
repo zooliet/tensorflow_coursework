@@ -49,7 +49,7 @@ if args.step >= 1:
     )
 
     if args.step == 1:
-        logger.info("Local copy of the dataset file: {}".format(train_dataset_fp))
+        logger.info("Local copy of the dataset file:\n{}".format(train_dataset_fp))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -325,6 +325,7 @@ if args.step == 12:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

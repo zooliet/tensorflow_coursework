@@ -88,7 +88,6 @@ if args.step == 1:
     logger.info(f"len(weights): {len(linear_layer.weights)}")
     for i, weight in enumerate(linear_layer.weights):
         logger.info(f"weight[{i}]'s shape: {weight.shape}")
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -126,7 +125,7 @@ if args.step == 2:
     logger.info(f"len(non-trainable weights): {len(my_sum.non_trainable_weights)}")
     
     # It's not included in the trainable weights:
-    logger.info(f"len(trainable_weights): {len(my_sum.trainable_weights)}\n")
+    logger.info(f"len(trainable_weights): {len(my_sum.trainable_weights)}")
 
 
 args.step = auto_increment(args.step, args.all)
@@ -177,7 +176,6 @@ if args.step == 3:
     logger.info(f"len(weights): {len(linear_layer.weights)}")
     for i, weight in enumerate(linear_layer.weights):
         logger.info(f"weight[{i}]'s shape: {weight.shape}")
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -237,7 +235,6 @@ if args.step == 4:
     logger.info(f"len(weights): {len(mlp.weights)}")
     for i, weight in enumerate(mlp.weights):
         logger.info(f"weight[{i}]'s shape: {weight.shape}")
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -350,7 +347,7 @@ if args.step == 5:
         epochs=args.epochs,
         verbose=2
     )
-    print('')
+    print()
 
     # It's also possible not to pass any loss in `compile`,
     # since the model already has a loss to minimize, via the `add_loss`
@@ -361,7 +358,6 @@ if args.step == 5:
         epochs=args.epochs,
         verbose=2
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -416,7 +412,6 @@ if args.step == 6:
         epochs=args.epochs, 
         verbose=2
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -460,7 +455,7 @@ if args.step == 7:
 
     layer = Linear(64)
     config = layer.get_config()
-    logger.info(f'layer.get_config():\n{config}\n')
+    logger.info(f'layer.get_config():\n{config}')
     new_layer = Linear.from_config(config)
 
 
@@ -625,7 +620,7 @@ if args.step == 11:
 
             if step % 100 == 0:
                 logger.info("step %d: mean loss = %.4f" % (step, loss_metric.result()))
-        print('')
+        print()
 
     logger.info('against fit():')
     vae = VariationalAutoEncoder(784, 64, 32)
@@ -637,7 +632,6 @@ if args.step == 11:
         batch_size=64, 
         verbose=2
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -695,10 +689,10 @@ if args.step == 12:
         batch_size=64, 
         verbose=2
     )
-    print('')
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

@@ -201,6 +201,7 @@ if args.step >= 7:
 
     if args.step == 7:
         model.summary()
+        print()
 
         predictions = model(image_batch)
         logger.info(f'predctions.shape: {predictions.shape}')
@@ -281,9 +282,9 @@ if args.step == 10:
     print("\n### Step #10 - Export your model")
 
     t = time.time()
-    export_path = "tmp/saved_models/{}".format(int(t))
+    export_path = "tmp/tf2_t0604/saved_models/{}".format(int(t))
     model.save(export_path)
-    logger.info(f'export_path: {export_path}')
+    logger.info(f'export_path:\n{export_path}')
 
     reloaded = tf.keras.models.load_model(export_path)
     result_batch = model.predict(image_batch)
@@ -294,6 +295,7 @@ if args.step == 10:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

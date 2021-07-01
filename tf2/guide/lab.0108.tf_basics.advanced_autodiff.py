@@ -41,7 +41,6 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 1:
     print("\n### Step #1 - Controlling gradient recording")
 
-
 args.step = auto_increment(args.step, args.all)
 ### Step #2 - Stop gradient
 if args.step == 2:
@@ -89,6 +88,7 @@ if args.step == 10:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

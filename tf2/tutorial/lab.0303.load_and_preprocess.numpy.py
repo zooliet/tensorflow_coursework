@@ -103,6 +103,7 @@ if args.step == 4:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

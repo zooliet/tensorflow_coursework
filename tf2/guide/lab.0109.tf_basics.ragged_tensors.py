@@ -111,7 +111,7 @@ if args.step == 2:
 
     logger.info('Ragged tensors can be converted to nested Python lists and NumPy arrays:')
     print(digits.to_list(), '\n')
-    print(digits.numpy(), '\n')
+    print(digits.numpy())
 
 
 args.step = auto_increment(args.step, args.all)
@@ -184,17 +184,18 @@ if args.step == 4:
     try:
         tf.ragged.constant([["one", "two"], [3, 4]]) 
     except ValueError as exception:
-        print(exception, '\n')
+        print(exception)
 
 args.step = auto_increment(args.step, args.all)
 ### Step #5 - Example use case
 if args.step == 5:
     print("\n### Step #5 - Example use case")
     
-    print("\n\tMore to come!\n")
+    print("\n\tMore to come!")
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

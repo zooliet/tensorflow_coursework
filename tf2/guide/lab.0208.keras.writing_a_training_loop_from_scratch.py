@@ -138,7 +138,6 @@ if args.step == 2:
                     % (step, float(loss_value))
                 )
                 logger.debug("Seen so far: %s samples" % ((step + 1) * batch_size))
-        print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -209,8 +208,6 @@ if args.step == 3:
         val_acc_metric.reset_states()
         logger.info("Validation acc: %.4f" % (float(val_acc),))
         logger.info("Time taken/epoch: %.2fs" % (time.time() - start_time))
-
-        print('') # end of an epoch
 
 
 args.step = auto_increment(args.step, args.all)
@@ -291,7 +288,6 @@ if args.step == 4:
         val_acc_metric.reset_states()
         logger.info("Validation acc: %.4f" % (float(val_acc),))
         logger.info("Time taken/epoch: %.2fs" % (time.time() - start_time))
-        print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -382,7 +378,6 @@ if args.step == 5:
         val_acc_metric.reset_states()
         logger.info("Validation acc: %.4f" % (float(val_acc),))
         logger.info("Time taken/epoch: %.2fs" % (time.time() - start_time))
-        print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -393,6 +388,7 @@ if args.step == 6:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

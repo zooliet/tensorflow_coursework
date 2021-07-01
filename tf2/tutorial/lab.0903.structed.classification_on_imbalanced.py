@@ -229,6 +229,7 @@ if args.step >= 29:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

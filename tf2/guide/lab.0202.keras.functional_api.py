@@ -71,7 +71,6 @@ if args.step in [1,2,3]:
         logger.info('inputs: {}, {}\n'.format(inputs.shape, inputs.dtype))
 
         model.summary()
-        print('')
 
         tf.keras.utils.plot_model(
             model, "tmp/tf2_g0202/my_first_model_with_shape_info.png", show_shapes=True
@@ -136,7 +135,6 @@ if args.step == 3:
     del model
     # Recreate the exact same model purely from the file:
     model = tf.keras.models.load_model("tmp/tf2_g0202/my_model")
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -153,7 +151,7 @@ if args.step == 4:
     encoder_output = GlobalMaxPooling2D()(x)
     encoder = Model(encoder_input, encoder_output, name="encoder")
     encoder.summary()
-    print('')
+    print()
 
     x = Reshape((4, 4, 1))(encoder_output)
     x = Conv2DTranspose(16, 3, activation="relu")(x)
@@ -163,7 +161,6 @@ if args.step == 4:
     decoder_output = Conv2DTranspose(1, 3, activation="relu")(x)
     autoencoder = Model(encoder_input, decoder_output, name="autoencoder")
     autoencoder.summary()    
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -180,7 +177,7 @@ if args.step == 5:
     encoder_output = GlobalMaxPooling2D()(x)
     encoder = Model(encoder_input, encoder_output, name="encoder")
     encoder.summary()
-    print('')
+    print()
 
     decoder_input = Input(shape=(16,), name="encoded_img")
     x = Reshape((4, 4, 1))(decoder_input)
@@ -191,14 +188,13 @@ if args.step == 5:
     decoder_output = Conv2DTranspose(1, 3, activation="relu")(x)
     decoder = Model(decoder_input, decoder_output, name="decoder")
     decoder.summary()
-    print('')
+    print()
 
     autoencoder_input = Input(shape=(28, 28, 1), name="img")
     encoded_img = encoder(autoencoder_input)
     decoded_img = decoder(encoded_img)
     autoencoder = Model(autoencoder_input, decoded_img, name="autoencoder")
     autoencoder.summary()
-    print('')
 
     # ensemble model
     def get_model():
@@ -308,7 +304,6 @@ if args.step == 6:
         batch_size=32,
         verbose=2 
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -345,7 +340,7 @@ if args.step == 7:
 
     model = Model(inputs, outputs, name="toy_resnet")
     model.summary()
-    print('')
+    print()
 
     tf.keras.utils.plot_model(
         model, "tmp/tf2_g0202/mini_resnet.png", show_shapes=True
@@ -382,7 +377,6 @@ if args.step == 7:
         validation_split=0.2,
         verbose=2
     )
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -432,7 +426,6 @@ if args.step == 9:
     feat_extraction_model = Model(inputs=vgg19.input, outputs=features_list)
     for feat in feat_extraction_model.output:
         logger.info(f"{feat.name}: {feat.shape}")
-    print('')
 
     img = np.random.random((1, 224, 224, 3)).astype("float32")
     extracted_features = feat_extraction_model(img)
@@ -480,7 +473,7 @@ args.step = auto_increment(args.step, args.all)
 ### Step #11 - When to use the functional API
 if args.step == 11:
     print("\n### Step #11 - When to use the functional API")
-    logger.info("https://www.tensorflow.org/guide/keras/functional#when_to_use_the_functional_api\n")
+    logger.info("https://www.tensorflow.org/guide/keras/functional#when_to_use_the_functional_api")
 
 
 args.step = auto_increment(args.step, args.all)
@@ -491,6 +484,7 @@ if args.step == 12:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

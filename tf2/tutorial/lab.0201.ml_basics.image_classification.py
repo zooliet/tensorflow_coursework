@@ -64,7 +64,6 @@ if args.step == 2:
     logger.info(f'len(train_labels): {len(train_labels)}') # 60000
     logger.info(f'test_images.shape: {test_images.shape}') # (10000, 28, 28)
     logger.info(f'len(test_labels): {len(test_labels)}') # 10000
-
     logger.info(f'train_labels: {np.unique(train_labels)}')
 
 
@@ -80,10 +79,6 @@ if args.step >= 3:
         plt.grid(False)
         plt.show(block=False)
 
-    train_images = train_images / 255.0
-    test_images = test_images / 255.0
-
-    if args.step == 3 and args.plot:
         plt.figure(figsize=(10,10))
         for i in range(25):
             plt.subplot(5,5,i+1)
@@ -130,7 +125,7 @@ if args.step >= 6:
     model.fit(
         train_images, train_labels, 
         epochs=args.epochs, 
-        verbose=2 if args.step == 6 else 0
+        verbose=1 if args.step == 6 else 0
     )
 
 
@@ -151,9 +146,10 @@ if args.step >= 8:
     probability_model = Sequential([model, Softmax()])
     predictions = probability_model.predict(test_images)
     if args.step == 8:
-        logger.info(f'Predictions(softmax):\n{predictions[:5]}')
-        logger.info(f'After applying np.argmax: {np.argmax(predictions[:5], -1)}')
+        logger.info(f'Predictions(softmax):\n{predictions[:5]}\n')
+        logger.info(f'Predictions(index): {np.argmax(predictions[:5], -1)}')
 
+if args.step:
     def plot_image(i, predictions_array, true_label, img):
         true_label, img = true_label[i], img[i]
         plt.grid(False)
@@ -237,8 +233,8 @@ if args.step == 10:
     logger.info(f'test_image.shape: {img.shape}')
 
     predictions_single = probability_model.predict(img)
-    logger.info(f'predictions: {predictions_single}')
-    logger.info(f'np.argmax(): {np.argmax(predictions_single[0])}')
+    logger.info(f'predictions:\n{predictions_single}\n')
+    logger.info(f'predictions(index): {np.argmax(predictions_single[0])}')
 
     if args.plot:
         plt.figure(figsize=(6,3))
@@ -248,6 +244,7 @@ if args.step == 10:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

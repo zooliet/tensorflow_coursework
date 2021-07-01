@@ -87,7 +87,7 @@ if args.step == 2:
 
     _ = layer(tf.zeros([10, 5])) # Calling the layer `.builds` it.
     logger.info('layer.trainable_variables:')
-    print([var.name for var in layer.trainable_variables], '\n')
+    print([var.name for var in layer.trainable_variables])
 
 
 args.step = auto_increment(args.step, args.all)
@@ -148,6 +148,7 @@ if args.step == 3:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

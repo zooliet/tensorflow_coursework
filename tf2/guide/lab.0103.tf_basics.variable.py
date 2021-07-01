@@ -87,12 +87,11 @@ if args.step == 1:
     # a and b are different
     print(a.numpy())
     print(b.numpy())
-    print('')
+    print()
 
     logger.info('There are other versions of assign:')
     print(a.assign_add([2,3]).numpy())  # [7. 9.]
     print(a.assign_sub([7,9]).numpy())  # [0. 0.]
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -154,10 +153,11 @@ if args.step == 3:
     with tf.device('GPU:0'):
         # Element-wise multiply
         k = a * b
-    print(k, '\n')
+    print(k)
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

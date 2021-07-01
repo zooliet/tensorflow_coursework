@@ -217,6 +217,7 @@ if args.step >= 9:
 
     if args.step == 9:
         model.summary()
+        print()
         logger.info(f'len(model.trainable_variables): {len(model.trainable_variables)}\n')
         # The 2.5M parameters in MobileNet are frozen, 
         # but there are 1.2K trainable parameters in the Dense layer. 
@@ -313,6 +314,7 @@ if args.step >= 13:
 
     if args.step == 13:
         model.summary()
+        print()
         logger.info(f'len(model.trainable_variables): {len(model.trainable_variables)}')
 
 
@@ -395,6 +397,7 @@ if args.step == 15:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

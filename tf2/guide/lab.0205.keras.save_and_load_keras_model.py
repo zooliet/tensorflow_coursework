@@ -30,7 +30,7 @@ import time
 from PIL import Image
 
 from tensorflow.keras import Input, Model, Sequential
-from tensorflow.keras.layers import Layer, Dense, InputLayer
+from tensorflow.keras.layers import Layer, Dense, InputLayer, Dropout
 
 
 ### TOC
@@ -133,7 +133,7 @@ if args.step == 3:
 
     logger.info('ls -l .../my_model:')
     print(*os.listdir('tmp/tf2_g0205/my_model'), sep='\n')
-    print('')
+    print()
 
     # How SavedModel handles custom objects
     class CustomModel(Model):
@@ -178,7 +178,7 @@ if args.step == 3:
 
     logger.info("Original model:\n{}".format(model))
     logger.info("Model loaded with custom objects:\n{}".format(loaded_1))
-    logger.info("Model loaded without the custom object class:\n{}\n".format(loaded_2))
+    logger.info("Model loaded without the custom object class:\n{}".format(loaded_2))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -207,7 +207,6 @@ if args.step == 4:
     # The reconstructed model is already compiled and has retained the optimizer
     # state, so training can resume:
     reconstructed_model.fit(test_input, test_target, verbose=2)
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -418,6 +417,7 @@ if args.step == 11:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

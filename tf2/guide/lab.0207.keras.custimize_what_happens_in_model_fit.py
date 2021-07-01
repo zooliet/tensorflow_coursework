@@ -134,7 +134,6 @@ if args.step == 2:
     y = np.random.random((1000, 1))
 
     model.fit(x, y, epochs=args.epochs, verbose=2)
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -210,7 +209,6 @@ if args.step == 3:
     y = np.random.random((1000, 1))
 
     model.fit(x, y, epochs=args.epochs, verbose=2)
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -276,7 +274,6 @@ if args.step == 4:
     y = np.random.random((1000, 1))
     sw = np.random.random((1000, 1))
     model.fit(x, y, sample_weight=sw, epochs=args.epochs, verbose=2)
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -309,7 +306,6 @@ if args.step == 5:
     x = np.random.random((1000, 32))
     y = np.random.random((1000, 1))
     model.evaluate(x, y)
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -419,10 +415,10 @@ if args.step == 6:
     # To limit the execution time, we only train on 100 batches. You can train on
     # the entire dataset. You will need about 20 epochs to get nice results.
     gan.fit(dataset.take(100), epochs=args.epochs, verbose=2)
-    print('')
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

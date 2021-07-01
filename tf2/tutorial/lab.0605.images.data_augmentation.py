@@ -57,6 +57,7 @@ if args.step >= 1:
     num_classes = metadata.features['label'].num_classes
 
     if args.step == 1:
+        print()
         logger.info(f'num_classes: {num_classes}')
         if args.plot:
             image, label = next(iter(train_ds))
@@ -197,6 +198,7 @@ if args.step == 6:
 
     loss, acc = model.evaluate(test_ds, verbose=0)
     if args.step == 6:
+        print()
         logger.info("Accuracy: {:.4f}".format(acc))
 
 
@@ -425,6 +427,7 @@ if args.step == 11:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

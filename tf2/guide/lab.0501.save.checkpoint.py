@@ -148,7 +148,7 @@ if args.step == 3:
                 save_path = manager.save()
                 print("Saved checkpoint for step {}: {}".format(int(ckpt.step), save_path))
                 print("loss {:1.2f}".format(loss.numpy()))
-        print('')
+        print()
 
     train_and_checkpoint(net, manager)
 
@@ -168,7 +168,6 @@ if args.step == 3:
 
     logger.info('List the three remaining checkpoints:') 
     print(*manager.checkpoints, sep='\n') 
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -179,6 +178,7 @@ if args.step == 4:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

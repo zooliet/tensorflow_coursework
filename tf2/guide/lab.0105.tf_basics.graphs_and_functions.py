@@ -140,7 +140,7 @@ if args.step == 3:
     # includes `inner_function` as well as `outer_function`.
     logger.info('using @tf.function decorator:')
     result = outer_function(tf.constant([[1.0, 2.0]])).numpy()
-    print(result, '\n')
+    print(result)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -159,13 +159,13 @@ if args.step == 4:
 
     print("First branch, with graph:", tf_simple_relu(tf.constant(1)).numpy())
     print("Second branch, with graph:", tf_simple_relu(tf.constant(-1)).numpy())
-    print('')
+    print()
 
     logger.info('This is the graph-generating output of AutoGraph:')
-    print(tf.autograph.to_code(simple_relu), '\n')
+    print(tf.autograph.to_code(simple_relu))
 
     logger.info('This is the graph itself:')
-    print(tf_simple_relu.get_concrete_function(tf.constant(1)).graph.as_graph_def(), '\n')
+    print(tf_simple_relu.get_concrete_function(tf.constant(1)).graph.as_graph_def())
 
 
 args.step = auto_increment(args.step, args.all)
@@ -200,7 +200,7 @@ if args.step == 5:
 
     logger.info('There are three ConcreteFunctions (one for each graph) in my_relu:')
     # The `ConcreteFunction` also knows the return type and shape!
-    print(my_relu.pretty_printed_concrete_signatures(), '\n')
+    print(my_relu.pretty_printed_concrete_signatures())
 
 
 args.step = auto_increment(args.step, args.all)
@@ -244,7 +244,6 @@ if args.step == 6:
     get_MSE(y_true, y_pred)
     get_MSE(y_true, y_pred)
     get_MSE(y_true, y_pred)
-    print('')
 
     # Don't forget to set it back when you are done
     tf.config.run_functions_eagerly(False)
@@ -297,7 +296,7 @@ if args.step == 8:
     print("Eager execution:", timeit.timeit(lambda: power(x, 100), number=1000))
     
     power_as_graph = tf.function(power)
-    print("Graph execution:", timeit.timeit(lambda: power_as_graph(x, 100), number=1000), '\n')
+    print("Graph execution:", timeit.timeit(lambda: power_as_graph(x, 100), number=1000))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -358,6 +357,7 @@ if args.step == 10:
 
 
 ### End of File
+print('')
 if args.plot:
     plt.show()
 debug()

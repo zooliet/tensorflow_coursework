@@ -44,6 +44,11 @@ if args.step == 0:
     toc(__file__)
 
 
+if args.step or args.all:
+    if not os.path.exists('tmp/tf2_t0606/'):
+        os.mkdir('tmp/tf2_t0606/') 
+
+
 args.step = auto_increment(args.step, args.all)
 ### Step #1 - Download the Oxford-IIIT Pets dataset
 if args.step in [1, 2, 3, 4]:
@@ -55,7 +60,7 @@ if args.step in [1, 2, 3, 4]:
         logger.info('dataset:')
         for key, value in dataset.items():
             print(f'{key}:\n{value.element_spec}\n')
-        logger.info(f'info:\n{info}\n')
+        logger.info(f'info:\n{info}')
 
     def normalize(input_image, input_mask):
         input_image = tf.cast(input_image, tf.float32) / 255.0
@@ -181,9 +186,9 @@ if args.step in [3, 4]:
         metrics=['accuracy']
     )
 
-    tf.keras.utils.plot_model(model, 'tmp/segmentation.png', show_shapes=True)
+    tf.keras.utils.plot_model(model, 'tmp/tf2_t0606/segmentation.png', show_shapes=True)
     if args.plot:
-        image = Image.open('tmp/segmentation.png')
+        image = Image.open('tmp/tf2_t0606/segmentation.png')
         plt.figure()
         plt.imshow(image)
         plt.show(block=False)
@@ -242,6 +247,7 @@ if args.step in [3, 4]:
         plt.legend()
         plt.show(block=False)
 
+
 args.step = auto_increment(args.step, args.all)
 ### Step #4 - Make predictions
 if args.step == 4:
@@ -262,10 +268,14 @@ args.step = auto_increment(args.step, args.all)
 if args.step == 6:
     print("\n### Step #6 - Next steps")
 
-    logger.info("https://github.com/tensorflow/models/tree/master/research/object_detection")
+    __doc__='''
+    https://github.com/tensorflow/models/tree/master/research/object_detection
+    '''
+    print(__doc__)
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

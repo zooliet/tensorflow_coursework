@@ -109,6 +109,7 @@ if args.step >= 10:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

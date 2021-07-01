@@ -77,11 +77,12 @@ if args.step >= 1:
 
         logger.info(f'Number of total examples: {num_samples}')
         logger.info(f'Number of examples per label: {len(tf.io.gfile.listdir(str(data_dir/commands[0])))}')
-        logger.info(f'Example file tensor:\n{filenames[0]}')
 
         logger.info(f'Training set size: {len(train_files)}')
         logger.info(f'Validation set size: {len(val_files)}')
-        logger.info(f'Test set size: {len(test_files)}')
+        logger.info(f'Test set size: {len(test_files)}\n')
+
+        logger.info(f'Example file tensor:\n{filenames[0]}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -262,6 +263,7 @@ if args.step >= 4:
     )
 
     if args.step == 4:
+        print()
         model.summary()
 
         if args.plot:
@@ -323,6 +325,7 @@ if args.step == 7:
     for spectrogram, label in sample_ds.batch(1):
         prediction = model(spectrogram)
         logger.info(f'prediction:\n{prediction}')
+
         if args.plot:
             plt.bar(commands, tf.nn.softmax(prediction[0]))
             plt.title(f'Predictions for "{commands[label[0]]}"')
@@ -330,6 +333,7 @@ if args.step == 7:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

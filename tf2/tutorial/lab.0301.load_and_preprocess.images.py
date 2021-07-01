@@ -61,23 +61,25 @@ if args.step >= 1:
     #     dataset_file = tf.keras.utils.get_file('flower_photos.tgz', dataset_url, extract=True)
     # dataset_dir = os.path.join(os.path.dirname(dataset_file), 'flower_photos')
     
-    logger.info(f'dataset_dir: {dataset_dir}')
     dataset_dir = pathlib.Path(dataset_dir)
     image_count = len(list(dataset_dir.glob('*/*.jpg')))
-    logger.info(f'ls flower_photos/*/*.jpg | wc -l: {image_count}')
 
-    if args.step == 1 and args.plot:
-        roses = list(dataset_dir.glob('roses/*'))
-        image = Image.open(str(roses[0]))
-        plt.figure()
-        plt.imshow(image)
-        plt.show(block=False)
-        # or
-        # image = tf.io.read_file(str(roses[0]))
-        # image = tf.image.decode_jpeg(image)
-        # plt.figure()
-        # plt.imshow(image)
-        # plt.show(block=False)
+    if args.step == 1:
+        logger.info(f'dataset_dir: {dataset_dir}')
+        logger.info(f'ls flower_photos/*/*.jpg | wc -l: {image_count}')
+
+        if args.plot:
+            roses = list(dataset_dir.glob('roses/*'))
+            image = Image.open(str(roses[0]))
+            plt.figure()
+            plt.imshow(image)
+            plt.show(block=False)
+            # or
+            # image = tf.io.read_file(str(roses[0]))
+            # image = tf.image.decode_jpeg(image)
+            # plt.figure()
+            # plt.imshow(image)
+            # plt.show(block=False)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -110,7 +112,8 @@ if args.step >= 2:
     class_names = train_ds.class_names
 
     if args.step == 2:
-        logger.info(f'class names: {class_names}')
+        print()
+        logger.info(f'class names:\n{class_names}\n')
         for image_batch, labels_batch in train_ds.take(1):
             logger.info(f'image_batch.shape: {image_batch.shape}') # (32, 180, 180, 3)
             logger.info(f'labels_batch.shape: {labels_batch.shape}') # (32,)
@@ -202,11 +205,11 @@ if args.step >= 7:
     class_names = sorted([item.name for item in dataset_dir.glob('*') if item.name != "LICENSE.txt"])
 
     if args.step == 7:
-        logger.info(f'class_names: {class_names}')
+        logger.info(f'class_names:\n{class_names}\n')
         logger.info('list_ds:')
         for f in list_ds.take(5):
             print(f.numpy().decode())
-        print("...")
+        print("...\n")
 
     val_size = int(image_count * 0.2)
     train_ds = list_ds.skip(val_size)
@@ -283,7 +286,7 @@ if args.step == 9:
             plt.axis("off")
         plt.plot(block=False)
     else:
-        print('Usage: --plot')
+        logger.warning('use --plot for this step.')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -330,6 +333,7 @@ if args.step == 11:
         with_info=True,
         as_supervised=True,
     )
+    print()
 
     num_classes = metadata.features['label'].num_classes
     logger.info('# of classes: {}'.format(num_classes))
@@ -348,6 +352,7 @@ if args.step == 11:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

@@ -73,7 +73,7 @@ if args.step in [2, 3, 4]:
     if args.step == 2:
         logger.info('dataset.element_spec:')
         print(*list(dataset.element_spec), sep='\n')
-        print('')
+        print()
 
         logger.info('dataset samples:')
         for feat, targ in dataset.take(5):
@@ -118,7 +118,7 @@ if args.step == 4:
     logger.info('inputs:')
     for value in inputs.values():
         print(f'{value.name:8s} {value.shape} {value.dtype}')
-    print('')
+    print()
         
     # x = tf.stack(list(inputs.values()), axis=-1) # (None, 13, 1)
     # x = tf.reshape(x, (-1, len(inputs))) # (None, 13)
@@ -143,15 +143,16 @@ if args.step == 4:
     ).batch(16)
 
     for feats, labels in dict_slices.take(1):
-        logger.info('1 batch of dict_slices:')
+        logger.info('one batch of dict_slices:')
         for key, value in feats.items():
             print(f'{key:10}:{value}')
-        print("{:10s}:{}".format('labels', labels.numpy()))
+        print("{:10s}:{}\n".format('labels', labels.numpy()))
 
-    model_func.fit(dict_slices, epochs=args.epochs, verbose=0)
+    model_func.fit(dict_slices, epochs=args.epochs, verbose=2)
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

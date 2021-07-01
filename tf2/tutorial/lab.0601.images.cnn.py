@@ -140,6 +140,7 @@ if args.step == 6:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

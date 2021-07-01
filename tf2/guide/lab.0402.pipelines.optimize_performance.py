@@ -62,7 +62,7 @@ if args.step or args.all:
             for sample in dataset:
                 # Performing a training step
                 time.sleep(0.01)
-        print(f"Execution time: {time.perf_counter() - start_time:.4f} sec\n")
+        print(f"Execution time: {time.perf_counter() - start_time:.4f} sec")
 
 
 args.step = auto_increment(args.step, args.all)
@@ -296,7 +296,7 @@ if args.step == 7:
         for _ in tf.data.Dataset.range(num_epochs):
             for _ in dataset:
                 pass
-        tf.print(f"Execution time: {time.perf_counter() - start_time:.4f} sec\n")
+        tf.print(f"Execution time: {time.perf_counter() - start_time:.4f} sec")
 
     def increment(x):
         return x+1
@@ -331,7 +331,7 @@ if args.step == 7:
         plt.show(block=False)
 
 
-### Step #8 - Reducing memory footprint
+### Step #8 - Reducing memory footprint()
 if args.step == 8:
     print("\n### Step #8 - Reducing memory footprint")
 
@@ -376,7 +376,7 @@ if args.step == 9:
 
     
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()
-

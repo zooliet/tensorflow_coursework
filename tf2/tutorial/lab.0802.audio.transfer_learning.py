@@ -44,6 +44,11 @@ if args.step == 0:
     toc(__file__)
 
 
+if args.step or args.all:
+    if not os.path.exists('tmp/tf2_t0802/'):
+        os.mkdir('tmp/tf2_t0802/') 
+
+
 args.step = auto_increment(args.step, args.all)
 ### Step #1 - About YAMNet: Loading YAMNet from TensorFlow Hub
 if args.step >= 1: 
@@ -174,7 +179,7 @@ if args.step >= 7:
     main_ds = tf.data.Dataset.from_tensor_slices((filenames, targets, folds))
     if args.step == 7:
         print(*list(main_ds.element_spec), sep='\n')
-    print('')
+    print()
     
     def load_wav_for_map(filename, label, fold):
         return load_wav_16k_mono(filename), label, fold
@@ -182,7 +187,7 @@ if args.step >= 7:
     main_ds = main_ds.map(load_wav_for_map)
     if args.step == 7:
         print(*list(main_ds.element_spec), sep='\n')
-    print('')
+    print()
 
     # applies the embedding extraction model to a wav data
     def extract_embedding(wav_data, label, fold):
@@ -199,7 +204,6 @@ if args.step >= 7:
     main_ds = main_ds.map(extract_embedding).unbatch()
     if args.step == 7:
         print(*list(main_ds.element_spec), sep='\n')
-    print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -258,6 +262,7 @@ if args.step >= 9:
     loss, accuracy = my_model.evaluate(test_ds, verbose=0)
 
     if args.step == 9:
+        print()
         logger.info(f"Loss: {loss:.2f}")
         logger.info(f"Accuracy: {accuracy:.2f}")
 
@@ -289,7 +294,7 @@ if args.step >= 11:
         def call(self, input):
             return tf.math.reduce_mean(input, axis=self.axis)
 
-    saved_model_path = 'tmp/dogs_and_cats_yamnet'
+    saved_model_path = 'tmp/tf2_t0802/dogs_and_cats_yamnet'
 
     input_segment = Input(shape=(), dtype=tf.float32, name='audio')
     embedding_extraction_layer = hub.KerasLayer(
@@ -302,14 +307,21 @@ if args.step >= 11:
     serving_model = Model(input_segment, serving_outputs)
     serving_model.save(saved_model_path, include_optimizer=False)
 
-    tf.keras.utils.plot_model(serving_model, 'tmp/dogs_and_cats_yamnet.png')
-    if args.step == 11 and args.plot:
-        image = Image.open('tmp/segmentation.png')
-        plt.figure()
-        plt.imshow(image)
-        plt.show(block=False)
-    
+    tf.keras.utils.plot_model(
+        serving_model, 
+        'tmp/tf2_t0802/dogs_and_cats_yamnet.png',
+        show_shapes=True
+    )
+    if args.step == 11: 
+        serving_model.summary()
+        print()
 
+        if args.plot:
+            image = Image.open('tmp/tf2_t0802/dogs_and_cats_yamnet.png')
+            plt.figure()
+            plt.imshow(image)
+            plt.show(block=False)
+    
     reloaded_model = tf.saved_model.load(saved_model_path)
     reloaded_results = reloaded_model(testing_wav_data)
     cat_or_dog = my_classes[tf.argmax(reloaded_results)]
@@ -356,6 +368,7 @@ if args.step == 12:
     logger.info(f'[Your model] The main sound is: {your_infered_class} ({your_top_score})')
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

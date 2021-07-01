@@ -67,12 +67,12 @@ if args.step >= 1:
         logger.info(f'dataset_dir: {dataset_dir}')
         logger.info('ls dataset_dir:')
         print(*os.listdir(dataset_dir), sep=", ")
+        print()
 
         logger.info(f'train_dir: {train_dir}')
-        logger.info(f'test_dir: {test_dir}')
-
-        logger.info("ls train_dir")
+        logger.info("ls train_dir:")
         print(*os.listdir(train_dir), sep=", ")
+        print()
 
         sample_file = os.path.join(train_dir, 'pos/1181_9.txt')
         logger.info('cat {}:'.format(sample_file))
@@ -106,15 +106,16 @@ if args.step >= 2:
 
     raw_test_ds = tf.keras.preprocessing.text_dataset_from_directory(
         test_dir,
-        batch_size=batch_size
+        batch_size=batch_size,
     )
 
     # explore the sample batch
     if args.step == 2:
+        print()
         for text_batch, label_batch in raw_train_ds.take(1):
             for i in range(1):
                 review = text_batch.numpy()[i].decode()
-                logger.info("Review: \n{}".format(review))
+                logger.info("Review:\n{}\n".format(review))
                 logger.info("Label: {}".format(label_batch.numpy()[i]))
 
         logger.info("Label 0 corresponds to {}".format(raw_train_ds.class_names[0]))
@@ -157,9 +158,11 @@ if args.step >= 3:
         text_batch, label_batch = next(iter(raw_train_ds))
         first_review, first_label = text_batch[0], label_batch[0]
 
-        logger.info(f"Review: \n{first_review.numpy().decode()}")
-        logger.info(f"Label: {raw_train_ds.class_names[first_label]}")
-        logger.info(f"Vectorized review: \n{vectorize_text(first_review, first_label)}")
+        logger.info(f"Review:\n{first_review.numpy().decode()[:50]}...")
+        logger.info(f"Label: {raw_train_ds.class_names[first_label]}\n")
+        logger.info("Vectorized:")
+        print(*vectorize_text(first_review, first_label), sep='\n')
+        print()
 
         logger.info(f"1287 ---> {vectorize_layer.get_vocabulary()[1287]}")
         logger.info(f" 313 ---> {vectorize_layer.get_vocabulary()[313]}")
@@ -188,7 +191,6 @@ if args.step >= 5:
         Embedding(max_features + 1, embedding_dim),
         Dropout(0.2),
         GlobalAveragePooling1D(),
-        Dense(16, activation='relu'),
         Dropout(0.2),
         Dense(1)
     ])
@@ -313,6 +315,7 @@ if args.step == 11:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

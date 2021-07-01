@@ -100,7 +100,7 @@ if args.step == 1:
     # Find the index of the largest value
     print('index of largest value:', tf.argmax(c), '\n')
     # Compute the softmax
-    print('softmax:\n', tf.nn.softmax(c), '\n')
+    print('softmax:\n', tf.nn.softmax(c))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -126,7 +126,6 @@ if args.step == 2:
     print("Elements along axis 0 of tensor:", rank_4_tensor.shape[0])
     print("Elements along the last axis of tensor:", rank_4_tensor.shape[-1])
     print("Total number of elements (3*2*4*5): ", tf.size(rank_4_tensor).numpy())
-    print('')
 
     if args.plot:
         plt.figure()
@@ -161,7 +160,7 @@ if args.step == 3:
     print("From 4 to the end:", rank_1_tensor[4:].numpy())
     print("From 2, before 7:", rank_1_tensor[2:7].numpy())
     print("Every other item:", rank_1_tensor[::2].numpy())
-    print("Reversed:", rank_1_tensor[::-1].numpy(), '\n')
+    print("Reversed:", rank_1_tensor[::-1].numpy())
 
 
 args.step = auto_increment(args.step, args.all)
@@ -196,7 +195,7 @@ if args.step == 4:
         ],
     ])
     logger.info('Here is an example with a 3-axis tensor:')
-    print(rank_3_tensor[:, :, 4], '\n')
+    print(rank_3_tensor[:, :, 4])
 
     if args.plot:
         plt.figure(figsize=(8,4))
@@ -250,7 +249,7 @@ if args.step == 5:
     try:
       tf.reshape(rank_3_tensor, [7, -1])
     except Exception as e:
-      print(f"{type(e).__name__}: {e}\n")
+      print(f"{type(e).__name__}: {e}")
 
     if args.plot:
         plt.figure()
@@ -276,7 +275,7 @@ if args.step == 6:
     the_f16_tensor = tf.cast(the_f64_tensor, dtype=tf.float16)
     # Now, cast to an uint8 and lose the decimal precision
     the_u8_tensor = tf.cast(the_f16_tensor, dtype=tf.uint8)
-    print(the_u8_tensor, '\n')
+    print(the_u8_tensor)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -300,7 +299,7 @@ if args.step == 7:
     print(tf.multiply(x, 2))
     print(x * y)
     print(x * z)
-    print('')
+    print()
 
     logger.info('A broadcasted add: a [2,1] times a [1,3] gives a [2,3]:')
     x = tf.constant([1, 2], name='x')
@@ -336,7 +335,7 @@ if args.step == 7:
     # print(x_stretch * y_stretch)  # Again, operator overloading
 
     logger.info('You see what broadcasting looks like using tf.broadcast_to:')
-    print(tf.broadcast_to(tf.constant([1, 2, 3]), [3, 3]), '\n')
+    print(tf.broadcast_to(tf.constant([1, 2, 3]), [3, 3]))
 
 
 args.step = auto_increment(args.step, args.all)
@@ -384,7 +383,7 @@ if args.step == 9:
     print(ragged_tensor, '\n')
 
     logger.info('The shape of a tf.RaggedTensor contains some axes with unknown lengths:')
-    print(ragged_tensor.shape, '\n')
+    print(ragged_tensor.shape)
 
     if args.plot:
         plt.figure(figsize=(8,4))
@@ -450,7 +449,7 @@ if args.step == 10:
 
     print("\nUnicode bytes:", unicode_bytes)
     print("\nUnicode chars:", unicode_char_bytes)
-    print("\nUnicode values:", unicode_values, '\n')
+    print("\nUnicode values:", unicode_values)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -474,7 +473,7 @@ if args.step == 11:
     print(sparse_tensor, "\n")
 
     logger.info('You can convert sparse tensors to dense:')
-    print(tf.sparse.to_dense(sparse_tensor), '\n')
+    print(tf.sparse.to_dense(sparse_tensor))
 
     if args.plot:
         plt.figure()
@@ -485,6 +484,7 @@ if args.step == 11:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

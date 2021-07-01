@@ -166,8 +166,8 @@ if args.step in [3, 4] :
 
     if args.step == 3: 
         if args.plot:
-            tf.keras.utils.plot_model(titanic_preprocessing, 'tmp/titanic_processing.png', rankdir="LR", dpi=72, show_shapes=True)
-            image = tf.io.read_file('tmp/titanic_processing.png')
+            tf.keras.utils.plot_model(titanic_preprocessing, 'tmp/tf2_t0302/titanic_processing.png', rankdir="LR", dpi=72, show_shapes=True)
+            image = tf.io.read_file('tmp/tf2_t0302/titanic_processing.png')
             image = tf.image.decode_png(image)
             plt.figure(figsize=(10,10))
             plt.imshow(image)
@@ -201,20 +201,21 @@ if args.step in [3, 4] :
         x=titanic_features_dict, 
         y=titanic_labels, 
         epochs=args.epochs,
-        verbose=0
+        verbose=2 if args.step == 3 else 0
     )
 
     if args.step == 3:
-        titanic_model.save('tmp/test')
-        reloaded = tf.keras.models.load_model('tmp/test')
+        print()
+        titanic_model.save('tmp/tf2_t0302/test')
+        reloaded = tf.keras.models.load_model('tmp/tf2_t0302/test')
         
         test_features_dict = {name:values[:1] for name, values in titanic_features_dict.items()}
 
         before = titanic_model(test_features_dict)
         after = reloaded(test_features_dict)
         assert (before-after) < 1e-3
-        print(f'prediction of original model: {before}')
-        print(f'prediction of reloaded model: {after}')
+        logger.info(f'prediction of original model: {before}')
+        logger.info(f'prediction of reloaded model: {after}')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -238,7 +239,7 @@ if args.step == 4:
     for example in features_ds:
         for name, value in example.items():
             print(f"{name:19s}: {value}")
-        print('')
+        print()
         break
 
     titanic_ds = tf.data.Dataset.from_tensor_slices((titanic_features_dict, titanic_labels))
@@ -270,7 +271,7 @@ if args.step in [5, 6]:
         for key, value in batch.items():
             print(f"{key:20s}: {value}")
             print(f"{'label':20s}: {label}")
-        print('')
+        print()
     #
     traffic_volume_csv_gz = tf.keras.utils.get_file(
         'Metro_Interstate_Traffic_Volume.csv.gz',
@@ -290,7 +291,6 @@ if args.step in [5, 6]:
         for key, value in batch.items():
             print(f"{key:20s}: {value[:5]}")
             print(f"{'label':20s}: {label[:5]}")
-        print('')
 
 
 args.step = auto_increment(args.step, args.all)
@@ -336,7 +336,7 @@ if args.step == 7:
     font_csvs =  sorted(str(p) for p in pathlib.Path(os.path.dirname(fonts_zip)).glob("*.csv"))
     logger.info('font_csvs[:10]:')
     print(*font_csvs[:10], sep='\n')
-    print('')
+    print()
     logger.info(f'len(font_csvs): {len(font_csvs)}') 
 
     fonts_ds = tf.data.experimental.make_csv_dataset(
@@ -400,6 +400,7 @@ if args.step == 9:
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

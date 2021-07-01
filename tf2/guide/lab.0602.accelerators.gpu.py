@@ -109,7 +109,7 @@ if args.step == 4:
         try:
             tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
             logical_gpus = tf.config.experimental.list_logical_devices('GPU')
-            logger.info(f'{len(gpus)} Physical GPUs, {len(logical_gpus)} Logical GPU\n')
+            logger.info(f'{len(gpus)} Physical GPUs, {len(logical_gpus)} Logical GPU')
         except RuntimeError as e:
             # Visible devices must be set before GPUs have been initialized
             print(e)
@@ -140,7 +140,7 @@ if args.step == 4:
             for gpu in gpus:
                 tf.config.experimental.set_memory_growth(gpu, True)
             logical_gpus = tf.config.experimental.list_logical_devices('GPU')
-            logger.info(f'{len(gpus)} Physical GPUs, {len(logical_gpus)} Logical GPU\n')
+            logger.info(f'{len(gpus)} Physical GPUs, {len(logical_gpus)} Logical GPU')
         except RuntimeError as e:
                 # Memory growth must be set before GPUs have been initialized
             print(e)
@@ -225,10 +225,11 @@ if args.step == 6:
         with tf.device('/CPU:0'):
             matmul_sum = tf.add_n(c)
 
-    print(matmul_sum, '\n')
+    print(matmul_sum)
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()

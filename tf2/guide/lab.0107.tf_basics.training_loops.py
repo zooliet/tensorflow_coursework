@@ -109,7 +109,6 @@ if args.step >= 3:
         # List the variables tf.modules's built-in variable aggregation.
         logger.info("Variables:")
         print(*model.variables, sep='\n')
-        print('')
 
     # Verify the model works
     assert model(3.0).numpy() == 15.0
@@ -133,7 +132,7 @@ if args.step >= 4:
         return tf.reduce_mean(tf.square(target_y - predicted_y))
 
     if args.step == 4:
-        logger.info("Current loss: %1.3f\n" % loss(y, model(x)).numpy())
+        logger.info("Current loss: %1.3f" % loss(y, model(x)).numpy())
 
         # Before training the model, you can visualize the loss value by plotting 
         # the model's predictions in red and the training data in blue
@@ -188,7 +187,6 @@ if args.step >= 5:
 
             print("Epoch %2d: W=%1.2f b=%1.2f, loss=%2.5f" % 
                     (epoch, Ws[-1], bs[-1], current_loss))
-        print('')
 
     if args.step == 5:
         # For a look at training, you can send the same batch of x and y 
@@ -200,7 +198,7 @@ if args.step >= 5:
 
         # Do the training
         training_loop(model, x, y)
-        logger.info("Current loss: %1.5f\n" % loss(model(x), y).numpy())
+        logger.info("Current loss: %1.5f" % loss(model(x), y).numpy())
 
         if args.plot:
             plt.figure()
@@ -261,10 +259,10 @@ if args.step == 6:
     # as a single batch of size 1000.
     logger.info('Use the built-in fit() of a Keras model:')
     keras_model.fit(x, y, epochs=10, batch_size=1000, verbose=2)
-    print('')
 
 
 ### End of File
+print()
 if args.plot:
     plt.show()
 debug()
