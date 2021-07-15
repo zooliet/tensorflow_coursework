@@ -74,7 +74,7 @@ if args.step >= 1 and args.step not in [8, 13]:
         features = tf.stack(row[1:], 1)
         return features, label
     # row = (None,),(None,),(None,)...(None,) # 29개 
-    # *row = [(None,),(None,),(None,)...(None,)] # 29개 
+    # *row = [(None,),(None,),(None,)...(None,)] # into 29개list
     # row[0] = (None,) # 1개
     # row[1:] = [(None,),(None,)...(None,)] # 28개
     # tf.stack(row[1:], axis=1) => (None, 28)  

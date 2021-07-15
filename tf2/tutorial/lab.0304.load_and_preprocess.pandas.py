@@ -120,7 +120,7 @@ if args.step == 4:
         print(f'{value.name:8s} {value.shape} {value.dtype}')
     print()
         
-    # x = tf.stack(list(inputs.values()), axis=-1) # (None, 13, 1)
+    # x = tf.stack(list(inputs.values()), axis=1) # (None, 13, 1)
     # x = tf.reshape(x, (-1, len(inputs))) # (None, 13)
     # or
     x = Concatenate()(list(inputs.values())) # (None, 13)
