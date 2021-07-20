@@ -271,8 +271,8 @@ if args.step >= 6:
     )
 
     if args.step == 6:
-        print(w1, '\n')
-        print(w2)
+        logger.info(f'w1:\n{w1}\n')
+        logger.info(f'w2:\n{w2}')
 
         if args.plot:
             plt.figure()
@@ -395,7 +395,7 @@ if args.step >= 9:
             targets=None,
             sequence_length=self.total_window_size,
             sequence_stride=1,
-            shuffle=False,
+            shuffle=False, # should be True
             batch_size=32,
         )
 
@@ -453,8 +453,7 @@ if args.step >= 10:
         input_width=1, label_width=1, shift=1, label_columns=['T (degC)']
     )
     if args.step == 10:
-        print(single_step_window, '\n')
-
+        logger.info(f'single_step_window:\n{single_step_window}')
         for example_inputs, example_labels in single_step_window.train.take(1):
             print(f'Inputs shape (batch, time, features): {example_inputs.shape}')
             print(f'Labels shape (batch, time, features): {example_labels.shape}')
@@ -491,11 +490,13 @@ if args.step >= 11:
     wide_window = WindowGenerator(
         input_width=24, label_width=24, shift=1, label_columns=['T (degC)']
     )
-    if args.step == 11 and args.plot:
-        logger.info(f'wide_window:\n{wide_window}\n')
-        logger.info(f'Input shape: {wide_window.example[0].shape}')
-        logger.info(f'Output shape: {baseline(wide_window.example[0]).shape}')
-        wide_window.plot(baseline)
+    if args.step == 11:
+        logger.info(f'wide_window:\n{wide_window}')
+        print(f'Input shape: {wide_window.example[0].shape}')
+        print(f'Output shape: {baseline(wide_window.example[0]).shape}')
+
+        if args.plot:
+            wide_window.plot(baseline)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -531,26 +532,31 @@ if args.step >= 12:
         return history
 
     if args.step == 12:
-        logger.info(f'Input shape: {single_step_window.example[0].shape}')
-        logger.info(f'Output shape: {linear(single_step_window.example[0]).shape}\n')
+        logger.info('linear model on single_step_window:')
+        print(f'Input shape: {single_step_window.example[0].shape}')
+        print(f'Output shape: {linear(single_step_window.example[0]).shape}\n')
 
     history = compile_and_fit(linear, single_step_window, verbose=args.step==12)
 
     val_performance['Linear'] = linear.evaluate(single_step_window.val, verbose=0)
     performance['Linear'] = linear.evaluate(single_step_window.test, verbose=0)
 
-    if args.step == 12 and args.plot:
-        logger.info(f'Input shape: {wide_window.example[0].shape}')
-        logger.info(f'Output shape: {linear(wide_window.example[0]).shape}')
-        wide_window.plot(linear)
+    if args.step == 12: 
+        print()
+        logger.info('linear model on wide_window:')
+        print(f'Input shape: {wide_window.example[0].shape}')
+        print(f'Output shape: {linear(wide_window.example[0]).shape}')
 
-        plt.figure()
-        plt.bar(x = range(len(train_df.columns)),
-        height=linear.layers[0].kernel[:,0].numpy())
-        axis = plt.gca()
-        axis.set_xticks(range(len(train_df.columns)))
-        _ = axis.set_xticklabels(train_df.columns, rotation=90)
-        plt.show(block=False)
+        if args.plot:
+            wide_window.plot(linear)
+
+            plt.figure()
+            plt.bar(x = range(len(train_df.columns)),
+            height=linear.layers[0].kernel[:,0].numpy())
+            axis = plt.gca()
+            axis.set_xticks(range(len(train_df.columns)))
+            _ = axis.set_xticklabels(train_df.columns, rotation=90)
+            plt.show(block=False)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -564,13 +570,24 @@ if args.step >= 13:
         tf.keras.layers.Dense(units=1)
     ])
 
+    if args.step == 13:
+        logger.info('dense model on single_step_window:')
+        print(f'Input shape: {single_step_window.example[0].shape}')
+        print(f'Output shape: {dense(single_step_window.example[0]).shape}\n')
+
     history = compile_and_fit(dense, single_step_window, verbose=args.step==13)
 
     val_performance['Dense'] = dense.evaluate(single_step_window.val, verbose=0)
     performance['Dense'] = dense.evaluate(single_step_window.test, verbose=0)
 
-    if args.step == 13 and args.plot:
-        wide_window.plot(dense)
+    if args.step == 13:
+        print()
+        logger.info('linear model on wide_window:')
+        print(f'Input shape: {wide_window.example[0].shape}')
+        print(f'Output shape: {dense(wide_window.example[0]).shape}')
+
+        if args.plot:
+            wide_window.plot(dense)
 
 
 args.step = auto_increment(args.step, args.all)
@@ -586,7 +603,10 @@ if args.step >= 14:
         label_columns=['T (degC)'])
 
     if args.step == 14:
-        print(conv_window, '\n')
+        logger.info(f'conv_window:\n{conv_window}')
+        print(f'Inputs shape (batch, time, features): {conv_window.example[0].shape}')
+        print(f'Labels shape (batch, time, features): {conv_window.example[1].shape}')
+
         if args.plot:
             conv_window.plot()
 
@@ -601,22 +621,18 @@ if args.step >= 14:
         tf.keras.layers.Reshape([1, -1]),
     ])
 
-    if args.step == 14:
-        logger.info(f'Input shape: {conv_window.example[0].shape}')
-        logger.info(f'Output shape: {multi_step_dense(conv_window.example[0]).shape}')
-
     history = compile_and_fit(multi_step_dense, conv_window, verbose=args.step==14)
 
     val_performance['Multi step dense'] = multi_step_dense.evaluate(conv_window.val, verbose=0)
     performance['Multi step dense'] = multi_step_dense.evaluate(conv_window.test, verbose=0)
 
     if args.step == 14:
-        logger.info(f'conv_window:\n{conv_window}\n')
-        logger.info(f'Input shape: {conv_window.example[0].shape}')
-        logger.info(f'Output shape: {multi_step_dense(conv_window.example[0]).shape}')
+        print()
+        logger.info('multi_step_dense model on conv_window:')
+        print(f'Input shape: {conv_window.example[0].shape}')
+        print(f'Output shape: {multi_step_dense(conv_window.example[0]).shape}')
 
         if args.plot:
-            conv_window.plot()
             conv_window.plot(multi_step_dense)
 
 
@@ -633,15 +649,16 @@ if args.step >= 15:
         tf.keras.layers.Dense(units=1),
     ])
 
-    if args.step == 15:
-        logger.info("Conv model on conv_window:")
-        print(f'Input shape: {conv_window.example[0].shape}')
-        print(f'Output shape: {conv_model(conv_window.example[0]).shape}')
-
 
     history = compile_and_fit(conv_model, conv_window, verbose=args.step==15)
     val_performance['Conv'] = conv_model.evaluate(conv_window.val, verbose=0)
     performance['Conv'] = conv_model.evaluate(conv_window.test, verbose=0)
+
+    if args.step == 15:
+        print()
+        logger.info("Conv model on conv_window:")
+        print(f'Input shape: {conv_window.example[0].shape}')
+        print(f'Output shape: {conv_model(conv_window.example[0]).shape}')
 
     LABEL_WIDTH = 24
     INPUT_WIDTH = LABEL_WIDTH + (CONV_WIDTH - 1)
@@ -653,10 +670,13 @@ if args.step >= 15:
     )
 
     if args.step == 15:
-        logger.info(f'wide_conv_window:\n{wide_conv_window}\n')
-        logger.info(f'Input shape: {wide_conv_window.example[0].shape}')
-        logger.info(f'Labels shape: {wide_conv_window.example[1].shape}')
-        logger.info(f'Output shape: {conv_model(wide_conv_window.example[0]).shape}')
+        logger.info(f'wide_conv_window:\n{wide_conv_window}')
+        print(f'Input shape: {wide_conv_window.example[0].shape}')
+        print(f'Labels shape: {wide_conv_window.example[1].shape}\n')
+
+        logger.info("Conv model on wide_conv_window:")
+        print(f'Input shape: {wide_conv_window.example[0].shape}')
+        print(f'Output shape: {conv_model(wide_conv_window.example[0]).shape}')
 
         if args.plot:
             wide_conv_window.plot(conv_model)
