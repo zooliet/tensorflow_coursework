@@ -46,197 +46,61 @@ if args.step == 0:
     toc(__file__)
 
 
-# if args.step or args.all:
-#     if not os.path.exists('tmp/tfx_g0101/'):
-#         os.mkdir('tmp/tfx_g0101/')
-
-
 args.step = auto_increment(args.step, args.all)
-### Step #1 - Artifact
+### Step #1 - Building a TFX Pipeline Locally
 if args.step == 1:
-    print("\n### Step #1 - Artifact")
+    print("\n### Step #1 - Building a TFX Pipeline Locally")
 
     __doc__='''
-    The outputs of steps in a TFX pipeline are called artifacts. Subsequent
-    steps in your workflow may use these artifacts as inputs. In this way, TFX
-    lets you transfer data between workflow steps.
+    TFX makes it easier to orchestrate your machine learning (ML) workflow as a
+    pipeline, in order to:
+    - Automate your ML process, which lets you regularly retrain, evaluate, and
+      deploy your model.
+    - Create ML pipelines which include deep analysis of model performance and
+      validation of newly trained models to ensure performance and reliability.
+    - Monitor training data for anomalies and eliminate training-serving skew
+    - Increase the velocity of experimentation by running a pipeline with
+      different sets of hyperparameters.
 
-    For instance, the ExampleGen standard component emits serialized examples,
-    which components such as the StatisticsGen standard component use as
-    inputs.
+    A typical pipeline development process begins on a local machine, with data
+    analysis and component setup, before being deployed into production. This
+    guide describes two ways to build a pipeline locally.
+    - Customize a TFX pipeline template to fit the needs of your ML workflow.
+      TFX pipeline templates are prebuilt workflows that demonstrate best
+      practices using the TFX standard components.
+    - Build a pipeline using TFX. In this use case, you define a pipeline
+      without starting from a template.
 
-    Artifacts must be strongly typed with an artifact type registered in the ML
-    Metadata store. 
-
-    Artifact types have a name and define a schema of its properties. Artifact
-    type names must be unique in your ML Metadata store. TFX provides several
-    standard artifact types that describe complex data types and value types,
-    such as: string, integer, and float. You can reuse these artifact types or
-    define custom artifact types that derive from Artifact.
+    As you are developing your pipeline, you can run it with LocalDagRunner.
+    Then, once the pipeline components have been well defined and tested, you
+    would use a production-grade orchestrator such as Kubeflow or Airflow.
     '''
     print(__doc__)
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #2 - Parameter
+### Step #2 - Build a pipeline using a template: Create a copy of the pipeline template
 if args.step == 2:
-    print("\n### Step #2 - Parameter")
-
-    __doc__='''
-    Parameters are inputs to pipelines that are known before your pipeline is
-    executed. Parameters let you change the behavior of a pipeline, or a part
-    of a pipeline, through configuration instead of code.
-
-    For example, you can use parameters to run a pipeline with different sets
-    of hyperparameters without changing the pipeline's code.
-
-    Using parameters lets you increase the velocity of experimentation by
-    making it easier to run your pipeline with different sets of parameters.
-    '''
-    print(__doc__)
+    print("\n### Step #2 - Build a pipeline using a template: Create a copy of the pipeline template")
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #3 - Component
+### Step #3 - Build a pipeline using a template: Explore the pipeline template
 if args.step == 3:
-    print("\n### Step #3 - Component")
-
-    __doc__='''
-    A component is an implementation of an ML task that you can use as a step
-    in your TFX pipeline. Components are composed of:
-
-    - A component specification, which defines the component's input and output
-      artifacts, and the component's required parameters.  
-    - An executor, which implements the code to perform a step in your ML
-      workflow, such as ingesting and transforming data or training and
-      evaluating a model.  
-    - A component interface, which packages the component specification and
-      executor for use in a pipeline.  
-
-    TFX provides several standard components that you can use in your
-    pipelines. If these components do not meet your needs, you can build custom
-    components. 
-    '''
-    print(__doc__)
+    print("\n### Step #3 - Build a pipeline using a template: Explore the pipeline template")
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #4 - Pipeline
+### Step #4 - Build a pipeline using a template: Customize your pipeline
 if args.step == 4:
-    print("\n### Step #4 - Pipeline")
-
-    __doc__='''
-    A TFX pipeline is a implementation of an ML workflow that can be
-    run on various orchestrators, such as: Apache Airflow, Apache Beam, and
-    Kubeflow Pipelines. A pipeline is composed of component instances and input
-    parameters.
-
-    Component instances produce artifacts as outputs and typically depend on
-    artifacts produced by upstream component instances as inputs. 
-
-    For example, consider a pipeline that does the following:
-
-    - Ingests data directly from a proprietary system using a custom component.
-    - Calculates statistics for the training data using the StatisticsGen
-      component.
-    - Creates a data schema using the SchemaGen component.
-    - Checks the training data for anomalies using the ExampleValidator
-      component.
-    - Performs feature engineering on the dataset using the Transform
-      component.
-    - Trains a model using the Trainer component.
-    - Evaluates the trained model using the Evaluator component.
-    - If the model passes its evaluation, the pipeline enqueues the trained
-      model to a proprietary deployment system using a custom component.
-
-    To determine the execution sequence for the component instances, TFX
-    analyzes the artifact dependencies.
-
-    - The data ingestion component does not have any artifact dependencies, so
-      it can be the first node in the graph.
-    - StatisticsGen depends on the examples produced by data ingestion, so it
-      must be executed after data ingestion.
-    - SchemaGen depends on the statistics created by StatisticsGen, so it must
-      be executed after StatisticsGen.
-    - ExampleValidator depends on the statistics created by StatisticsGen and
-      the schema created by SchemaGen, so it must be executed after
-      StatisticsGen and SchemaGen.
-    - Transform depends on the examples produced by data ingestion and the
-      schema created by SchemaGen, so it must be executed after data ingestion
-      and SchemaGen.
-    - Trainer depends on the examples produced by data ingestion, the schema
-      created by SchemaGen, and the saved model produced by Transform. The
-      Trainer can be executed only after data ingestion, SchemaGen, and
-      Transform.
-    - Evaluator depends on the examples produced by data ingestion and the
-      saved model produced by the Trainer, so it must be executed after data
-      ingestion and the Trainer.
-    - The custom deployer depends on the saved model produced by the Trainer
-      and the analysis results created by the Evaluator, so the deployer must
-      be executed after the Trainer and the Evaluator.
-      
-    Based on this analysis, an orchestrator runs:
-
-    - The data ingestion, StatisticsGen, SchemaGen component instances
-      sequentially.
-    - The ExampleValidator and Transform components can run in parallel since
-      they share input artifact dependencies and do not depend on each other's
-      output.
-    - After the Transform component is complete, the Trainer, Evaluator, and
-      custom deployer component instances run sequentially.
-    '''
-    print(__doc__)
+    print("\n### Step #4 - Build a pipeline using a template: Customize your pipeline")
 
 
 args.step = auto_increment(args.step, args.all)
-### Step #5 - TFX Pipeline Template
+### Step #5 - Build a custom pipeline
 if args.step == 5:
-    print("\n### Step #5 - TFX Pipeline Template")
+    print("\n### Step #5 - Build a custom pipeline")
 
-    __doc__='''
-    TFX Pipeline Templates make it easier to get started with pipeline
-    development by providing a prebuilt pipeline that you can customize for
-    your use case.
-    '''
-    print(__doc__)
-
-
-args.step = auto_increment(args.step, args.all)
-### Step #6 - Pipeline Run
-if args.step == 6:
-    print("\n### Step #6 - Pipeline Run")
-
-    __doc__='''
-    A run is a single execution of a pipeline.
-    '''
-    print(__doc__)
-
-
-args.step = auto_increment(args.step, args.all)
-### Step #7 - Orchestrator
-if args.step == 7:
-    print("\n### Step #7 - Orchestrator")
-
-    __doc__='''
-    An Orchestrator is a system where you can execute pipeline runs. 
-    TFX supports orchestrators such as: Apache Airflow, Apache Beam, and
-    Kubeflow Pipelines. TFX also uses the term DagRunner to refer to an
-    implementation that supports an orchestrator.
-    '''
-    print(__doc__)
-
-
-# args.step = auto_increment(args.step, args.all)
-# ### Step #8 - Summary
-# if args.step == 8:
-#     print("\n### Step #8 - Summary")
-#
-#     __doc__='''
-#     pipleline == workflow
-#     a pipeline consists of components
-#     components == tasks
-#     '''
-#     print(__doc__)
 
 ### End of File
 print()
